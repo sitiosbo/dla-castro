@@ -95,14 +95,6 @@ const schemaExtra = {
             </div>
 
             <button type="submit" class="btn-submit">Enviar Evaluación Legal</button>
-            <div id="form-success" class="form-message form-success" hidden>
-              <span class="form-message-icon" aria-hidden="true">✓</span>
-              <p><strong>Consulta enviada correctamente.</strong> Un profesional de DLA se pondrá en contacto a la brevedad.</p>
-            </div>
-            <div id="form-error" class="form-message form-error" hidden>
-              <span class="form-message-icon" aria-hidden="true">✕</span>
-              <p><strong>No se pudo enviar la consulta.</strong> Intente nuevamente o contacte directamente por WhatsApp.</p>
-            </div>
             <p class="form-privacy-note">
               Sus datos están protegidos por el deber de confidencialidad profesional.
             </p>
@@ -191,13 +183,6 @@ const schemaExtra = {
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
   .form-privacy-note { font-family: var(--font-body); font-size: 0.75rem; color: var(--color-ink-400); text-align: center; }
 
-  .form-message { display: flex; align-items: flex-start; gap: 0.625rem; padding: 1rem; border-radius: 0.375rem; font-family: var(--font-body); font-size: 0.875rem; line-height: 1.5; }
-  .form-message-icon { font-weight: 700; font-size: 1.125rem; flex-shrink: 0; margin-top: 0.0625rem; }
-  .form-success { background: rgba(15, 169, 104, 0.08); border: 1px solid rgba(15, 169, 104, 0.25); color: var(--color-navy-800); }
-  .form-success .form-message-icon { color: var(--color-success-500); }
-  .form-error { background: rgba(181, 98, 44, 0.08); border: 1px solid rgba(181, 98, 44, 0.25); color: var(--color-navy-800); }
-  .form-error .form-message-icon { color: var(--color-terracotta-600); }
-
   .info-card { background: var(--color-navy-950); color: var(--color-white); padding: 2rem; border-radius: var(--radius-card); }
   .info-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
   .info-tagline { font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
@@ -259,14 +244,11 @@ const schemaExtra = {
 
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const btnSubmit = form?.querySelector('.btn-submit') as HTMLButtonElement | null;
-  const successMsg = document.getElementById('form-success');
-  const errorMsg = document.getElementById('form-error');
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form || !btnSubmit) return;
 
-    errorMsg?.setAttribute('hidden', '');
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Enviando…';
 
@@ -289,9 +271,13 @@ const schemaExtra = {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       form.hidden = true;
-      successMsg?.removeAttribute('hidden');
+      if (typeof (window as any).showToast === 'function') {
+        (window as any).showToast('success', ' Un profesional de DLA se pondrá en contacto a la brevedad.');
+      }
     } catch {
-      errorMsg?.removeAttribute('hidden');
+      if (typeof (window as any).showToast === 'function') {
+        (window as any).showToast('error', ' Intente nuevamente o contacte directamente por WhatsApp.');
+      }
       btnSubmit.disabled = false;
       btnSubmit.textContent = 'Enviar Evaluación Legal';
     }

@@ -1,0 +1,127 @@
+---
+// Toast global de notificaciones. Se incluye una sola vez en BaseLayout,
+// igual que WhatsAppFloat. Expone window.showToast(type, message, opts) para
+// que cualquier script de página lo invoque sin importar nada más.
+---
+<div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+<style>
+  .toast-region {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 24rem;
+    width: calc(100% - 3rem);
+    pointer-events: none;
+  }
+
+  .toast {
+    pointer-events: auto;
+    background: var(--color-white);
+    border-left: 4px solid var(--color-success-500);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card), 0 8px 24px rgba(15, 27, 61, 0.12);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-navy-800);
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateX(1rem);
+    animation: toast-enter var(--motion-duration-enter) var(--motion-ease-enter) forwards;
+  }
+
+  .toast.toast-error {
+    border-left-color: var(--color-terracotta-600);
+  }
+
+  .toast.toast-exiting {
+    animation: toast-exit var(--motion-duration-exit) var(--motion-ease-exit) forwards;
+  }
+
+  .toast-icon {
+    font-weight: 700;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+    margin-top: 0.0625rem;
+  }
+  .toast-success .toast-icon { color: var(--color-success-500); }
+  .toast-error .toast-icon { color: var(--color-terracotta-600); }
+
+  .toast-body { flex: 1; }
+  .toast-body strong { display: block; margin-bottom: 0.125rem; }
+
+  .toast-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-ink-400);
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0.125rem;
+    flex-shrink: 0;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+  .toast-close:hover { color: var(--color-navy-800); }
+
+  @keyframes toast-enter {
+    from { opacity: 0; transform: translateX(1rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toast-exit {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(1rem); }
+  }
+
+  @media (max-width: 640px) {
+    .toast-region { top: auto; bottom: 1.5rem; left: 1.5rem; right: 1.5rem; max-width: none; }
+  }
+</style>
+
+<script>
+  type ToastType = 'success' | 'error';
+
+  function showToast(type: ToastType, message: string, opts: { title?: string; duration?: number } = {}) {
+    const region = document.getElementById('toast-region');
+    if (!region) return;
+
+    // El error es más importante y no debe auto-desaparecer tan rápido
+    // (contiene la alternativa de WhatsApp, el usuario necesita leerla con calma).
+    const defaultDuration = type === 'error' ? 10000 : 5000;
+    const duration = opts.duration ?? defaultDuration;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+    const icon = type === 'success' ? '✓' : '✕';
+    const title = opts.title ?? (type === 'success' ? 'Consulta enviada correctamente.' : 'No se pudo enviar la consulta.');
+
+    toast.innerHTML = `
+      <span class="toast-icon" aria-hidden="true">${icon}</span>
+      <div class="toast-body"><strong>${title}</strong>${message}</div>
+      <button class="toast-close" aria-label="Cerrar notificación">✕</button>
+    `;
+
+    region.appendChild(toast);
+
+    const remove = () => {
+      if (toast.classList.contains('toast-exiting')) return;
+      toast.classList.add('toast-exiting');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+
+    toast.querySelector('.toast-close')?.addEventListener('click', remove);
+    if (duration > 0) setTimeout(remove, duration);
+  }
+
+  // Exponer globalmente para que cualquier script de página lo use.
+  (window as any).showToast = showToast;
+</script>

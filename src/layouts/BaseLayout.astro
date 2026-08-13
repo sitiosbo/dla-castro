@@ -4,6 +4,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import Toast from '../components/Toast.astro';
 import '../styles/tokens.css';
 
 interface Props {
@@ -108,5 +109,6 @@ const schemaOrg = {
     <slot />
     <Footer />
     <WhatsAppFloat />
+    <Toast />
   </body>
 </html>
