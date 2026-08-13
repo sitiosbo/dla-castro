@@ -16,11 +16,11 @@ const servicios = defineCollection({
 // Posts de blog normativo (Ley 1883, APS, jurisprudencia) — motor de SEO recurrente
 const blog = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     titulo: z.string(),
     fechaPublicacion: z.date(),
     resumen: z.string(),
-    imagenPortada: z.string().optional(),
+    imagenPortada: image().optional(),
     categoria: z.enum(['normativa', 'siniestros', 'jurisprudencia', 'general']),
   }),
 });

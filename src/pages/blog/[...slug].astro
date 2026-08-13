@@ -2,6 +2,7 @@
 // Post individual de blog.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -89,7 +90,14 @@ const schemaExtra = {
     <div class="article-inner">
       {post.data.imagenPortada && (
         <div class="article-cover">
-          <img src={post.data.imagenPortada} alt={post.data.titulo} class="article-cover-img" />
+          <Image
+            src={post.data.imagenPortada}
+            alt={post.data.titulo}
+            class="article-cover-img"
+            widths={[800, 1200]}
+            sizes="(max-width: 640px) 100vw, 52rem"
+            loading="eager"
+          />
         </div>
       )}
 

@@ -65,6 +65,10 @@ una línea de servicio de ese despacho**. Reglas específicas:
 - [x] Páginas legales (`aviso-legal.astro`, `politica-privacidad.astro`)
 - [x] Favicon SVG base (`public/favicon.svg`)
 - [x] Dependencias instaladas (`node_modules`)
+- [x] `blog/index.astro` y `blog/[...slug].astro` con tipografía editorial y schema SEO
+- [x] `public/admin/` — Decap CMS con OAuth embebido en el Worker (`src/worker/index.js`)
+- [x] `Toast.astro` — notificaciones flotantes globales (formulario de contacto y futuras)
+- [x] Optimización de imágenes: `image()` en schema blog, `<Image>` en páginas, `getImage()` para skyline
 - [x] Compilación probada con `npm run build` sin errores
 
 ## 4. Orden de trabajo y estado de pasos
@@ -81,13 +85,33 @@ una línea de servicio de ese despacho**. Reglas específicas:
 8. [x] Implementar las 4 páginas de `areas-de-practica/` + pillar page.
 9. [x] Implementar `proceso.astro`, `resultados.astro`, `sobre-mi.astro`, `contacto.astro`.
 10. [x] Implementar `preguntas-frecuentes.astro` con JSON-LD `FAQPage` real y comentarios `<!-- TODO: validar con el abogado -->`.
-11. [ ] ~~Blog: `blog/index.astro` y `blog/[...slug].astro`~~ — **EN PAUSA**
+11. [x] Blog: `blog/index.astro`, `blog/[...slug].astro` — **implementado y en producción**
 12. [x] QA final del sitio principal (sin blog): responsive, WhatsAppFloat, sitemap.xml, comprobación de compilación.
 
 ## 4.5 Metodología de animación — Emil Kowalski (cumplida)
 
 Todo el movimiento utiliza exclusivamente las variables CSS `--motion-*` de `tokens.css`.
 El único componente con animación orquestada es `Timeline.astro`.
+
+## 4.6 Regla permanente de imágenes — astro:assets
+
+> **OBLIGATORIO para cualquier imagen nueva, sin excepciones.**
+
+- **Toda imagen del sitio debe vivir en `src/assets/`** (nunca en `public/`). Astro solo
+  puede optimizar (comprimir, convertir a WebP, generar srcset) archivos que estén dentro
+  de `src/` — los de `public/` se sirven sin procesar.
+- **Para `<img>` normales:** usar el componente `<Image>` de `astro:assets`, nunca la
+  etiqueta `<img>` nativa. Pasar siempre `widths` y `sizes` para imágenes responsivas.
+- **Para `background-image` en CSS:** usar `getImage()` de `astro:assets` en el
+  frontmatter para obtener la URL optimizada, e inyectarla como custom property CSS
+  (`style={\`--mi-img: url('${img.src}')\`}`). No hardcodear rutas de `public/` en CSS.
+- **Imágenes de blog (Decap CMS):** el schema usa `image()` (Astro helper, no `z.string()`)
+  y el config.yml tiene `media_folder: ""` + `public_folder: ""` a nivel de colección
+  para que las portadas se guarden como rutas relativas junto al `.md` del artículo.
+- **Futura foto de Castro en /sobre-mi/:** agregar a `src/assets/castro-foto.jpg` y
+  renderizar con `<Image src={castroFoto} alt="..." widths={[400, 800]} ...>`.
+- **No pedirle a Castro que comprima fotos antes de subirlas.** El pipeline de Astro
+  se encarga en cada `npm run build`.
 
 ## 5. Verificación obligatoria
 

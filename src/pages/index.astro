@@ -11,6 +11,8 @@ import Timeline from '../components/Timeline.astro';
 import StatBar from '../components/StatBar.astro';
 import ServiceTable from '../components/ServiceTable.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import skylineRaw from '../assets/lapaz-skyline.jpg';
 
 const servicios = (await getCollection('servicios')).sort(
   (a, b) => a.data.ordenHome - b.data.ordenHome,
@@ -64,6 +66,9 @@ const statsData = [
   { label: 'Arbitrajes favorables', value: arbitrajesFavorables },
   { label: 'Recupero total de indemnizaciones', value: recuperoIndemnizaciones },
 ];
+
+// Skyline optimizado — Astro convierte a WebP y comprime en build time
+const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 });
 ---
 
 <BaseLayout
@@ -261,7 +266,7 @@ const statsData = [
   <ServiceTable />
 
   <!-- 10. Liderazgo y Confianza (Skyline de La Paz) -->
-  <section class="liderazgo-section" aria-label="Liderazgo y respaldo legal institucional">
+  <section class="liderazgo-section" aria-label="Liderazgo y respaldo legal institucional" style={`--skyline-url: url('${skyline.src}')`}>
     <div class="liderazgo-overlay"></div>
     <div class="section-inner liderazgo-inner">
       <div class="liderazgo-content">
@@ -771,7 +776,7 @@ const statsData = [
   /* === SECCIÓN 10: Liderazgo y Confianza (Skyline de La Paz) === */
   .liderazgo-section {
     position: relative;
-    background-image: url('/images/lapaz-skyline.jpg');
+    background-image: var(--skyline-url);
     background-size: cover;
     background-position: center;
     padding: 5.5rem 0;

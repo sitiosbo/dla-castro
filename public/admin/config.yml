@@ -39,6 +39,8 @@ collections:
     folder: "src/content/blog"
     create: true
     slug: "{{year}}-{{month}}-{{slug}}"
+    media_folder: ""      # Las imágenes se guardan junto al .md del artículo (ruta relativa)
+    public_folder: ""     # Necesario para que image() de Astro pueda procesarlas en build time
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
       - {

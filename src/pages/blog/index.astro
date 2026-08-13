@@ -2,6 +2,7 @@
 // Listado de blog (Decap CMS alimenta esta colección).
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 const allPosts = await getCollection('blog');
 const posts = allPosts.sort(
@@ -66,10 +67,12 @@ const schemaExtra = {
             <article class="post-card">
               {post.data.imagenPortada && (
                 <div class="post-cover-wrap">
-                  <img
+                  <Image
                     src={post.data.imagenPortada}
                     alt={post.data.titulo}
                     class="post-cover-img"
+                    widths={[400, 800]}
+                    sizes="(max-width: 640px) 100vw, (max-width: 992px) 50vw, 33vw"
                     loading="lazy"
                   />
                 </div>
