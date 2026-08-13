@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers con Static Assets + Worker script embebido para OAuth de Decap CMS.
+  "name": "dla-seguros",
+  "compatibility_date": "2025-01-01",
+  "main": "src/worker/index.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  }
+}

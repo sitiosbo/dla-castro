@@ -1,0 +1,257 @@
+---
+// Footer global: logo DLA, "Abogado responsable: Castro", ciudades de cobertura
+// (desde content/settings/general.json), enlaces a áreas de práctica, blog,
+// aviso legal / política de privacidad.
+import { getEntry } from 'astro:content';
+const settings = await getEntry('settings', 'general');
+const { ciudadesCobertura } = settings.data.contacto;
+const currentYear = new Date().getFullYear();
+
+const areasLinks = [
+  { label: 'Seguros Generales', href: '/areas-de-practica/seguros-generales/' },
+  { label: 'Seguros de Personas', href: '/areas-de-practica/seguros-de-personas/' },
+  { label: 'Fianzas y Caución', href: '/areas-de-practica/fianzas-y-caucion/' },
+  { label: 'Impugnación de Rechazos', href: '/areas-de-practica/impugnacion-de-rechazos/' },
+];
+
+const legalLinks = [
+  { label: 'Aviso Legal', href: '/aviso-legal/' },
+  { label: 'Política de Privacidad', href: '/politica-privacidad/' },
+];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <!-- Columna marca -->
+    <div class="footer-brand">
+      <a href="/" class="footer-logo" aria-label="DLA — Defensa Legal del Asegurado, inicio">
+        <span class="footer-logo-dla">DLA</span>
+        <span class="footer-logo-tagline">Defensa Legal del Asegurado</span>
+      </a>
+      <p class="footer-description">
+        Estudio jurídico especializado en Derecho de Seguros en Bolivia.
+        Asesoría técnica, patrocinio en siniestros e impugnación de rechazos.
+      </p>
+      <!-- Única mención de Castro en el footer, como firma de abogado responsable -->
+      <p class="footer-abogado">
+        <span class="abogado-label">Abogado responsable:</span>
+        <span class="abogado-name">Castro</span>
+      </p>
+      <p class="footer-cobertura">
+        {ciudadesCobertura.join(' · ')}
+      </p>
+    </div>
+
+    <!-- Columna: Áreas de Práctica -->
+    <div class="footer-col">
+      <h3 class="footer-col-title">Áreas de Práctica</h3>
+      <ul class="footer-links">
+        {areasLinks.map((link) => (
+          <li><a href={link.href} class="footer-link">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Columna: Navegación -->
+    <div class="footer-col">
+      <h3 class="footer-col-title">Estudio</h3>
+      <ul class="footer-links">
+        <li><a href="/proceso/" class="footer-link">Proceso</a></li>
+        <li><a href="/resultados/" class="footer-link">Resultados</a></li>
+        <li><a href="/sobre-mi/" class="footer-link">Sobre Mí</a></li>
+        <li><a href="/preguntas-frecuentes/" class="footer-link">Preguntas Frecuentes</a></li>
+        <li><a href="/contacto/" class="footer-link">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra inferior -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <p class="footer-copyright">
+        © {currentYear} DLA — Defensa Legal del Asegurado. Todos los derechos reservados.
+      </p>
+      <nav class="footer-legal-nav" aria-label="Legal">
+        {legalLinks.map((link, i) => (
+          <>
+            <a href={link.href} class="footer-legal-link">{link.label}</a>
+            {i < legalLinks.length - 1 && <span class="footer-legal-sep" aria-hidden="true">·</span>}
+          </>
+        ))}
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-navy-950);
+    color: var(--color-white);
+    padding-top: 3.5rem;
+    margin-top: 5rem;
+  }
+
+  .footer-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 3rem;
+  }
+
+  /* Marca */
+  .footer-logo {
+    display: inline-flex;
+    flex-direction: column;
+    text-decoration: none;
+    margin-bottom: 1rem;
+  }
+
+  .footer-logo-dla {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .footer-logo:hover .footer-logo-dla {
+    color: var(--color-terracotta-500);
+  }
+
+  .footer-logo-tagline {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  .footer-description {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    max-width: 24rem;
+  }
+
+  .footer-abogado {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .abogado-label {
+    color: rgba(255,255,255,0.45);
+    margin-right: 0.25rem;
+  }
+
+  /* Castro solo como firma, tamaño pequeño, no jerárquico */
+  .abogado-name {
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+  }
+
+  .footer-cobertura {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-terracotta-500);
+    letter-spacing: 0.03em;
+    margin-top: 0.125rem;
+  }
+
+  /* Columnas de navegación */
+  .footer-col-title {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-link {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .footer-link:hover {
+    color: var(--color-white);
+  }
+
+  /* Barra inferior */
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-bottom-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .footer-copyright {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .footer-legal-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-legal-link {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .footer-legal-link:hover {
+    color: rgba(255,255,255,0.65);
+  }
+
+  .footer-legal-sep {
+    color: rgba(255,255,255,0.2);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .footer-bottom-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

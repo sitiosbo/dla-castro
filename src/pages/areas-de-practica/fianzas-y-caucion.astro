@@ -1,0 +1,18 @@
+---
+// Página de práctica: fianzas-y-caucion
+// Contenido fuente: src/content/servicios/fianzas-y-caucion.md
+import AreaLayout from '../../layouts/AreaLayout.astro';
+import { getEntry } from 'astro:content';
+const entry = await getEntry('servicios', 'fianzas-y-caucion');
+const { Content } = await entry.render();
+---
+<AreaLayout
+  titulo={entry.data.titulo}
+  resumen={entry.data.resumen}
+  slug={entry.slug}
+  prioridadConversion={entry.data.prioridadConversion}
+  icono={entry.data.icono}
+  breadcrumbLabel={entry.data.titulo}
+>
+  <Content />
+</AreaLayout>

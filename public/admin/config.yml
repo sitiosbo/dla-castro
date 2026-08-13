@@ -1,0 +1,95 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+site_url: https://dlaseguros.bo
+logo_url: /favicon.svg
+
+collections:
+  - name: "servicios"
+    label: "Áreas de Práctica"
+    folder: "src/content/servicios"
+    create: false # las 4 áreas ya están definidas, solo se editan
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Resumen (para cards de Home)", name: "resumen", widget: "text" }
+      - { label: "Ícono", name: "icono", widget: "string", required: false }
+      - label: "Prioridad de conversión"
+        name: "prioridadConversion"
+        widget: "select"
+        options: ["alta", "media"]
+      - { label: "Orden en Home", name: "ordenHome", widget: "number" }
+      - { label: "Contenido", name: "body", widget: "markdown" }
+
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{slug}}"
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Fecha de publicación", name: "fechaPublicacion", widget: "datetime" }
+      - { label: "Resumen", name: "resumen", widget: "text" }
+      - { label: "Imagen de portada", name: "imagenPortada", widget: "image", required: false }
+      - label: "Categoría"
+        name: "categoria"
+        widget: "select"
+        options: ["normativa", "siniestros", "jurisprudencia", "general"]
+      - { label: "Contenido", name: "body", widget: "markdown" }
+
+  - name: "testimonios"
+    label: "Testimonios"
+    folder: "src/content/testimonios"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Iniciales del cliente (nunca nombre completo)", name: "inicialesCliente", widget: "string" }
+      - { label: "Tipo de caso", name: "tipoCaso", widget: "string" }
+      - { label: "Texto del testimonio", name: "texto", widget: "text" }
+      - { label: "Resultado", name: "resultado", widget: "string", required: false }
+      - { label: "Contenido adicional", name: "body", widget: "markdown", required: false }
+
+  - name: "casos"
+    label: "Casos de Éxito"
+    folder: "src/content/casos"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - label: "Ramo"
+        name: "ramo"
+        widget: "select"
+        options: ["generales", "personas", "fianzas-caucion"]
+      - { label: "Resultado (%)", name: "resultadoPorcentaje", widget: "number", required: false }
+      - { label: "Resumen (anonimizado)", name: "resumen", widget: "text" }
+      - { label: "Contenido adicional", name: "body", widget: "markdown", required: false }
+
+  - name: "settings"
+    label: "Configuración General"
+    files:
+      - name: "general"
+        label: "Estadísticas y Contacto"
+        file: "src/content/settings/general.json"
+        fields:
+          - label: "Estadísticas"
+            name: "stats"
+            widget: "object"
+            fields:
+              - { label: "Años de experiencia", name: "aniosExperiencia", widget: "number" }
+              - { label: "Recupero de indemnizaciones (%)", name: "recuperoIndemnizaciones", widget: "number" }
+              - { label: "Resolución vía administrativa (%)", name: "resolucionViaAdministrativa", widget: "number" }
+              - { label: "Arreglos directos (%)", name: "arreglosDirectos", widget: "number" }
+              - { label: "Arbitrajes favorables (%)", name: "arbitrajesFavorables", widget: "number" }
+          - label: "Contacto"
+            name: "contacto"
+            widget: "object"
+            fields:
+              - { label: "WhatsApp", name: "whatsapp", widget: "string" }
+              - { label: "Email", name: "email", widget: "string", required: false }
+              - { label: "Ciudades de cobertura", name: "ciudadesCobertura", widget: "list" }

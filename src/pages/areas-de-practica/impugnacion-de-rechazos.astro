@@ -1,0 +1,19 @@
+---
+// Página de práctica: impugnacion-de-rechazos
+// Contenido fuente: src/content/servicios/impugnacion-de-rechazos.md
+// MAYOR PRIORIDAD DE CONVERSIÓN — CTA urgente + Timeline arriba del fold (via AreaLayout)
+import AreaLayout from '../../layouts/AreaLayout.astro';
+import { getEntry } from 'astro:content';
+const entry = await getEntry('servicios', 'impugnacion-de-rechazos');
+const { Content } = await entry.render();
+---
+<AreaLayout
+  titulo={entry.data.titulo}
+  resumen={entry.data.resumen}
+  slug={entry.slug}
+  prioridadConversion={entry.data.prioridadConversion}
+  icono={entry.data.icono}
+  breadcrumbLabel={entry.data.titulo}
+>
+  <Content />
+</AreaLayout>

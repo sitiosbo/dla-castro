@@ -1,0 +1,219 @@
+---
+// Barra de confianza inmediata post-hero: 25+ años / % recupero / ciudades de cobertura.
+// Aquí es donde "Castro" aparece por primera vez como firma/credencial (no como marca).
+// Datos vienen de content/settings/general.json.
+import { getEntry } from 'astro:content';
+const settings = await getEntry('settings', 'general');
+const { aniosExperiencia, recuperoIndemnizaciones, arreglosDirectos } = settings.data.stats;
+const { ciudadesCobertura } = settings.data.contacto;
+
+const items = [
+  {
+    value: `${aniosExperiencia}+`,
+    label: 'Años de experiencia',
+    sublabel: 'en Derecho de Seguros',
+    mono: true,
+  },
+  {
+    value: `${recuperoIndemnizaciones}%`,
+    label: 'Recupero de indemnizaciones',
+    sublabel: 'casos complejos',
+    mono: true,
+  },
+  {
+    value: `${arreglosDirectos}%`,
+    label: 'Arreglos directos',
+    sublabel: 'sin llegar a juicio',
+    mono: true,
+  },
+  {
+    value: ciudadesCobertura.slice(0, -1).join(' · ') + ' · Nacional',
+    label: 'Cobertura nacional',
+    sublabel: 'Bolivia',
+    mono: false,
+    wide: true,
+  },
+];
+---
+
+<section class="trustbar" aria-label="Indicadores de confianza DLA">
+  <!-- Numeral gigante traslúcido de fondo (marca de agua editorial) -->
+  <span class="trustbar-watermark" aria-hidden="true">{aniosExperiencia}+</span>
+  <div class="trustbar-inner">
+    <div class="trustbar-items">
+      {items.map((item) => (
+        <div class:list={['trustbar-item', { 'trustbar-item-wide': item.wide }]}>
+          <span class:list={['trustbar-value', { 'trustbar-value-mono': item.mono }]}>
+            {item.value}
+          </span>
+          <span class="trustbar-label">{item.label}</span>
+          <span class="trustbar-sublabel">{item.sublabel}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Primera mención de Castro: solo como firma del abogado responsable -->
+    <div class="trustbar-firma">
+      <span class="trustbar-firma-text">
+        Abogado responsable:
+        <a href="/sobre-mi/" class="trustbar-firma-link">Castro</a>
+      </span>
+      <span class="trustbar-firma-sep" aria-hidden="true">·</span>
+      <span class="trustbar-firma-text">
+        Especialista en Derecho de Seguros en Bolivia
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .trustbar {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-white);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.07);
+    padding: 2.5rem 0;
+  }
+
+  .trustbar-watermark {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: 11rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-navy-800);
+    opacity: 0.04;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .trustbar-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .trustbar-items {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(15, 27, 61, 0.20);
+    border: 1px solid rgba(15, 27, 61, 0.20);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 27, 61, 0.05);
+  }
+
+  .trustbar-item {
+    background: var(--color-white);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .trustbar-item:hover {
+    background: rgba(15, 27, 61, 0.02);
+  }
+
+  .trustbar-item-wide {
+    /* La ciudad ocupa más espacio natural por el contenido */
+  }
+
+  .trustbar-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .trustbar-value-mono {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    color: var(--color-terracotta-600);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .trustbar-label {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    margin-top: 0.25rem;
+  }
+
+  .trustbar-sublabel {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+  }
+
+  /* Firma del abogado — Castro como credencial, no como co-marca */
+  .trustbar-firma {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+  }
+
+  .trustbar-firma-text {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-ink-400);
+  }
+
+  /* Castro: enlace sutil, mismo tamaño que el texto acompañante — nunca jerarquía de marca */
+  .trustbar-firma-link {
+    color: var(--color-ink-600);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro),
+                border-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .trustbar-firma-link:hover {
+    color: var(--color-navy-800);
+    border-color: var(--color-navy-800);
+  }
+
+  .trustbar-firma-sep {
+    color: var(--color-ink-400);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 900px) {
+    .trustbar-items {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .trustbar-items {
+      grid-template-columns: 1fr;
+    }
+
+    .trustbar-firma {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .trustbar-firma-sep {
+      display: none;
+    }
+  }
+</style>

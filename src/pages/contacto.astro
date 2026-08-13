@@ -1,0 +1,299 @@
+---
+// Formulario corto (nombre, tipo de caso, aseguradora involucrada, teléfono) + WhatsApp + datos.
+// Replica el cierre del deck: Especialista / Experiencia / Cobertura / Contacto Directo.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'general');
+const { whatsapp, email, ciudadesCobertura } = settings.data.contacto;
+const { aniosExperiencia, recuperoIndemnizaciones } = settings.data.stats;
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Contacto', item: 'https://dlaseguros.bo/contacto/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Contacto y Evaluación Legal"
+  description="Agenda una evaluación legal inicial con DLA. Asesoría experta en Derecho de Seguros en Bolivia."
+  schemaExtra={schemaExtra}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Contacto</span>
+    </div>
+  </nav>
+
+  <!-- Hero Contacto -->
+  <header class="contacto-hero">
+    <div class="contacto-hero-inner">
+      <p class="eyebrow">Evaluación inicial de caso</p>
+      <h1 class="contacto-title">Agende su Evaluación Legal</h1>
+      <p class="contacto-subtitle">
+        Inicie su consulta directamente con el equipo técnico de DLA. Respuesta y confidencialidad garantizadas.
+      </p>
+    </div>
+  </header>
+
+  <main class="contacto-main">
+    <div class="contacto-inner">
+      <div class="contacto-grid">
+        <!-- Formulario de Evaluación -->
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Formulario de Consulta Técnica</h2>
+            <p>Complete los datos clave para un primer análisis confidencial de su póliza o siniestro.</p>
+          </div>
+
+          <form id="contact-form" class="contact-form" action="#" method="POST">
+            <div class="form-group">
+              <label for="nombre">Nombre Completo o Empresa *</label>
+              <input type="text" id="nombre" name="nombre" required placeholder="Ej. Roberto Mendoza / Constructora Andes" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tipoCaso">Tipo de Reclamo / Ramo *</label>
+                <select id="tipoCaso" name="tipoCaso" required>
+                  <option value="">Seleccione una opción</option>
+                  <option value="impugnacion">Impugnación de Rechazo de Siniestro</option>
+                  <option value="generales">Seguros Generales / Patrimoniales</option>
+                  <option value="personas">Seguros de Personas / Vida / Desgravamen</option>
+                  <option value="fianzas">Fianzas y Garantías Contractuales</option>
+                  <option value="consultoria">Consultoría Técnico-Regulatoria</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="aseguradora">Aseguradora Involucrada</label>
+                <input type="text" id="aseguradora" name="aseguradora" placeholder="Ej. Credinform, Alianza, BISA, etc." />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="telefono">Teléfono / WhatsApp de Contacto *</label>
+                <input type="tel" id="telefono" name="telefono" required placeholder="+591 70000000" />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" placeholder="correo@empresa.com" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="mensaje">Resumen Breve de la Consulta / Siniestro</label>
+              <textarea id="mensaje" name="mensaje" rows="4" placeholder="Describa brevemente la fecha del evento, estado del reclamo o motivo de la consulta..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Enviar Evaluación Legal</button>
+            <div id="form-success" class="form-message form-success" hidden>
+              <span class="form-message-icon" aria-hidden="true">✓</span>
+              <p><strong>Consulta enviada correctamente.</strong> Un profesional de DLA se pondrá en contacto a la brevedad.</p>
+            </div>
+            <div id="form-error" class="form-message form-error" hidden>
+              <span class="form-message-icon" aria-hidden="true">✕</span>
+              <p><strong>No se pudo enviar la consulta.</strong> Intente nuevamente o contacte directamente por WhatsApp.</p>
+            </div>
+            <p class="form-privacy-note">
+              Sus datos están protegidos por el deber de confidencialidad profesional.
+            </p>
+          </form>
+        </div>
+
+        <!-- Panel de Información de Contacto (Cierre del Deck) -->
+        <aside class="contacto-info-panel">
+          <div class="info-card">
+            <h3>DLA — Defensa Legal del Asegurado</h3>
+            <p class="info-tagline">Estudio Jurídico Especializado en Seguros</p>
+
+            <div class="info-details">
+              <div class="info-item">
+                <span class="info-label">Abogado Responsable:</span>
+                <span class="info-val">Castro</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Especialización:</span>
+                <span class="info-val">Derecho de Seguros, Reaseguros y Fianzas</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Trayectoria:</span>
+                <span class="info-val">{aniosExperiencia}+ años en el mercado boliviano</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Efectividad Histórica:</span>
+                <span class="info-val highlight-stat">{recuperoIndemnizaciones}% de recupero en siniestros</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Cobertura Territorial:</span>
+                <span class="info-val">{ciudadesCobertura.join(' · ')}</span>
+              </div>
+            </div>
+
+            <div class="direct-contact-box">
+              <h4>Contacto Directo</h4>
+              {whatsapp && whatsapp !== 'TODO_NUMERO_WHATSAPP' ? (
+                <a href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" class="btn-direct-wa">
+                  Consulta Inmediata por WhatsApp
+                </a>
+              ) : (
+                <p class="wa-pending-text">WhatsApp: Número pendiente de configuración</p>
+              )}
+              {email && (
+                <p class="email-direct">Email: <a href={`mailto:${email}`}>{email}</a></p>
+              )}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .breadcrumb { background: rgba(15, 27, 61, 0.02); border-bottom: 1px solid rgba(15, 27, 61, 0.06); padding: 0.75rem 0; }
+  .breadcrumb-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumb-link { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-ink-400); text-decoration: none; }
+  .breadcrumb-link:hover { color: var(--color-navy-800); }
+  .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
+  .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
+
+  .contacto-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
+  .contacto-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-terracotta-500); text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.75rem; }
+  .contacto-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .contacto-subtitle { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 40rem; }
+
+  .contacto-main { padding: 4rem 0 5rem; }
+  .contacto-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .contacto-grid { display: grid; grid-template-columns: 1fr 380px; gap: 4rem; align-items: start; }
+
+  .form-container { background: var(--color-white); border: 1px solid rgba(15, 27, 61, 0.1); border-radius: var(--radius-card); padding: 2.5rem; box-shadow: var(--shadow-card); }
+  .form-header h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--color-navy-800); margin-bottom: 0.5rem; }
+  .form-header p { font-family: var(--font-body); font-size: 0.875rem; color: var(--color-ink-600); margin-bottom: 2rem; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
+  .form-group label { font-family: var(--font-body); font-size: 0.8125rem; font-weight: 600; color: var(--color-navy-800); }
+  .form-group input, .form-group select, .form-group textarea { font-family: var(--font-body); font-size: 0.875rem; padding: 0.625rem 0.875rem; border: 1px solid rgba(15, 27, 61, 0.2); border-radius: 0.375rem; color: var(--color-navy-800); background: var(--color-white); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--color-terracotta-600); box-shadow: 0 0 0 2px rgba(181, 98, 44, 0.15); }
+  .btn-submit { font-family: var(--font-body); font-size: 0.9375rem; font-weight: 600; color: var(--color-white); background: var(--color-terracotta-600); border: none; padding: 0.875rem; border-radius: 0.375rem; cursor: pointer; transition: background-color var(--motion-duration-micro); margin-top: 0.5rem; }
+  .btn-submit:hover { background: var(--color-terracotta-500); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .form-privacy-note { font-family: var(--font-body); font-size: 0.75rem; color: var(--color-ink-400); text-align: center; }
+
+  .form-message { display: flex; align-items: flex-start; gap: 0.625rem; padding: 1rem; border-radius: 0.375rem; font-family: var(--font-body); font-size: 0.875rem; line-height: 1.5; }
+  .form-message-icon { font-weight: 700; font-size: 1.125rem; flex-shrink: 0; margin-top: 0.0625rem; }
+  .form-success { background: rgba(15, 169, 104, 0.08); border: 1px solid rgba(15, 169, 104, 0.25); color: var(--color-navy-800); }
+  .form-success .form-message-icon { color: var(--color-success-500); }
+  .form-error { background: rgba(181, 98, 44, 0.08); border: 1px solid rgba(181, 98, 44, 0.25); color: var(--color-navy-800); }
+  .form-error .form-message-icon { color: var(--color-terracotta-600); }
+
+  .info-card { background: var(--color-navy-950); color: var(--color-white); padding: 2rem; border-radius: var(--radius-card); }
+  .info-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .info-tagline { font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+
+  .info-details { display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.25rem 0; margin-bottom: 1.5rem; }
+  .info-item { display: flex; flex-direction: column; gap: 0.125rem; }
+  .info-label { font-family: var(--font-body); font-size: 0.6875rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
+  .info-val { font-family: var(--font-body); font-size: 0.875rem; color: rgba(255,255,255,0.9); }
+  .highlight-stat { font-family: var(--font-mono); color: var(--color-terracotta-500); font-weight: 500; }
+
+  .direct-contact-box h4 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .btn-direct-wa { display: block; text-align: center; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-white); background: #25D366; text-decoration: none; padding: 0.75rem; border-radius: 0.375rem; transition: background-color var(--motion-duration-micro); }
+  .btn-direct-wa:hover { background: #1ebe5b; }
+  .wa-pending-text { font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+  .email-direct { font-family: var(--font-body); font-size: 0.8125rem; color: rgba(255,255,255,0.6); margin-top: 0.75rem; }
+  .email-direct a { color: var(--color-terracotta-500); text-decoration: none; }
+
+  @media (max-width: 900px) {
+    .contacto-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!--
+  ============================================================
+  GOOGLE APPS SCRIPT — Configurar antes de usar el formulario
+  ============================================================
+  1. Crear un Google Sheet vacío.
+  2. Ir a Extensiones > Apps Script > pegar este código:
+  ============================================================
+
+  function doPost(e) {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.openById('TU_SHEET_ID').getActiveSheet();
+    sheet.appendRow([
+      new Date(),
+      data.nombre   || '',
+      data.tipoCaso || '',
+      data.aseguradora || '',
+      data.telefono || '',
+      data.email    || '',
+      data.mensaje  || ''
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  ============================================================
+  3. Guardar, luego: Desplegar > Nuevo despliegue > Tipo: App web
+     - Ejecutar como: Yo mismo
+     - Quién tiene acceso: Cualquier usuario
+  4. Copiar la URL del despliegue y reemplazarla abajo en
+     ENDPOINT_URL.
+  ============================================================
+-->
+<script>
+  const ENDPOINT_URL = 'https://script.google.com/macros/s/TU_SCRIPT_ID/exec';
+
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const btnSubmit = form?.querySelector('.btn-submit') as HTMLButtonElement | null;
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form || !btnSubmit) return;
+
+    errorMsg?.setAttribute('hidden', '');
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Enviando…';
+
+    const payload = {
+      nombre: (form.elements.namedItem('nombre') as HTMLInputElement)?.value.trim(),
+      tipoCaso: (form.elements.namedItem('tipoCaso') as HTMLSelectElement)?.value,
+      aseguradora: (form.elements.namedItem('aseguradora') as HTMLInputElement)?.value.trim(),
+      telefono: (form.elements.namedItem('telefono') as HTMLInputElement)?.value.trim(),
+      email: (form.elements.namedItem('email') as HTMLInputElement)?.value.trim(),
+      mensaje: (form.elements.namedItem('mensaje') as HTMLTextAreaElement)?.value.trim(),
+    };
+
+    try {
+      const res = await fetch(ENDPOINT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      form.hidden = true;
+      successMsg?.removeAttribute('hidden');
+    } catch {
+      errorMsg?.removeAttribute('hidden');
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Enviar Evaluación Legal';
+    }
+  });
+</script>

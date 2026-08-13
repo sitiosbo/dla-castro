@@ -1,0 +1,379 @@
+---
+// Tabla "Portafolio Cobertura de Servicios" — segmenta al visitante por tipo de cliente
+// (Asegurados/Empresas, Corredores y Auxiliares, Aseguradoras/Reaseguros).
+// Alto valor de conversión B2B — mantener exactamente la estructura del deck original.
+
+// Tipos de clientes (columnas)
+const clientTypes = [
+  { key: 'asegurados', label: 'Asegurados / Empresas', badge: 'B2C · B2B', href: '/contacto/' },
+  { key: 'corredores', label: 'Corredores y Auxiliares', badge: 'B2B', href: '/contacto/' },
+  { key: 'aseguradoras', label: 'Aseguradoras / Reaseguros', badge: 'B2B Técnico', href: '/contacto/' },
+];
+
+// Servicios (filas) con disponibilidad por tipo de cliente
+const servicios = [
+  {
+    categoria: 'Auditoría y Revisión de Pólizas',
+    descripcion: 'Revisión técnica de condicionados, cláusulas y límites de cobertura.',
+    asegurados: true,
+    corredores: true,
+    aseguradoras: false,
+  },
+  {
+    categoria: 'Gestión de Siniestros',
+    descripcion: 'Acompañamiento técnico desde el aviso hasta el cobro de la indemnización.',
+    asegurados: true,
+    corredores: true,
+    aseguradoras: false,
+  },
+  {
+    categoria: 'Impugnaciones ante la APS',
+    descripcion: 'Reclamaciones administrativas ante la Autoridad de Fiscalización y Control de Pensiones y Seguros.',
+    asegurados: true,
+    corredores: false,
+    aseguradoras: false,
+  },
+  {
+    categoria: 'Cuantificación de Indemnizaciones',
+    descripcion: 'Verificación técnica de liquidaciones y cálculo conforme a la póliza.',
+    asegurados: true,
+    corredores: true,
+    aseguradoras: false,
+  },
+  {
+    categoria: 'Arbitraje y Litigio Judicial',
+    descripcion: 'Representación en procesos arbitrales y judiciales en controversias de seguros.',
+    asegurados: true,
+    corredores: false,
+    aseguradoras: true,
+  },
+  {
+    categoria: 'Asesoría Técnico-Regulatoria',
+    descripcion: 'Consultoría sobre normativa APS, Ley 1883 y reglamentación sectorial vigente.',
+    asegurados: false,
+    corredores: true,
+    aseguradoras: true,
+  },
+  {
+    categoria: 'Impugnación de Ejecución de Fianzas',
+    descripcion: 'Defensa técnica en ejecuciones de garantías contractuales públicas y privadas.',
+    asegurados: true,
+    corredores: false,
+    aseguradoras: false,
+  },
+];
+---
+
+<section class="servicetable-section" aria-label="Portafolio de servicios DLA por tipo de cliente">
+  <div class="servicetable-inner">
+    <div class="servicetable-header">
+      <p class="servicetable-eyebrow">Portafolio de cobertura</p>
+      <h2 class="servicetable-title">¿A quién servimos?</h2>
+      <p class="servicetable-subtitle">
+        Seleccione su perfil para identificar los servicios disponibles para su caso.
+      </p>
+    </div>
+
+    <!-- Tabla desktop -->
+    <div class="table-wrap" role="region" aria-label="Tabla de servicios por tipo de cliente">
+      <table class="service-table">
+        <caption class="sr-only">
+          Portafolio de servicios DLA — disponibilidad por tipo de cliente
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" class="th-servicio">Servicio</th>
+            {clientTypes.map((ct) => (
+              <th scope="col" class="th-cliente">
+                <div class="th-cliente-inner">
+                  <span class="th-cliente-badge">{ct.badge}</span>
+                  <span class="th-cliente-label">{ct.label}</span>
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {servicios.map((row, index) => (
+            <tr class="service-row" style={`--row-index: ${index}`}>
+              <td class="td-servicio">
+                <span class="servicio-categoria">{row.categoria}</span>
+                <span class="servicio-descripcion">{row.descripcion}</span>
+              </td>
+              {clientTypes.map((ct) => {
+                const disponible = row[ct.key as keyof typeof row] as boolean;
+                return (
+                  <td class="td-check">
+                    {disponible ? (
+                      <span class="check-si" aria-label="Disponible">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M3 8.5l3.5 3.5 6.5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="check-no" aria-label="No aplica">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                      </span>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cards de tipo de cliente con CTAs -->
+    <div class="client-ctas">
+      {clientTypes.map((ct) => (
+        <a href={ct.href} class="client-cta-card">
+          <span class="client-cta-badge">{ct.badge}</span>
+          <span class="client-cta-label">{ct.label}</span>
+          <span class="client-cta-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .servicetable-section {
+    background: var(--color-white);
+    padding: 5rem 0;
+  }
+
+  .servicetable-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Encabezado */
+  .servicetable-header {
+    max-width: 40rem;
+    margin-bottom: 3rem;
+  }
+
+  .servicetable-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-terracotta-600);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+  }
+
+  .servicetable-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--color-navy-800);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .servicetable-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* Tabla */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-card);
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    box-shadow: var(--shadow-card);
+    margin-bottom: 2rem;
+  }
+
+  .service-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+  }
+
+  .th-servicio,
+  .th-cliente {
+    background: var(--color-navy-950);
+    color: var(--color-white);
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+  }
+
+  .th-servicio {
+    width: 40%;
+  }
+
+  .th-cliente-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .th-cliente-badge {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-terracotta-500);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .th-cliente-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Filas */
+  .service-row {
+    border-bottom: 1px solid rgba(15, 27, 61, 0.06);
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
+    opacity: 0;
+    animation: rowReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--row-index) * 50ms + 200ms) forwards;
+  }
+
+  @keyframes rowReveal {
+    to { opacity: 1; }
+  }
+
+  .service-row:last-child {
+    border-bottom: none;
+  }
+
+  .service-row:hover {
+    background: rgba(15, 27, 61, 0.025);
+  }
+
+  .td-servicio {
+    padding: 1rem 1.25rem;
+    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .servicio-categoria {
+    font-weight: 600;
+    color: var(--color-navy-800);
+    font-size: 0.875rem;
+  }
+
+  .servicio-descripcion {
+    font-size: 0.8125rem;
+    color: var(--color-ink-400);
+    line-height: 1.4;
+  }
+
+  .td-check {
+    padding: 1rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .check-si {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: rgba(15, 169, 104, 0.1);
+    color: var(--color-success-500);
+    border-radius: 50%;
+  }
+
+  .check-no {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: rgba(15, 27, 61, 0.2);
+  }
+
+  /* CTAs por tipo de cliente */
+  .client-ctas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .client-cta-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    background: rgba(15, 27, 61, 0.03);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .client-cta-card:hover {
+    background: rgba(15, 27, 61, 0.06);
+    border-color: var(--color-navy-600);
+    transform: translateY(-1px);
+  }
+
+  .client-cta-badge {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-terracotta-600);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .client-cta-label {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+  }
+
+  .client-cta-arrow {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-terracotta-600);
+    margin-top: 0.25rem;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .client-cta-card:hover .client-cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Accesibilidad */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 768px) {
+    .client-ctas {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

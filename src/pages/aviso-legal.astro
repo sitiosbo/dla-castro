@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Aviso Legal" description="Aviso legal de DLA — Defensa Legal del Asegurado.">
+  <main class="legal-page">
+    <div class="legal-inner">
+      <h1>Aviso Legal</h1>
+      <p class="legal-meta">Última actualización: agosto de 2026</p>
+      <div class="legal-content">
+        <h2>Titular del sitio</h2>
+        <p>
+          El presente sitio web es titularidad de <strong>DLA — Defensa Legal del Asegurado</strong>,
+          estudio jurídico especializado en Derecho de Seguros con sede en Bolivia.
+          Abogado responsable: Castro.
+        </p>
+
+        <h2>Objeto</h2>
+        <p>
+          Este sitio tiene finalidad exclusivamente informativa sobre los servicios
+          jurídicos prestados por DLA. La información contenida no constituye asesoría
+          legal vinculante. Para consultas específicas sobre su caso, utilice los
+          canales de contacto habilitados.
+        </p>
+
+        <h2>Propiedad intelectual</h2>
+        <p>
+          Los contenidos, marca DLA y elementos gráficos del sitio son propiedad
+          del estudio. Queda prohibida su reproducción sin autorización expresa.
+        </p>
+
+        <!-- TODO: validar con el abogado el texto legal completo antes de publicar -->
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    padding: 5rem 0;
+  }
+  .legal-inner {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    margin-bottom: 0.5rem;
+  }
+  .legal-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+    margin-bottom: 2.5rem;
+  }
+  .legal-content h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    margin: 2rem 0 0.75rem;
+  }
+  .legal-content p {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.7;
+  }
+</style>

@@ -1,0 +1,14 @@
+{
+  "stats": {
+    "aniosExperiencia": 25,
+    "recuperoIndemnizaciones": 95,
+    "resolucionViaAdministrativa": 82,
+    "arreglosDirectos": 88,
+    "arbitrajesFavorables": 79
+  },
+  "contacto": {
+    "whatsapp": "59170557088",
+    "email": "contacto@dlaseguros.bo",
+    "ciudadesCobertura": ["La Paz", "Santa Cruz", "Cochabamba", "Toda Bolivia"]
+  }
+}

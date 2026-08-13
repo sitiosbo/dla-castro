@@ -1,0 +1,130 @@
+---
+// Pillar page: hub que enlaza a las 4 subpáginas de práctica, con resumen de cada una.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const servicios = (await getCollection('servicios')).sort((a,b) => a.data.ordenHome - b.data.ordenHome);
+
+const iconos: Record<string, string> = {
+  document: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M7 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V8l-5-4H7z"/><path d="M14 4v4h5"/></svg>`,
+  heart: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`,
+  shield: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  gavel: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22l9-9-3-3-6 6-3-3-3 3 3 3 3 3z"/><path d="M5 12L3 14l7 7 2-2M14.5 4.5l-6 6 3 3 6-6-3-3z"/></svg>`,
+};
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Áreas de Práctica', item: 'https://dlaseguros.bo/areas-de-practica/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Áreas de Práctica"
+  description="Seguros Generales, Seguros de Personas, Fianzas y Caución, Impugnación de Rechazos — DLA especialista en Derecho de Seguros en Bolivia."
+  schemaExtra={schemaExtra}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Áreas de Práctica</span>
+    </div>
+  </nav>
+
+  <!-- Hero de pillar page -->
+  <header class="pillar-hero">
+    <div class="pillar-hero-inner">
+      <p class="eyebrow">Especialización jurídica</p>
+      <h1 class="pillar-titulo">Áreas de Práctica</h1>
+      <p class="pillar-desc">
+        Dominio técnico completo del mercado asegurador boliviano.
+        Cuatro áreas especializadas que cubren todos los ramos y tipos de controversia.
+      </p>
+    </div>
+  </header>
+
+  <!-- Grid de áreas -->
+  <main class="pillar-main">
+    <div class="pillar-inner">
+      <div class="areas-grid">
+        {servicios.map((servicio, index) => (
+          <a
+            href={`/areas-de-practica/${servicio.slug}/`}
+            class:list={['area-card', { 'area-card-highlight': servicio.data.prioridadConversion === 'alta' }]}
+            style={`--card-index: ${index}`}
+          >
+            {servicio.data.prioridadConversion === 'alta' && (
+              <span class="area-urgente-tag">Mayor urgencia comercial</span>
+            )}
+            <div class="area-icon-wrap" aria-hidden="true"
+              set:html={iconos[servicio.data.icono ?? 'document']}
+            />
+            <h2 class="area-titulo">{servicio.data.titulo}</h2>
+            <p class="area-resumen">{servicio.data.resumen}</p>
+            <span class="area-cta">Ver área de práctica →</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- CTA de contacto al pie -->
+      <div class="pillar-cta">
+        <p class="pillar-cta-text">¿No sabe cuál área corresponde a su caso?</p>
+        <a href="/contacto/" class="btn-primary-pillar">Cuéntenos su situación</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .breadcrumb { background: rgba(15, 27, 61, 0.02); border-bottom: 1px solid rgba(15, 27, 61, 0.06); padding: 0.75rem 0; }
+  .breadcrumb-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumb-link { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-ink-400); text-decoration: none; transition: color var(--motion-duration-micro) var(--motion-ease-micro); }
+  .breadcrumb-link:hover { color: var(--color-navy-800); }
+  .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
+  .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
+
+  .pillar-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
+  .pillar-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-terracotta-500); text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.75rem; }
+  .pillar-titulo { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--color-white); letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .pillar-desc { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 36rem; }
+
+  .pillar-main { padding: 4rem 0 5rem; }
+  .pillar-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  .areas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+
+  .area-card {
+    display: flex; flex-direction: column; gap: 0.875rem;
+    padding: 2rem; background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.1); border-radius: var(--radius-card);
+    text-decoration: none; position: relative;
+    transition: border-color var(--motion-duration-micro) var(--motion-ease-micro),
+                transform var(--motion-duration-micro) var(--motion-ease-micro),
+                box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+    opacity: 0;
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--card-index) * 80ms) forwards;
+  }
+
+  @keyframes cardReveal { to { opacity: 1; } }
+
+  .area-card:hover { border-color: var(--color-terracotta-600); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(181, 98, 44, 0.1); }
+  .area-card-highlight { border-color: var(--color-terracotta-600); background: rgba(181, 98, 44, 0.02); }
+
+  .area-urgente-tag { position: absolute; top: -0.75rem; left: 1.5rem; background: var(--color-terracotta-600); color: var(--color-white); font-family: var(--font-body); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.625rem; border-radius: 2rem; }
+  .area-icon-wrap { color: var(--color-terracotta-600); }
+  .area-titulo { font-family: var(--font-display); font-size: 1.375rem; font-weight: 700; color: var(--color-navy-800); letter-spacing: -0.01em; line-height: 1.25; }
+  .area-resumen { font-family: var(--font-body); font-size: 0.9375rem; color: var(--color-ink-600); line-height: 1.65; flex: 1; }
+  .area-cta { font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-terracotta-600); margin-top: 0.5rem; }
+
+  .pillar-cta { display: flex; align-items: center; justify-content: center; gap: 1.5rem; padding: 2.5rem; background: rgba(15, 27, 61, 0.03); border-radius: var(--radius-card); border: 1px solid rgba(15, 27, 61, 0.07); flex-wrap: wrap; }
+  .pillar-cta-text { font-family: var(--font-body); font-size: 1rem; color: var(--color-ink-600); }
+  .btn-primary-pillar { font-family: var(--font-body); font-size: 0.9375rem; font-weight: 600; color: var(--color-white); background: var(--color-terracotta-600); text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 0.375rem; transition: background-color var(--motion-duration-micro) var(--motion-ease-micro); }
+  .btn-primary-pillar:hover { background: var(--color-terracotta-500); }
+
+  @media (max-width: 640px) { .areas-grid { grid-template-columns: 1fr; } }
+</style>

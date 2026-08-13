@@ -1,0 +1,217 @@
+---
+// Trayectoria de Castro (25+ años), credenciales, especialización en Derecho de Seguros.
+// En esta página "Castro" tiene protagonismo como la credencial humana responsable de DLA.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'general');
+const { aniosExperiencia, recuperoIndemnizaciones, arreglosDirectos, resolucionViaAdministrativa } = settings.data.stats;
+const { ciudadesCobertura } = settings.data.contacto;
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Sobre Mí', item: 'https://dlaseguros.bo/sobre-mi/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Sobre Mí"
+  description="Abogado Castro — Especialista en Derecho de Seguros en Bolivia con más de 25 años de trayectoria. Fundador de DLA Defensa Legal del Asegurado."
+  schemaExtra={schemaExtra}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Sobre Mí</span>
+    </div>
+  </nav>
+
+  <!-- Hero Sobre Mí -->
+  <header class="about-hero">
+    <div class="about-hero-inner">
+      <div class="about-hero-badge">
+        <span class="badge-dot"></span> Abogado Responsable · DLA
+      </div>
+      <h1 class="about-title">Abogado Castro</h1>
+      <p class="about-subtitle">
+        Más de {aniosExperiencia} años dedicados exclusivamente al estudio, interpretación y patrocinio
+        en Derecho de Seguros y Reaseguros en Bolivia.
+      </p>
+    </div>
+  </header>
+
+  <main class="about-main">
+    <div class="about-inner">
+      <div class="about-grid">
+        <!-- Columna de historia y credenciales -->
+        <article class="about-bio prose">
+          <h2>Trayectoria y Compromiso con el Asegurado</h2>
+          <p>
+            Con más de dos décadas de ejercicio profesional en el mercado boliviano, el abogado Castro ha enfocado su práctica jurídica en la protección de asegurados, empresas, tomadores de pólizas y aseguradoras frente a controversias técnicas y contractuales de alta complejidad.
+          </p>
+          <p>
+            Frente a la asimetría habitual entre las entidades aseguradoras y los asegurados, <strong>DLA — Defensa Legal del Asegurado</strong> fue concebida como la firma especializada que equilibra la balanza mediante un rigor técnico-regulatorio sin concesiones.
+          </p>
+
+          <h3>Áreas de Especialización Técnica</h3>
+          <ul>
+            <li><strong>Derecho de Seguros y Reaseguros:</strong> Análisis de condicionados, cláusulas particulares, exclusiones y límites asegurados.</li>
+            <li><strong>Impugnación de Rechazos de Siniestros:</strong> Defensa administrativa ante la Autoridad de Fiscalización y Control de Pensiones y Seguros (APS).</li>
+            <li><strong>Fianzas y Garantías Contractuales:</strong> Ejecución e impugnación de pólizas de correcto uso de anticipo y cumplimiento de contrato en contrataciones estatales y privadas.</li>
+            <li><strong>Arbitraje y Litigio Comercial:</strong> Patrocinio técnico en tribunales arbitrales y la vía judicial en controversias del sector seguros.</li>
+          </ul>
+
+          <h3>Filosofía de Trabajo</h3>
+          <blockquote class="about-quote">
+            "En materia de seguros, la interpretación técnica de una cláusula y la precisión en los plazos legales son la diferencia entre la pérdida patrimonial y la recuperación efectiva de la indemnización."
+          </blockquote>
+
+          <h2>Cobertura y Alcance Nacional</h2>
+          <p>
+            Con presencia y atención continua en {ciudadesCobertura.join(', ')}, el estudio atiende reclamos y consultas de todo el país, representando tanto a personas naturales como a corporaciones y auxiliares de seguros.
+          </p>
+        </article>
+
+        <!-- Sidebar de credenciales y datos duros -->
+        <aside class="about-sidebar">
+
+          <!-- Espacio reservado para retrato profesional de Castro -->
+          <!-- TODO: reemplazar por foto profesional real de Castro cuando esté disponible — NUNCA usar stock de persona genérica aquí -->
+          <div class="castro-portrait-placeholder" role="img" aria-label="Espacio reservado para retrato profesional del abogado Castro">
+            <span class="portrait-initial" aria-hidden="true">C</span>
+            <span class="portrait-caption">Abogado Castro &mdash; Retrato profesional</span>
+          </div>
+
+          <div class="credentials-card">
+            <div class="card-header">
+              <span class="card-eyebrow">Credenciales Destacadas</span>
+              <h3 class="card-title">Castro</h3>
+              <p class="card-role">Abogado Especialista en Seguros</p>
+            </div>
+            <div class="card-stats">
+              <div class="c-stat">
+                <span class="c-stat-num">{aniosExperiencia}+</span>
+                <span class="c-stat-lbl">Años de Ejercicio</span>
+              </div>
+              <div class="c-stat">
+                <span class="c-stat-num">{recuperoIndemnizaciones}%</span>
+                <span class="c-stat-lbl">Recupero de Siniestros</span>
+              </div>
+              <div class="c-stat">
+                <span class="c-stat-num">{arreglosDirectos}%</span>
+                <span class="c-stat-lbl">Solución Pre-Litigio</span>
+              </div>
+              <div class="c-stat">
+                <span class="c-stat-num">{resolucionViaAdministrativa}%</span>
+                <span class="c-stat-lbl">Éxito en Vía APS</span>
+              </div>
+            </div>
+            <div class="card-cta-wrap">
+              <a href="/contacto/" class="btn-card-cta">Agendar Evaluación Directa</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .breadcrumb { background: rgba(15, 27, 61, 0.02); border-bottom: 1px solid rgba(15, 27, 61, 0.06); padding: 0.75rem 0; }
+  .breadcrumb-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumb-link { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-ink-400); text-decoration: none; transition: color var(--motion-duration-micro); }
+  .breadcrumb-link:hover { color: var(--color-navy-800); }
+  .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
+  .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
+
+  .about-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
+  .about-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .about-hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-cream-100); color: var(--color-navy-800); font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 0.875rem; border-radius: 2rem; margin-bottom: 1.25rem; }
+  .badge-dot { width: 6px; height: 6px; background: var(--color-terracotta-600); border-radius: 50%; }
+  .about-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  .about-subtitle { font-family: var(--font-body); font-size: 1.125rem; color: rgba(255,255,255,0.75); max-width: 42rem; line-height: 1.6; }
+
+  .about-main { padding: 4rem 0 5rem; }
+  .about-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .about-grid { display: grid; grid-template-columns: 1fr 340px; gap: 4rem; align-items: start; }
+
+  .about-bio.prose h2 { font-family: var(--font-display); font-size: 1.625rem; font-weight: 700; color: var(--color-navy-800); margin: 2rem 0 1rem; }
+  .about-bio.prose h2:first-child { margin-top: 0; }
+  .about-bio.prose h3 { font-family: var(--font-display); font-size: 1.1875rem; font-weight: 600; color: var(--color-navy-800); margin: 1.75rem 0 0.75rem; }
+  .about-bio.prose p { font-family: var(--font-body); font-size: 1rem; color: var(--color-ink-600); line-height: 1.75; margin-bottom: 1.25rem; }
+  .about-bio.prose ul { list-style: none; padding: 0; margin: 1rem 0 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .about-bio.prose li { font-family: var(--font-body); font-size: 0.9375rem; color: var(--color-ink-600); line-height: 1.6; padding-left: 1.5rem; position: relative; }
+  .about-bio.prose li::before { content: '›'; position: absolute; left: 0; color: var(--color-terracotta-600); font-weight: 700; }
+  .about-quote { border-left: 3px solid var(--color-terracotta-600); background: rgba(181, 98, 44, 0.04); padding: 1.25rem 1.5rem; margin: 2rem 0; font-family: var(--font-display); font-style: italic; font-size: 1.0625rem; color: var(--color-navy-800); line-height: 1.6; border-radius: 0 0.5rem 0.5rem 0; }
+
+  .credentials-card { background: var(--color-navy-950); color: var(--color-white); border-radius: var(--radius-card); padding: 2rem; position: sticky; top: 5rem; }
+  .card-eyebrow { font-family: var(--font-mono); font-size: 0.625rem; color: var(--color-terracotta-500); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.25rem; }
+  .card-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+  .card-role { font-family: var(--font-body); font-size: 0.8125rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+  .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.25rem 0; margin-bottom: 1.5rem; }
+  .c-stat { display: flex; flex-direction: column; gap: 0.25rem; }
+  .c-stat-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; color: var(--color-terracotta-500); }
+  .c-stat-lbl { font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.3; }
+  .btn-card-cta { display: block; text-align: center; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-white); background: var(--color-terracotta-600); text-decoration: none; padding: 0.75rem; border-radius: 0.375rem; transition: background-color var(--motion-duration-micro); }
+  .btn-card-cta:hover { background: var(--color-terracotta-500); }
+
+  /* Placeholder retrato Castro (4:5) — reemplazar con foto real cuando esté disponible */
+  .castro-portrait-placeholder {
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    background: var(--color-navy-950);
+    border: 1px solid rgba(15, 27, 61, 0.15);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    position: relative;
+  }
+  /* Glyph decorativo de fondo (marca de agua) */
+  .castro-portrait-placeholder::before {
+    content: 'DLA';
+    position: absolute;
+    font-family: var(--font-display);
+    font-size: 5rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.03);
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+  }
+  .portrait-initial {
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--color-terracotta-500);
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .portrait-caption {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .credentials-card { position: static; }
+    .castro-portrait-placeholder { aspect-ratio: 16 / 7; max-width: 28rem; margin: 0 auto 1.25rem; }
+  }
+</style>

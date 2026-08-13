@@ -1,0 +1,112 @@
+---
+// BaseLayout: envoltorio de toda página. Carga tokens.css, fuentes, meta tags base,
+// schema.org LegalService + Person (ver ESTADO.md sección SEO/AEO/GEO).
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import '../styles/tokens.css';
+
+interface Props {
+  title: string;
+  description: string;
+  // schemaExtra: JSON-LD adicional por página (FAQPage, BreadcrumbList)
+  schemaExtra?: Record<string, unknown>;
+  canonical?: string;
+  ogImage?: string;
+}
+const {
+  title,
+  description,
+  schemaExtra,
+  canonical = Astro.url.href,
+  ogImage = '/og-default.png',
+} = Astro.props;
+
+const siteUrl = 'https://dlaseguros.bo';
+
+// schema.org base — LegalService (marca DLA) + Person (Castro, abogado responsable)
+const schemaOrg = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'LegalService',
+      '@id': `${siteUrl}/#organization`,
+      name: 'DLA — Defensa Legal del Asegurado',
+      url: siteUrl,
+      logo: `${siteUrl}/favicon.svg`,
+      description:
+        'Estudio jurídico especializado en Derecho de Seguros en Bolivia. Asesoría técnica, patrocinio en siniestros e impugnación de rechazos de cobertura.',
+      areaServed: [
+        { '@type': 'City', name: 'La Paz' },
+        { '@type': 'City', name: 'Santa Cruz' },
+        { '@type': 'City', name: 'Cochabamba' },
+        { '@type': 'Country', name: 'Bolivia' },
+      ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Áreas de Práctica',
+        itemListElement: [
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros Generales' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros de Personas' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Fianzas y Caución' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Impugnación de Rechazos' } },
+        ],
+      },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}/#person-castro`,
+      name: 'Ramiro Castro',
+      jobTitle: 'Abogado Especialista en Derecho de Seguros',
+      worksFor: { '@id': `${siteUrl}/#organization` },
+      knowsAbout: ['Derecho de Seguros', 'Impugnación de rechazos', 'Ley 1883 de Bolivia', 'APS Bolivia'],
+    },
+    ...(schemaExtra ? [schemaExtra] : []),
+  ],
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} · DLA — Defensa Legal del Asegurado</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={`${title} · DLA — Defensa Legal del Asegurado`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:locale" content="es_BO" />
+    <meta property="og:site_name" content="DLA — Defensa Legal del Asegurado" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} · DLA — Defensa Legal del Asegurado`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+
+    <!-- Favicon DLA — wordmark en SVG, pendiente diseño gráfico definitivo -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fuentes: Fraunces (display/serif de autoridad), Inter (body), IBM Plex Mono (datos legales) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+
+    <!-- schema.org JSON-LD -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(schemaOrg)} />
+  </head>
+  <body class="font-body text-ink-600 bg-white">
+    <Header />
+    <slot />
+    <Footer />
+    <WhatsAppFloat />
+  </body>
+</html>

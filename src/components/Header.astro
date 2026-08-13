@@ -1,0 +1,466 @@
+---
+// Header global: wordmark "DLA" dominante + tagline pequeño "Defensa Legal del Asegurado".
+// "Castro" NO aparece aquí (ver ESTADO.md sección Marca) — solo en Footer/Sobre Mí.
+// Nav: Áreas de Práctica (dropdown a las 4 subpáginas), Proceso, Resultados, Blog, Contacto.
+// CTA visible en el header: "Agenda tu evaluación legal" (sticky en scroll).
+const navLinks = [
+  { label: 'Proceso', href: '/proceso/' },
+  { label: 'Resultados', href: '/resultados/' },
+  { label: 'Sobre Mí', href: '/sobre-mi/' },
+  { label: 'Preguntas Frecuentes', href: '/preguntas-frecuentes/' },
+];
+
+const areasLinks = [
+  { label: 'Seguros Generales', href: '/areas-de-practica/seguros-generales/' },
+  { label: 'Seguros de Personas', href: '/areas-de-practica/seguros-de-personas/' },
+  { label: 'Fianzas y Caución', href: '/areas-de-practica/fianzas-y-caucion/' },
+  { label: 'Impugnación de Rechazos', href: '/areas-de-practica/impugnacion-de-rechazos/' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header id="site-header" class="site-header">
+  <div class="header-inner">
+    <!-- Wordmark DLA — elemento dominante. "Castro" no aparece aquí. -->
+    <a href="/" class="header-logo" aria-label="DLA — Defensa Legal del Asegurado, inicio">
+      <span class="logo-dla">DLA</span>
+      <span class="logo-tagline">Defensa Legal del Asegurado</span>
+    </a>
+
+    <!-- Nav principal desktop -->
+    <nav class="header-nav" aria-label="Navegación principal">
+      <!-- Dropdown: Áreas de Práctica -->
+      <div class="nav-dropdown-wrap">
+        <button
+          id="areas-menu-btn"
+          class="nav-link nav-dropdown-trigger"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="areas-dropdown"
+        >
+          Áreas de Práctica
+          <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="areas-dropdown" class="nav-dropdown" role="menu" aria-labelledby="areas-menu-btn">
+          {areasLinks.map((link) => (
+            <a
+              href={link.href}
+              class:list={['nav-dropdown-item', { 'active': currentPath === link.href }]}
+              role="menuitem"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div class="dropdown-divider"></div>
+          <a href="/areas-de-practica/" class="nav-dropdown-item nav-dropdown-all" role="menuitem">
+            Ver todas las áreas →
+          </a>
+        </div>
+      </div>
+
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={['nav-link', { 'nav-link-active': currentPath === link.href }]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- CTA del header -->
+    <a href="/contacto/" id="header-cta" class="btn-header-cta">
+      Agenda tu evaluación
+    </a>
+
+    <!-- Botón hamburguesa (mobile) -->
+    <button
+      id="mobile-menu-btn"
+      class="mobile-menu-btn"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+  </div>
+
+  <!-- Menú mobile -->
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Menú móvil" hidden>
+    <div class="mobile-nav-inner">
+      <p class="mobile-nav-section-label">Áreas de Práctica</p>
+      {areasLinks.map((link) => (
+        <a href={link.href} class="mobile-nav-link">{link.label}</a>
+      ))}
+      <div class="mobile-nav-divider"></div>
+      {navLinks.map((link) => (
+        <a href={link.href} class="mobile-nav-link">{link.label}</a>
+      ))}
+      <a href="/contacto/" class="mobile-nav-cta">Agenda tu evaluación legal</a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-white);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+    transition:
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro),
+      background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .site-header.scrolled {
+    box-shadow: 0 2px 12px rgba(15, 27, 61, 0.10);
+  }
+
+  .header-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 4.25rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: height var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .site-header.scrolled .header-inner {
+    height: 3.5rem;
+  }
+
+  /* Wordmark — efecto grande en Hero / compacto al hacer scroll */
+  .header-logo {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .logo-dla {
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    transition:
+      font-size var(--motion-duration-micro) var(--motion-ease-micro),
+      color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .site-header.scrolled .logo-dla {
+    font-size: 1.5rem;
+  }
+
+  .header-logo:hover .logo-dla {
+    color: var(--color-terracotta-600);
+  }
+
+  .logo-tagline {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--color-ink-400);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+    opacity: 1;
+    max-height: 1rem;
+    transition:
+      opacity var(--motion-duration-micro) var(--motion-ease-micro),
+      max-height var(--motion-duration-micro) var(--motion-ease-micro),
+      margin-top var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .site-header.scrolled .logo-tagline {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Nav desktop */
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    margin-left: 1rem;
+  }
+
+  .nav-link {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-600);
+    text-decoration: none;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro),
+                background-color var(--motion-duration-micro) var(--motion-ease-micro);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav-link:hover,
+  .nav-link-active {
+    color: var(--color-navy-800);
+    background-color: rgba(15, 27, 61, 0.05);
+  }
+
+  /* Dropdown */
+  .nav-dropdown-wrap {
+    position: relative;
+  }
+
+  .dropdown-chevron {
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .nav-dropdown-trigger[aria-expanded="true"] .dropdown-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 14rem;
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    border-radius: var(--radius-card);
+    box-shadow: 0 8px 24px rgba(15, 27, 61, 0.12);
+    padding: 0.5rem;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    pointer-events: none;
+    transition: opacity var(--motion-duration-enter) var(--motion-ease-enter),
+                transform var(--motion-duration-enter) var(--motion-ease-enter);
+  }
+
+  .nav-dropdown.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav-dropdown-item {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-ink-600);
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro),
+                background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .nav-dropdown-item:hover,
+  .nav-dropdown-item.active {
+    color: var(--color-navy-800);
+    background-color: rgba(15, 27, 61, 0.05);
+  }
+
+  .nav-dropdown-all {
+    color: var(--color-terracotta-600);
+    font-weight: 500;
+  }
+
+  .dropdown-divider {
+    height: 1px;
+    background: rgba(15, 27, 61, 0.08);
+    margin: 0.375rem 0.75rem;
+  }
+
+  /* CTA header */
+  .btn-header-cta {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro),
+                transform var(--motion-duration-micro) var(--motion-ease-micro);
+    white-space: nowrap;
+  }
+
+  .btn-header-cta:hover {
+    background: var(--color-terracotta-500);
+    transform: translateY(-1px);
+  }
+
+  /* Mobile hamburger */
+  .mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .hamburger-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-navy-800);
+    border-radius: 1px;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro),
+                opacity var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  /* Mobile nav */
+  .mobile-nav {
+    background: var(--color-white);
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+  }
+
+  .mobile-nav[hidden] { display: none; }
+
+  .mobile-nav-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .mobile-nav-section-label {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-400);
+    padding: 0.5rem 0.5rem 0.25rem;
+  }
+
+  .mobile-nav-link {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    text-decoration: none;
+    padding: 0.625rem 0.5rem;
+    border-radius: 0.375rem;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro),
+                background var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .mobile-nav-link:hover {
+    color: var(--color-navy-800);
+    background: rgba(15, 27, 61, 0.05);
+  }
+
+  .mobile-nav-divider {
+    height: 1px;
+    background: rgba(15, 27, 61, 0.08);
+    margin: 0.5rem 0;
+  }
+
+  .mobile-nav-cta {
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .mobile-nav-cta:hover {
+    background: var(--color-terracotta-500);
+  }
+
+  @media (max-width: 768px) {
+    .header-nav,
+    .btn-header-cta {
+      display: none;
+    }
+
+    .mobile-menu-btn {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  // Sticky shadow al scroll
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 8) {
+      header?.classList.add('scrolled');
+    } else {
+      header?.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // Dropdown de Áreas de Práctica
+  const dropBtn = document.getElementById('areas-menu-btn');
+  const dropdown = document.getElementById('areas-dropdown');
+
+  function openDropdown() {
+    dropBtn?.setAttribute('aria-expanded', 'true');
+    dropdown?.classList.add('open');
+  }
+
+  function closeDropdown() {
+    dropBtn?.setAttribute('aria-expanded', 'false');
+    dropdown?.classList.remove('open');
+  }
+
+  dropBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dropBtn.getAttribute('aria-expanded') === 'true';
+    isOpen ? closeDropdown() : openDropdown();
+  });
+
+  document.addEventListener('click', closeDropdown);
+
+  dropBtn?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDropdown();
+  });
+
+  // Mobile menu
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  mobileBtn?.addEventListener('click', () => {
+    const isOpen = mobileBtn.getAttribute('aria-expanded') === 'true';
+    mobileBtn.setAttribute('aria-expanded', String(!isOpen));
+    mobileBtn.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
+    if (isOpen) {
+      mobileNav?.setAttribute('hidden', '');
+    } else {
+      mobileNav?.removeAttribute('hidden');
+    }
+  });
+</script>

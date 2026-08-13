@@ -1,0 +1,18 @@
+---
+// Página de práctica: seguros-de-personas
+// Contenido fuente: src/content/servicios/seguros-de-personas.md
+import AreaLayout from '../../layouts/AreaLayout.astro';
+import { getEntry } from 'astro:content';
+const entry = await getEntry('servicios', 'seguros-de-personas');
+const { Content } = await entry.render();
+---
+<AreaLayout
+  titulo={entry.data.titulo}
+  resumen={entry.data.resumen}
+  slug={entry.slug}
+  prioridadConversion={entry.data.prioridadConversion}
+  icono={entry.data.icono}
+  breadcrumbLabel={entry.data.titulo}
+>
+  <Content />
+</AreaLayout>

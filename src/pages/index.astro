@@ -1,0 +1,1008 @@
+---
+// Home. Orden de secciones (ver ARQUITECTURA_SITIO doc, sección 5):
+// 1. Hero  2. TrustBar  3. Soluciones de alto nivel  4. Especialista en todos los ramos
+// 5. Defensa integral de asegurados (4 bullets -> linkean a áreas de práctica)
+// 6. Áreas clave (3 cards)  7. StatBar  8. Timeline (ruta crítica)
+// 9. ServiceTable  10. Liderazgo y Confianza (Skyline)  11. CTA final  12. Footer
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import TrustBar from '../components/TrustBar.astro';
+import Timeline from '../components/Timeline.astro';
+import StatBar from '../components/StatBar.astro';
+import ServiceTable from '../components/ServiceTable.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const servicios = (await getCollection('servicios')).sort(
+  (a, b) => a.data.ordenHome - b.data.ordenHome,
+);
+const settings = await getEntry('settings', 'general');
+const { aniosExperiencia, recuperoIndemnizaciones, resolucionViaAdministrativa, arreglosDirectos, arbitrajesFavorables } =
+  settings.data.stats;
+
+// Iconos SVG para cada área de práctica
+const iconos: Record<string, string> = {
+  document: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M7 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V8l-5-4H7z"/><path d="M14 4v4h5"/></svg>`,
+  heart: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`,
+  shield: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  gavel: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22l9-9-3-3-6 6-3-3-3 3 3 3 3 3z"/><path d="M5 12L3 14l7 7 2-2M14.5 4.5l-6 6 3 3 6-6-3-3z"/></svg>`,
+};
+
+// Fases del timeline de Ruta Crítica del Reclamo
+const fases = [
+  {
+    numero: 1,
+    titulo: 'Ocurrencia',
+    descripcion: 'Aviso formal de siniestro y verificación de plazos legales según normativa vigente.',
+    anotacion: 'Art. 1028 Cód. Comercio',
+    cta: { label: '¿Qué hacer ante un siniestro?', href: '/proceso/' },
+  },
+  {
+    numero: 2,
+    titulo: 'Liquidación',
+    descripcion: 'Aportación de evidencias y fiscalización técnica del informe del ajustador.',
+    anotacion: 'Supervisión APS',
+  },
+  {
+    numero: 3,
+    titulo: 'Impugnación',
+    descripcion: 'Presentación de reclamo formal ante rechazo u objeción en los plazos reglamentarios.',
+    anotacion: 'Vía administrativa',
+    cta: { label: 'Siniestro rechazado →', href: '/areas-de-practica/impugnacion-de-rechazos/' },
+  },
+  {
+    numero: 4,
+    titulo: 'Ejecución',
+    descripcion: 'Cobro de indemnización o activación de la vía arbitral/judicial ante negativa persistente.',
+    anotacion: 'Arbitraje · Litigio',
+  },
+];
+
+// Stats para StatBar (datos del deck original)
+const statsData = [
+  { label: 'Arreglos directos con aseguradoras', value: arreglosDirectos },
+  { label: 'Resolución vía administrativa APS', value: resolucionViaAdministrativa },
+  { label: 'Arbitrajes favorables', value: arbitrajesFavorables },
+  { label: 'Recupero total de indemnizaciones', value: recuperoIndemnizaciones },
+];
+---
+
+<BaseLayout
+  title="Inicio"
+  description="Abogado especialista en Derecho de Seguros en Bolivia. Más de 25 años de experiencia en impugnación de rechazos, seguros generales, personas y fianzas."
+>
+  <!-- 1. Hero -->
+  <Hero aniosExperiencia={aniosExperiencia} recuperoIndemnizaciones={recuperoIndemnizaciones} arreglosDirectos={arreglosDirectos} />
+
+  <!-- 2. TrustBar -->
+  <TrustBar />
+
+  <!-- 3. Soluciones de alto nivel -->
+  <section class="soluciones-section" aria-label="Soluciones legales de alto nivel">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="eyebrow">Servicios DLA</p>
+        <h2 class="section-title">Soluciones legales de alto nivel</h2>
+        <p class="section-subtitle">
+          Dos ejes de servicio que cubren todo el ciclo de vida de un reclamo de seguro,
+          desde la prevención hasta el cobro forzado.
+        </p>
+      </div>
+      <div class="soluciones-grid">
+        <div class="solucion-card">
+          <div class="solucion-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+              <circle cx="12" cy="17" r=".5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="solucion-titulo">Asesoría Técnica Especializada</h3>
+          <p class="solucion-desc">
+            Revisión y análisis técnico de pólizas, condicionados y liquidaciones.
+            Consultoría normativa (Ley 1883, reglamentos APS) para aseguradoras,
+            corredores y empresas que necesitan entender su cobertura real.
+          </p>
+          <a href="/proceso/" class="solucion-link">Cómo trabajamos →</a>
+        </div>
+        <div class="solucion-card solucion-card-accent">
+          <div class="solucion-icon solucion-icon-accent" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="solucion-titulo solucion-titulo-accent">Patrocinio en Siniestros e Impugnaciones</h3>
+          <p class="solucion-desc solucion-desc-accent">
+            Representación técnica y legal en todo el ciclo: aviso de siniestro, negociación
+            directa con la aseguradora, impugnación administrativa ante la APS y,
+            si es necesario, litigio o arbitraje.
+          </p>
+          <a href="/areas-de-practica/impugnacion-de-rechazos/" class="solucion-link solucion-link-accent">
+            ¿Siniestro rechazado? Actúe ahora →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Especialista en todos los ramos -->
+  <section class="ramos-section" aria-label="Especialista en todos los ramos de seguros">
+    <div class="section-inner ramos-inner">
+      <div class="ramos-content">
+        <p class="eyebrow">Especialización</p>
+        <h2 class="section-title">Especialista en todos los ramos</h2>
+        <p class="ramos-desc">
+          Dominio técnico completo del mercado asegurador boliviano: seguros
+          patrimoniales, transporte, ingeniería, vida, salud, SOAT, fianzas
+          contractuales y más. La especialización no es un diferenciador —
+          es el requisito mínimo para ganar.
+        </p>
+        <div class="ramos-bullets">
+          <div class="ramos-bullet">
+            <span class="bullet-check" aria-hidden="true">✓</span>
+            <span>Análisis del condicionado de su póliza</span>
+          </div>
+          <div class="ramos-bullet">
+            <span class="bullet-check" aria-hidden="true">✓</span>
+            <span>Verificación de cláusulas de exclusión</span>
+          </div>
+          <div class="ramos-bullet">
+            <span class="bullet-check" aria-hidden="true">✓</span>
+            <span>Cuantificación técnica de indemnizaciones</span>
+          </div>
+          <div class="ramos-bullet">
+            <span class="bullet-check" aria-hidden="true">✓</span>
+            <span>Conocimiento de jurisprudencia APS actualizada</span>
+          </div>
+        </div>
+        <a href="/sobre-mi/" class="btn-outline">Trayectoria profesional</a>
+      </div>
+      <div class="ramos-visual" aria-hidden="true">
+        <!-- Composición visual de ramos en tarjetas técnicas -->
+        <div class="ramos-visual-grid">
+          {['Generales', 'Personas', 'Fianzas', 'SOAT', 'Ingeniería', 'Transporte'].map((ramo) => (
+            <div class="ramo-pill">{ramo}</div>
+          ))}
+        </div>
+        <div class="ramos-stat-destacado">
+          <span class="ramos-stat-numero">{aniosExperiencia}+</span>
+          <span class="ramos-stat-label">años de dominio técnico del mercado asegurador boliviano</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Defensa integral de asegurados (4 bullets -> linkean a áreas de práctica) -->
+  <section class="defensa-section" aria-label="Defensa integral de asegurados">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="eyebrow">Defensa integral</p>
+        <h2 class="section-title">Cuatro frentes de protección legal</h2>
+        <p class="section-subtitle">
+          Cada aspecto de un reclamo de seguro requiere un abordaje distinto.
+          DLA cubre el espectro completo.
+        </p>
+      </div>
+      <div class="defensa-grid">
+        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card defensa-card-primary">
+          <span class="defensa-num" aria-hidden="true">01</span>
+          <h3 class="defensa-titulo">Impugnación de Rechazos</h3>
+          <p class="defensa-desc">
+            Análisis exhaustivo y defensa técnica ante negativas injustificadas de cobertura.
+          </p>
+          <span class="defensa-link">Mayor prioridad — actuar rápido →</span>
+        </a>
+        <a href="/areas-de-practica/seguros-generales/" class="defensa-card">
+          <span class="defensa-num" aria-hidden="true">02</span>
+          <h3 class="defensa-titulo">Cuantificación de Indemnizaciones</h3>
+          <p class="defensa-desc">
+            Verificación de liquidaciones de siniestros y ajustes conforme a los límites reales de la póliza.
+          </p>
+          <span class="defensa-link">Ver seguros generales →</span>
+        </a>
+        <a href="/areas-de-practica/fianzas-y-caucion/" class="defensa-card">
+          <span class="defensa-num" aria-hidden="true">03</span>
+          <h3 class="defensa-titulo">Garantías y Fianzas</h3>
+          <p class="defensa-desc">
+            Ejecución e impugnación de garantías para contratos públicos y privados.
+          </p>
+          <span class="defensa-link">Ver fianzas y caución →</span>
+        </a>
+        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card">
+          <span class="defensa-num" aria-hidden="true">04</span>
+          <h3 class="defensa-titulo">Procesos Administrativos APS</h3>
+          <p class="defensa-desc">
+            Reclamaciones en la vía administrativa de la APS y acciones judiciales correspondientes.
+          </p>
+          <span class="defensa-link">Ver impugnaciones →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Áreas clave (3 cards + 1 destacada) -->
+  <section class="areas-section" aria-label="Áreas de práctica DLA">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="eyebrow">Áreas de Práctica</p>
+        <h2 class="section-title">Cobertura legal especializada</h2>
+      </div>
+      <div class="areas-grid">
+        {servicios.map((servicio) => (
+          <a
+            href={`/areas-de-practica/${servicio.slug}/`}
+            class:list={[
+              'area-card',
+              { 'area-card-highlight': servicio.data.prioridadConversion === 'alta' },
+            ]}
+          >
+            {servicio.data.prioridadConversion === 'alta' && (
+              <span class="area-card-badge">Mayor urgencia</span>
+            )}
+            <div
+              class="area-card-icon"
+              aria-hidden="true"
+              set:html={iconos[servicio.data.icono ?? 'document'] ?? iconos.document}
+            />
+            <h3 class="area-card-titulo">{servicio.data.titulo}</h3>
+            <p class="area-card-resumen">{servicio.data.resumen}</p>
+            <span class="area-card-link">Ver área →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. StatBar: efectividad en reclamos -->
+  <StatBar stats={statsData} />
+
+  <!-- 8. Timeline: Ruta Crítica del Reclamo -->
+  <Timeline fases={fases} />
+
+  <!-- 9. ServiceTable: Portafolio por tipo de cliente -->
+  <ServiceTable />
+
+  <!-- 10. Liderazgo y Confianza (Skyline de La Paz) -->
+  <section class="liderazgo-section" aria-label="Liderazgo y respaldo legal institucional">
+    <div class="liderazgo-overlay"></div>
+    <div class="section-inner liderazgo-inner">
+      <div class="liderazgo-content">
+        <p class="eyebrow eyebrow-cream">Respaldo Institucional · Alcance Nacional</p>
+        <h2 class="liderazgo-title">Respaldo legal sólido y transparente en todo el país</h2>
+        <p class="liderazgo-desc">
+          Con atención técnica permanente y representación especializada en La Paz, Santa Cruz y Cochabamba,
+          DLA brinda defensa jurídica rigurosa a empresas, asegurados y auxiliares en los 9 departamentos de Bolivia.
+        </p>
+        <div class="liderazgo-features">
+          <div class="liderazgo-feature">
+            <span class="liderazgo-feature-num">{aniosExperiencia}+</span>
+            <span class="liderazgo-feature-text">Años de especialización continuada</span>
+          </div>
+          <div class="liderazgo-feature">
+            <span class="liderazgo-feature-num">100%</span>
+            <span class="liderazgo-feature-text">Enfoque técnico en Derecho de Seguros</span>
+          </div>
+          <div class="liderazgo-feature">
+            <span class="liderazgo-feature-num">APS</span>
+            <span class="liderazgo-feature-text">Patrocinio administrativo y arbitral</span>
+          </div>
+        </div>
+        <a href="/sobre-mi/" class="btn-liderazgo-cta">
+          Conocer trayectoria profesional →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CTA final -->
+  <section class="cta-final" aria-label="Contacto directo DLA">
+    <!-- Numeral gigante traslúcido de fondo (marca de agua editorial) -->
+    <span class="cta-final-watermark" aria-hidden="true">{recuperoIndemnizaciones}%</span>
+    <div class="section-inner">
+      <div class="cta-final-inner">
+        <div class="cta-final-content">
+          <p class="eyebrow eyebrow-white">¿Consultas o casos de seguros?</p>
+          <h2 class="cta-final-title">Cuéntenos su caso.<br/>Le respondemos hoy.</h2>
+          <p class="cta-final-subtitle">
+            Evaluación inicial confidencial. Sin compromiso.<br/>
+            <strong class="cta-final-stat">{recuperoIndemnizaciones}% de recupero histórico</strong> en casos complejos.
+          </p>
+        </div>
+        <div class="cta-final-actions">
+          <a href="/contacto/" class="btn-primary-large">
+            Agenda tu evaluación legal
+          </a>
+          <div class="cta-final-meta">
+            <span class="cta-final-cobertura">La Paz · Santa Cruz · Cochabamba · Nacional</span>
+            <span class="cta-final-abogado">Abogado responsable: Castro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Utilidades globales de sección */
+  .section-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto 3rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-terracotta-600);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .eyebrow-white {
+    color: var(--color-cream-100);
+  }
+
+  .eyebrow-cream {
+    color: var(--color-cream-100);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    color: var(--color-navy-800);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.875rem;
+  }
+
+  .section-subtitle {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-ink-600);
+    line-height: 1.7;
+  }
+
+  /* === SECCIÓN 3: Soluciones === */
+  .soluciones-section {
+    padding: 5rem 0;
+    background: var(--color-white);
+  }
+
+  .soluciones-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .solucion-card {
+    padding: 2.25rem;
+    border: 1px solid rgba(15, 27, 61, 0.12);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+    transition:
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .solucion-card:hover {
+    border-color: rgba(15, 27, 61, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(15, 27, 61, 0.12);
+  }
+
+  .solucion-card-accent {
+    background: var(--color-navy-950);
+    border-color: transparent;
+  }
+
+  .solucion-card-accent:hover {
+    border-color: var(--color-terracotta-600);
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.25);
+  }
+
+  /* Icono inspirado en step-number-wrap de Timeline.astro */
+  .solucion-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--color-navy-950);
+    color: var(--color-white);
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(15, 27, 61, 0.22);
+  }
+
+  .solucion-icon-accent {
+    background: var(--color-terracotta-600);
+    color: var(--color-white);
+    box-shadow: 0 2px 8px rgba(181, 98, 44, 0.35);
+  }
+
+  .solucion-titulo {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    line-height: 1.3;
+  }
+
+  .solucion-titulo-accent { color: var(--color-white); }
+
+  .solucion-desc {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .solucion-desc-accent { color: rgba(255,255,255,0.7); }
+
+  .solucion-link {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-terracotta-600);
+    text-decoration: none;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .solucion-link:hover { color: var(--color-terracotta-500); }
+  .solucion-link-accent { color: var(--color-terracotta-500); }
+  .solucion-link-accent:hover { color: var(--color-cream-100); }
+
+  /* === SECCIÓN 4: Ramos === */
+  .ramos-section {
+    padding: 5rem 0;
+    background: rgba(15, 27, 61, 0.045);
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+  }
+
+  .ramos-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .ramos-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-ink-600);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .ramos-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+  }
+
+  .ramos-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.5;
+  }
+
+  .bullet-check {
+    color: var(--color-success-500);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    text-decoration: none;
+    padding: 0.625rem 1.25rem;
+    border: 1.5px solid var(--color-navy-800);
+    border-radius: 0.375rem;
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .btn-outline:hover {
+    background: var(--color-navy-800);
+    color: var(--color-white);
+  }
+
+  .ramos-visual-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+  }
+
+  .ramo-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-navy-800);
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.15);
+    padding: 0.375rem 0.875rem;
+    border-radius: 2rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 3px rgba(15, 27, 61, 0.05);
+  }
+
+  .ramos-stat-destacado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.5rem;
+    background: var(--color-navy-950);
+    border-radius: var(--radius-card);
+    color: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+
+  .ramos-stat-numero {
+    font-family: var(--font-mono);
+    font-size: 3rem;
+    font-weight: 500;
+    color: var(--color-terracotta-500);
+    line-height: 1;
+  }
+
+  .ramos-stat-label {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 18rem;
+    line-height: 1.4;
+  }
+
+  /* === SECCIÓN 5: Defensa integral === */
+  .defensa-section {
+    padding: 5rem 0;
+    background: var(--color-white);
+  }
+
+  .defensa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .defensa-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.75rem;
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    transition:
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+    position: relative;
+  }
+
+  .defensa-card:hover {
+    border-color: rgba(15, 27, 61, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15, 27, 61, 0.1);
+  }
+
+  .defensa-card-primary {
+    background: var(--color-navy-950);
+    border-color: transparent;
+  }
+
+  .defensa-card-primary:hover {
+    border-color: var(--color-terracotta-600);
+    box-shadow: 0 12px 28px rgba(15, 27, 61, 0.22);
+  }
+
+  .defensa-num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-ink-400);
+    letter-spacing: 0.06em;
+  }
+
+  .defensa-card-primary .defensa-num { color: rgba(255,255,255,0.3); }
+
+  .defensa-titulo {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    line-height: 1.3;
+  }
+
+  .defensa-card-primary .defensa-titulo { color: var(--color-white); }
+
+  .defensa-desc {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-ink-600);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .defensa-card-primary .defensa-desc { color: rgba(255,255,255,0.65); }
+
+  .defensa-link {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-terracotta-600);
+    margin-top: 0.375rem;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .defensa-card-primary .defensa-link { color: var(--color-terracotta-500); }
+
+  /* === SECCIÓN 6: Áreas === */
+  .areas-section {
+    padding: 5rem 0;
+    background: rgba(15, 27, 61, 0.045);
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+  }
+
+  .areas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .area-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.75rem 1.5rem;
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.12);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    position: relative;
+    transition:
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .area-card:hover {
+    border-color: var(--color-terracotta-600);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(15, 27, 61, 0.14);
+  }
+
+  .area-card-highlight {
+    border-color: var(--color-terracotta-600);
+    background: rgba(181, 98, 44, 0.02);
+  }
+
+  .area-card-badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 1rem;
+    background: var(--color-terracotta-600);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.625rem;
+    border-radius: 2rem;
+    box-shadow: 0 2px 6px rgba(181, 98, 44, 0.3);
+  }
+
+  /* Contenedor de icono elevado estilo sello */
+  .area-card-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    background: var(--color-navy-950);
+    color: var(--color-white);
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(15, 27, 61, 0.2);
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .area-card:hover .area-card-icon {
+    background: var(--color-terracotta-600);
+  }
+
+  .area-card-titulo {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    line-height: 1.3;
+  }
+
+  .area-card-resumen {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-ink-600);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .area-card-link {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-terracotta-600);
+    margin-top: 0.25rem;
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .area-card:hover .area-card-link {
+    color: var(--color-terracotta-500);
+  }
+
+  /* === SECCIÓN 10: Liderazgo y Confianza (Skyline de La Paz) === */
+  .liderazgo-section {
+    position: relative;
+    background-image: url('/images/lapaz-skyline.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 5.5rem 0;
+    color: var(--color-white);
+    overflow: hidden;
+  }
+
+  .liderazgo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(15, 27, 61, 0.94) 0%,
+      rgba(15, 27, 61, 0.86) 60%,
+      rgba(27, 42, 91, 0.88) 100%
+    );
+    pointer-events: none;
+  }
+
+  .liderazgo-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .liderazgo-content {
+    max-width: 44rem;
+  }
+
+  .liderazgo-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 3.8vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .liderazgo-desc {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    margin-bottom: 2.25rem;
+  }
+
+  .liderazgo-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 1.5rem 0;
+  }
+
+  .liderazgo-feature {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .liderazgo-feature-num {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--color-terracotta-500);
+    line-height: 1;
+  }
+
+  .liderazgo-feature-text {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+  }
+
+  .btn-liderazgo-cta {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 14px rgba(181, 98, 44, 0.4);
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .btn-liderazgo-cta:hover {
+    background: var(--color-terracotta-500);
+    transform: translateY(-1px);
+  }
+
+  /* === SECCIÓN 11: CTA Final === */
+  .cta-final {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-navy-950);
+    padding: 5.5rem 0;
+  }
+
+  .cta-final-watermark {
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: 16rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-terracotta-600);
+    opacity: 0.05;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .cta-final-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .cta-final-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .cta-final-subtitle {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  .cta-final-stat {
+    color: var(--color-terracotta-500);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  .cta-final-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  .btn-primary-large {
+    display: inline-flex;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    text-decoration: none;
+    padding: 0.875rem 2rem;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+    box-shadow: 0 4px 16px rgba(181, 98, 44, 0.45);
+  }
+
+  .btn-primary-large:hover {
+    background: var(--color-terracotta-500);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(181, 98, 44, 0.55);
+  }
+
+  .cta-final-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+
+  .cta-final-cobertura {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.04em;
+  }
+
+  .cta-final-abogado {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .areas-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    .soluciones-grid,
+    .defensa-grid,
+    .ramos-inner,
+    .cta-final-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .liderazgo-features {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-final-actions {
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .areas-grid { grid-template-columns: 1fr; }
+    .defensa-grid { grid-template-columns: 1fr; }
+  }
+</style>

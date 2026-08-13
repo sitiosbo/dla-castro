@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Política de Privacidad" description="Política de privacidad de DLA — Defensa Legal del Asegurado.">
+  <main class="legal-page">
+    <div class="legal-inner">
+      <h1>Política de Privacidad</h1>
+      <p class="legal-meta">Última actualización: agosto de 2026</p>
+      <div class="legal-content">
+        <h2>Datos recopilados</h2>
+        <p>
+          DLA recopila únicamente los datos que el usuario proporciona voluntariamente
+          a través del formulario de contacto: nombre, tipo de caso y teléfono.
+          No se recopilan datos de navegación más allá de los necesarios para el
+          funcionamiento del sitio.
+        </p>
+
+        <h2>Finalidad del tratamiento</h2>
+        <p>
+          Los datos se utilizan exclusivamente para responder a la consulta del usuario
+          y, si corresponde, iniciar la relación de asesoría legal. No se comparten
+          con terceros.
+        </p>
+
+        <h2>Confidencialidad</h2>
+        <p>
+          Toda información proporcionada está sujeta al secreto profesional del abogado.
+        </p>
+
+        <!-- TODO: validar con el abogado el texto legal completo antes de publicar -->
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal-page { padding: 5rem 0; }
+  .legal-inner { max-width: 48rem; margin: 0 auto; padding: 0 1.5rem; }
+  h1 { font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; color: var(--color-navy-800); margin-bottom: 0.5rem; }
+  .legal-meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-ink-400); margin-bottom: 2.5rem; }
+  .legal-content h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--color-navy-800); margin: 2rem 0 0.75rem; }
+  .legal-content p { font-family: var(--font-body); font-size: 0.9375rem; color: var(--color-ink-600); line-height: 1.7; }
+</style>

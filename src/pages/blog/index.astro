@@ -1,0 +1,326 @@
+---
+// Listado de blog (Decap CMS alimenta esta colección).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort(
+  (a, b) => b.data.fechaPublicacion.valueOf() - a.data.fechaPublicacion.valueOf()
+);
+
+const categoriasMap: Record<string, string> = {
+  normativa: 'Normativa & Leyes',
+  siniestros: 'Rechazo de Siniestros',
+  jurisprudencia: 'Jurisprudencia & APS',
+  general: 'Análisis General',
+};
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('es-BO', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://dlaseguros.bo/blog/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Blog y Artículos Técnicos"
+  description="Análisis especializado sobre normativa de seguros, regulación APS, impugnación de rechazos y jurisprudencia en Bolivia."
+  schemaExtra={schemaExtra}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Blog</span>
+    </div>
+  </nav>
+
+  <!-- Hero Blog -->
+  <header class="blog-hero">
+    <div class="blog-hero-inner">
+      <p class="eyebrow">Análisis & Jurisprudencia</p>
+      <h1 class="blog-title">Blog Técnico de Seguros</h1>
+      <p class="blog-subtitle">
+        Criterios jurídicos, normativa actualizada y guías técnicas para asegurados,
+        empresas y tomadores de pólizas en Bolivia.
+      </p>
+    </div>
+  </header>
+
+  <main class="blog-main">
+    <div class="blog-inner">
+      {posts.length > 0 ? (
+        <div class="blog-grid">
+          {posts.map((post) => (
+            <article class="post-card">
+              {post.data.imagenPortada && (
+                <div class="post-cover-wrap">
+                  <img
+                    src={post.data.imagenPortada}
+                    alt={post.data.titulo}
+                    class="post-cover-img"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div class="post-card-content">
+                <div class="post-meta">
+                  <span class="post-category">
+                    {categoriasMap[post.data.categoria] || post.data.categoria}
+                  </span>
+                  <span class="post-date">{formatDate(post.data.fechaPublicacion)}</span>
+                </div>
+                <h2 class="post-title">
+                  <a href={`/blog/${post.slug}/`} class="post-title-link">
+                    {post.data.titulo}
+                  </a>
+                </h2>
+                <p class="post-resumen">{post.data.resumen}</p>
+                <div class="post-footer">
+                  <a href={`/blog/${post.slug}/`} class="post-read-more">
+                    Leer artículo completo &rarr;
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="blog-empty">
+          <p>Próximamente se publicarán nuevos artículos técnicos.</p>
+        </div>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    background: rgba(15, 27, 61, 0.02);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.06);
+    padding: 0.75rem 0;
+  }
+  .breadcrumb-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .breadcrumb-link {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-ink-400);
+    text-decoration: none;
+    transition: color var(--motion-duration-micro);
+  }
+  .breadcrumb-link:hover {
+    color: var(--color-navy-800);
+  }
+  .breadcrumb-sep {
+    color: var(--color-ink-400);
+    font-size: 0.75rem;
+  }
+  .breadcrumb-current {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-navy-800);
+    font-weight: 500;
+  }
+
+  .blog-hero {
+    background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%);
+    color: var(--color-white);
+    padding: 4rem 0;
+  }
+  .blog-hero-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-terracotta-500);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .blog-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .blog-subtitle {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.65;
+    max-width: 42rem;
+  }
+
+  .blog-main {
+    padding: 4rem 0 5rem;
+    background: rgba(15, 27, 61, 0.02);
+  }
+  .blog-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .post-card {
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition:
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro),
+      border-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.14);
+    border-color: rgba(15, 27, 61, 0.22);
+  }
+
+  .post-cover-wrap {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--color-navy-950);
+  }
+
+  .post-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .post-card:hover .post-cover-img {
+    transform: scale(1.03);
+  }
+
+  .post-card-content {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .post-category {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--color-terracotta-600);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(181, 98, 44, 0.08);
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.25rem;
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+  }
+
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    line-height: 1.35;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--motion-duration-micro);
+  }
+
+  .post-title-link:hover {
+    color: var(--color-terracotta-600);
+  }
+
+  .post-resumen {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(15, 27, 61, 0.06);
+  }
+
+  .post-read-more {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-terracotta-600);
+    text-decoration: none;
+    transition: color var(--motion-duration-micro);
+  }
+
+  .post-read-more:hover {
+    color: var(--color-terracotta-500);
+  }
+
+  .blog-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-family: var(--font-body);
+    color: var(--color-ink-600);
+  }
+
+  @media (max-width: 992px) {
+    .blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,228 @@
+---
+// Estadísticas ampliadas (StatBar con contexto), casos anonimizados (content/casos), testimonios.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StatBar from '../components/StatBar.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const casos = await getCollection('casos');
+const testimonios = await getCollection('testimonios');
+const settings = await getEntry('settings', 'general');
+
+const { aniosExperiencia, recuperoIndemnizaciones, resolucionViaAdministrativa, arreglosDirectos, arbitrajesFavorables } = settings.data.stats;
+
+const statsData = [
+  { label: 'Arreglos directos con aseguradoras', value: arreglosDirectos },
+  { label: 'Resolución vía administrativa APS', value: resolucionViaAdministrativa },
+  { label: 'Arbitrajes favorables', value: arbitrajesFavorables },
+  { label: 'Recupero total de indemnizaciones', value: recuperoIndemnizaciones },
+];
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Resultados', item: 'https://dlaseguros.bo/resultados/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Resultados y Estadísticas"
+  description="Resultados comprobables, casos anonimizados y efectividad en el reclamo e impugnación de seguros en Bolivia."
+  schemaExtra={schemaExtra}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Resultados</span>
+    </div>
+  </nav>
+
+  <!-- Hero Resultados -->
+  <header class="resultados-hero">
+    <div class="resultados-hero-inner">
+      <p class="eyebrow">Respaldo cuantitativo</p>
+      <h1 class="resultados-title">Resultados y Efectividad</h1>
+      <p class="resultados-subtitle">
+        Más de {aniosExperiencia} años de trayectoria traducidos en indicadores cuantitativos
+        de recupero e impugnación exitosa en Bolivia.
+      </p>
+    </div>
+  </header>
+
+  <!-- Gráfico principal de efectividad -->
+  <StatBar
+    stats={statsData}
+    title="Métricas Históricas de Recuperación"
+    subtitle="Resultados consolidados en resolución de disputas ante aseguradoras y la APS."
+  />
+
+  <!-- Casos Anonimizados -->
+  <section class="casos-section">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="eyebrow">Precedentes y referencias</p>
+        <h2 class="section-title">Casos de Éxito Anonimizados</h2>
+        <p class="section-subtitle">
+          Por razones de secreto profesional y confidencialidad contractual, los precedentes se presentan sin datos identificables.
+        </p>
+      </div>
+
+      <div class="casos-grid">
+        {casos.map((caso) => (
+          <div class="caso-card">
+            <div class="caso-header">
+              <span class="caso-ramo-tag">{caso.data.ramo}</span>
+              {caso.data.resultadoPorcentaje && (
+                <span class="caso-pct">{caso.data.resultadoPorcentaje}% Recuperado</span>
+              )}
+            </div>
+            <h3 class="caso-titulo">{caso.data.titulo}</h3>
+            <p class="caso-resumen">{caso.data.resumen}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios -->
+  <section class="testimonios-section">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="eyebrow">Experiencia del cliente</p>
+        <h2 class="section-title">Testimonios de Asegurados</h2>
+        <p class="section-subtitle">Experiencias directas de clientes — sin datos identificables por razones de confidencialidad.</p>
+      </div>
+
+      <div class="testimonios-grid">
+        {testimonios.map((testimonio) => (
+          <div class="testimonio-card">
+            <!-- Comilla tipográfica protagonista (sin foto de persona) -->
+            <span class="testimonio-comilla" aria-hidden="true">&ldquo;</span>
+            <blockquote class="testimonio-texto">{testimonio.data.texto}</blockquote>
+            <footer class="testimonio-footer">
+              <div class="testimonio-firma">
+                <!-- Iniciales + tipo de caso en --font-mono (firma técnica) -->
+                <span class="author-initials">{testimonio.data.inicialesCliente}</span>
+                <span class="author-sep" aria-hidden="true">·</span>
+                <span class="author-case">{testimonio.data.tipoCaso}</span>
+              </div>
+              {testimonio.data.resultado && (
+                <span class="testimonio-res-badge">{testimonio.data.resultado}</span>
+              )}
+            </footer>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { background: rgba(15, 27, 61, 0.02); border-bottom: 1px solid rgba(15, 27, 61, 0.06); padding: 0.75rem 0; }
+  .breadcrumb-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumb-link { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-ink-400); text-decoration: none; }
+  .breadcrumb-link:hover { color: var(--color-navy-800); }
+  .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
+  .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
+
+  .resultados-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
+  .resultados-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-terracotta-500); text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.75rem; }
+  .resultados-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .resultados-subtitle { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 40rem; }
+
+  .section-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .section-header { text-align: center; max-width: 42rem; margin: 0 auto 3rem; }
+  .section-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--color-navy-800); margin-bottom: 0.5rem; }
+  .section-subtitle { font-family: var(--font-body); font-size: 0.9375rem; color: var(--color-ink-600); }
+
+  .casos-section { padding: 5rem 0; background: var(--color-white); }
+  .casos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .caso-card { padding: 1.75rem; background: rgba(15, 27, 61, 0.02); border: 1px solid rgba(15, 27, 61, 0.08); border-radius: var(--radius-card); }
+  .caso-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .caso-ramo-tag { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-navy-800); text-transform: uppercase; background: rgba(15, 27, 61, 0.06); padding: 0.2rem 0.5rem; border-radius: 0.25rem; }
+  .caso-pct { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600; color: var(--color-terracotta-600); }
+  .caso-titulo { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; color: var(--color-navy-800); margin-bottom: 0.5rem; }
+  .caso-resumen { font-family: var(--font-body); font-size: 0.875rem; color: var(--color-ink-600); line-height: 1.6; }
+
+  .testimonios-section {
+    padding: 5rem 0;
+    background: rgba(15, 27, 61, 0.045);
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+  }
+  .testimonios-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .testimonio-card {
+    position: relative;
+    padding: 2.25rem 2rem 2rem;
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.10);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow: hidden;
+  }
+  /* Comilla tipográfica protagonista — sin foto de persona */
+  .testimonio-comilla {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-terracotta-600);
+    display: block;
+    margin-bottom: -1.25rem;
+    user-select: none;
+  }
+  .testimonio-texto {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.0625rem;
+    color: var(--color-navy-800);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .testimonio-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(15, 27, 61, 0.07);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+  /* Firma técnica en --font-mono (iniciales · tipo de caso) */
+  .testimonio-firma {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .author-initials {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    letter-spacing: 0.05em;
+  }
+  .author-sep {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+  }
+  .author-case {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-ink-400);
+    letter-spacing: 0.04em;
+  }
+  .testimonio-res-badge { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-success-500); background: rgba(15, 169, 104, 0.08); padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
+
+  @media (max-width: 768px) {
+    .casos-grid, .testimonios-grid { grid-template-columns: 1fr; }
+  }
+</style>

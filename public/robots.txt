@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dlaseguros.bo/sitemap-index.xml

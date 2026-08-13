@@ -1,0 +1,292 @@
+---
+// FAQ con schema.org FAQPage — clave para AEO (respuestas citables por buscadores de IA).
+// Implementación con <details>/<summary> nativo HTML:
+// - Accesibilidad y soporte de teclado/lector de pantalla gratis, sin JS.
+// - El contenido permanece en el DOM aunque esté colapsado — SEO/AEO no afectado.
+// - Menos JavaScript = mejor performance en Cloudflare Workers con Static Assets.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqs = [
+  {
+    pregunta: '¿Qué debo hacer inmediatamente si la aseguradora rechaza mi siniestro?',
+    respuesta:
+      'Al recibir una carta formal de rechazo, es fundamental no dejar transcurrir los plazos reglamentarios. Debe conservarse toda la correspondencia, la póliza completa y el informe del ajustador perito para iniciar una evaluación técnica legal y formalizar la impugnación ante la aseguradora y la APS.',
+    notaLegal: '<!-- TODO: validar con el abogado los plazos de prescripción específicos por ramo -->',
+  },
+  {
+    pregunta: '¿Cuál es el rol de la Autoridad de Fiscalización y Control de Pensiones y Seguros (APS)?',
+    respuesta:
+      'La APS es el órgano regulador del mercado asegurador en Bolivia. Ante una negativa o discrepancia no resuelta, el asegurado puede interponer un reclamo en la vía administrativa para que la autoridad evalúe si la aseguradora actuó conforme a ley y al condicionado de la póliza.',
+    notaLegal: '<!-- TODO: validar con el abogado los requisitos formales del reclamo administrativo APS -->',
+  },
+  {
+    pregunta: '¿En qué consiste el plazo de aviso de siniestro según el Código de Comercio?',
+    respuesta:
+      'El Art. 1028 del Código de Comercio de Bolivia establece los plazos e imperativos para dar aviso del siniestro a la aseguradora. El incumplimiento injustificado de este plazo puede ser invocado por la compañía para declinar la cobertura, salvo causas de fuerza mayor.',
+    notaLegal: '<!-- TODO: validar con el abogado la redacción exacta y excepciones del Art. 1028 -->',
+  },
+  {
+    pregunta: '¿Se puede impugnar una fianza de cumplimiento de contrato o anticipo?',
+    respuesta:
+      'Sí. La ejecución arbitraria o indebida de pólizas de caución y fianzas en contrataciones públicas o privadas puede ser objeto de acciones de contención e impugnación para evitar la afectación patrimonial injustificada de la empresa contratista.',
+    notaLegal: '<!-- TODO: validar con el abogado los precedentes arbitrales en materia de fianzas -->',
+  },
+  {
+    pregunta: '¿Cómo se determinan los honorarios por la defensa legal en DLA?',
+    respuesta:
+      'DLA estructura sus honorarios de forma transparente según el tipo de servicio: análisis preliminar de póliza, representación administrativa o cuota litis / éxito según la cuantía y complejidad del caso.',
+    notaLegal: '<!-- TODO: validar con el abogado la modalidad de cobro preferente -->',
+  },
+];
+
+// Schema JSON-LD FAQPage para SEO / AEO
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.pregunta,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.respuesta,
+    },
+  })),
+};
+
+const schemaExtra = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
+    { '@type': 'ListItem', position: 2, name: 'Preguntas Frecuentes', item: 'https://dlaseguros.bo/preguntas-frecuentes/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Preguntas Frecuentes"
+  description="Respuestas a dudas comunes sobre rechazos de siniestros, reclamos en la APS, seguros generales y fianzas en Bolivia."
+  schemaExtra={{ ...faqSchema, ...schemaExtra }}
+>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">Preguntas Frecuentes</span>
+    </div>
+  </nav>
+
+  <!-- Hero FAQ -->
+  <header class="faq-hero">
+    <div class="faq-hero-inner">
+      <p class="eyebrow">Aclaraciones jurídicas</p>
+      <h1 class="faq-title">Preguntas Frecuentes</h1>
+      <p class="faq-subtitle">
+        Respuestas técnicas a las interrogantes más habituales sobre siniestros, rechazos,
+        normativa de seguros y el procedimiento ante la APS en Bolivia.
+      </p>
+    </div>
+  </header>
+
+  <main class="faq-main">
+    <div class="faq-inner">
+      <!--
+        Acordeón nativo HTML — <details>/<summary>.
+        - Accesibilidad: teclado (Tab + Enter/Space), lector de pantalla, sin JS adicional.
+        - SEO/AEO: el contenido permanece en el DOM aunque esté colapsado; el schema FAQPage funciona igual.
+        - Performance: cero JS para la funcionalidad de abrir/cerrar.
+        - La primera pregunta se abre por defecto (open) como "pregunta destacada".
+      -->
+      <div class="faq-list">
+        {faqs.map((faq, index) => (
+          <details class="faq-item" open={index === 0 ? true : undefined}>
+            <summary class="faq-summary">
+              <span class="faq-num" aria-hidden="true">0{index + 1}</span>
+              <span class="faq-question-text">{faq.pregunta}</span>
+              <!-- Ícono de chevron, rota via CSS cuando [open] -->
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <!--
+              Wrapper interno para poder animar la apertura con grid-template-rows.
+              El soporte de navegadores modernos (Chrome 116+, Firefox 130+, Safari 17.5+)
+              permite animar details con interpolate-size o con grid height trick.
+              Usamos el truco grid como fallback universal.
+            -->
+            <div class="faq-answer-wrap">
+              <p class="faq-answer">{faq.respuesta}</p>
+              <Fragment set:html={faq.notaLegal} />
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <div class="faq-cta-banner">
+        <div class="cta-banner-content">
+          <h3>¿Tiene una interrogante específica sobre su caso?</h3>
+          <p>Consulte directamente con el estudio. Evaluamos su expediente sin compromiso.</p>
+        </div>
+        <a href="/contacto/" class="btn-faq-cta">Consultar con el Abogado</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .breadcrumb { background: rgba(15, 27, 61, 0.02); border-bottom: 1px solid rgba(15, 27, 61, 0.06); padding: 0.75rem 0; }
+  .breadcrumb-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumb-link { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-ink-400); text-decoration: none; }
+  .breadcrumb-link:hover { color: var(--color-navy-800); }
+  .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
+  .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
+
+  .faq-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
+  .faq-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-terracotta-500); text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.75rem; }
+  .faq-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .faq-subtitle { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 40rem; }
+
+  .faq-main { padding: 4rem 0 5rem; }
+  .faq-inner { max-width: 52rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ===== Acordeón nativo <details>/<summary> ===== */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 4rem;
+  }
+
+  /* Contenedor del acordeón — sin list-style ya que usamos <details> */
+  .faq-item {
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    /* Transición de borde al abrir */
+    transition: border-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .faq-item[open] {
+    border-color: rgba(15, 27, 61, 0.15);
+  }
+
+  /* Quitar el marcador por defecto del browser */
+  .faq-item summary {
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Summary: la fila clicable con pregunta + ícono */
+  .faq-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    user-select: none;
+    /* Sin outline por defecto del browser — el :focus-visible sí aplica */
+    outline: none;
+    transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .faq-summary:hover {
+    background: rgba(15, 27, 61, 0.02);
+  }
+
+  /* Foco accesible — visible solo con teclado */
+  .faq-summary:focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: -2px;
+    border-radius: var(--radius-card);
+  }
+
+  /* Número de pregunta */
+  .faq-num {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-terracotta-600);
+    flex-shrink: 0;
+    width: 2rem;
+  }
+
+  /* Texto de la pregunta */
+  .faq-question-text {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    line-height: 1.35;
+    flex: 1;
+  }
+
+  /* Chevron — rota 180° cuando el details está abierto */
+  .faq-chevron {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+    color: var(--color-terracotta-600);
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  /*
+    Animación de apertura con el truco grid-template-rows:
+    0fr → 1fr. Soporte universal en Chrome 88+, Firefox 94+, Safari 14.1+.
+    El wrapper interno necesita overflow: hidden para que el clip funcione.
+  */
+  .faq-answer-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--motion-duration-enter) var(--motion-ease-enter);
+    overflow: hidden;
+  }
+
+  /* El contenido interno necesita min-height: 0 para que el grid clip funcione */
+  .faq-answer-wrap > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  details[open] .faq-answer-wrap {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-answer {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.7;
+    padding: 0 2rem 1.75rem 4.75rem; /* alineado bajo el texto de la pregunta (faq-num + gap) */
+    margin: 0;
+  }
+
+  /* ===== CTA Banner ===== */
+  .faq-cta-banner { background: var(--color-navy-950); color: var(--color-white); padding: 2.5rem; border-radius: var(--radius-card); display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+  .cta-banner-content h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.375rem; }
+  .cta-banner-content p { font-family: var(--font-body); font-size: 0.875rem; color: rgba(255,255,255,0.7); }
+  .btn-faq-cta { font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-white); background: var(--color-terracotta-600); text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 0.375rem; white-space: nowrap; transition: background-color var(--motion-duration-micro); }
+  .btn-faq-cta:hover { background: var(--color-terracotta-500); }
+
+  @media (max-width: 768px) {
+    .faq-cta-banner { flex-direction: column; text-align: center; }
+    .faq-summary { padding: 1.25rem 1.25rem; }
+    .faq-answer { padding: 0 1.25rem 1.5rem 1.25rem; }
+  }
+</style>
