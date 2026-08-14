@@ -113,6 +113,23 @@ El único componente con animación orquestada es `Timeline.astro`.
 - **No pedirle a Castro que comprima fotos antes de subirlas.** El pipeline de Astro
   se encarga en cada `npm run build`.
 
+## 4.7 Deuda técnica: @astrojs/sitemap fijado en 3.6.0
+
+> **Registrado:** 14-agosto-2026.
+
+`@astrojs/sitemap` está fijado en `3.6.0` (sin rango `^`) porque la versión
+`3.7.3` (latest en npm) tiene un bug conocido que rompe el build:
+`Cannot read properties of undefined (reading 'reduce')` en
+`@astrojs/sitemap/dist/index.js:85:37`.
+
+No existe ninguna versión publicada después de 3.7.3 que corrija el bug
+(verificado 14-ago-2026: `npm view @astrojs/sitemap versions --json`).
+
+**Acción periódica:** revisar si una versión posterior corrige el bug
+(`npm view @astrojs/sitemap dist-tags --json`) para actualizar y volver
+a recibir parches de seguridad. Cuando se confirme el fix, cambiar a
+un rango seguro tipo `~3.x.y`.
+
 ## 5. Verificación obligatoria
 
 - `npm run build` ejecutado y validado sin errores.
