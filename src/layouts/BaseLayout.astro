@@ -100,9 +100,19 @@ const schemaOrg = {
     <!-- Fuentes: Fraunces (display/serif de autoridad), Inter (body), IBM Plex Mono (datos legales) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload crítico: Google Fonts CSS para Hero (LCP candidate) -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap"
+    />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
 
     <!-- schema.org JSON-LD -->

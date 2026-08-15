@@ -72,21 +72,21 @@ const currentPath = Astro.url.pathname;
         Proceso
       </a>
 
-      <!-- Dropdown: Estudio -->
+      <!-- Dropdown: Trayectoria -->
       <div class="nav-dropdown-wrap">
         <button
-          id="estudio-menu-btn"
+          id="trayectoria-menu-btn"
           class="nav-link nav-dropdown-trigger"
           aria-haspopup="true"
           aria-expanded="false"
-          aria-controls="estudio-dropdown"
+          aria-controls="trayectoria-dropdown"
         >
-          Estudio
+          Trayectoria
           <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div id="estudio-dropdown" class="nav-dropdown" role="menu" aria-labelledby="estudio-menu-btn">
+        <div id="trayectoria-dropdown" class="nav-dropdown" role="menu" aria-labelledby="trayectoria-menu-btn">
           {estudioLinks.map((link) => (
             <a
               href={link.href}
@@ -140,7 +140,7 @@ const currentPath = Astro.url.pathname;
         <a href={link.href} class="mobile-nav-link">{link.label}</a>
       ))}
       <div class="mobile-nav-divider"></div>
-      <p class="mobile-nav-section-label">Estudio</p>
+      <p class="mobile-nav-section-label">Trayectoria</p>
       {estudioLinks.map((link) => (
         <a href={link.href} class="mobile-nav-link">{link.label}</a>
       ))}
@@ -532,12 +532,12 @@ const currentPath = Astro.url.pathname;
   }
 
   const areasDropdown = setupDropdown('areas-menu-btn', 'areas-dropdown');
-  const estudioDropdown = setupDropdown('estudio-menu-btn', 'estudio-dropdown');
+  const trayectoriaDropdown = setupDropdown('trayectoria-menu-btn', 'trayectoria-dropdown');
 
   // Cerrar todos los dropdowns al hacer click fuera
   document.addEventListener('click', () => {
     areasDropdown?.close();
-    estudioDropdown?.close();
+    trayectoriaDropdown?.close();
   });
 
   // Mobile menu
