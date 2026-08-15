@@ -10,8 +10,9 @@ import '../styles/tokens.css';
 interface Props {
   title: string;
   description: string;
-  // schemaExtra: JSON-LD adicional por página (FAQPage, BreadcrumbList)
-  schemaExtra?: Record<string, unknown>;
+  // schemaExtra: JSON-LD adicional por página (FAQPage, BreadcrumbList, BlogPosting)
+  // Puede ser un objeto único o un array de objetos
+  schemaExtra?: Record<string, unknown> | Record<string, unknown>[];
   canonical?: string;
   ogImage?: string;
 }
@@ -62,7 +63,10 @@ const schemaOrg = {
       worksFor: { '@id': `${siteUrl}/#organization` },
       knowsAbout: ['Derecho de Seguros', 'Impugnación de rechazos', 'Ley 1883 de Bolivia', 'APS Bolivia'],
     },
-    ...(schemaExtra ? [schemaExtra] : []),
+    // schemaExtra puede ser un objeto único o un array de objetos (ej. BlogPosting + BreadcrumbList)
+    ...(schemaExtra
+      ? (Array.isArray(schemaExtra) ? schemaExtra : [schemaExtra])
+      : []),
   ],
 };
 ---

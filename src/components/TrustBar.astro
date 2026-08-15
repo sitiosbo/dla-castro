@@ -2,6 +2,7 @@
 // Barra de confianza inmediata post-hero: 25+ años / % recupero / ciudades de cobertura.
 // Aquí es donde "Castro" aparece por primera vez como firma/credencial (no como marca).
 // Datos vienen de content/settings/general.json.
+// Count-up: IntersectionObserver + --motion-duration-countup (mismo patrón que StatBar.astro).
 import { getEntry } from 'astro:content';
 const settings = await getEntry('settings', 'general');
 const { aniosExperiencia, recuperoIndemnizaciones, arreglosDirectos } = settings.data.stats;
@@ -9,29 +10,31 @@ const { ciudadesCobertura } = settings.data.contacto;
 
 const items = [
   {
-    value: `${aniosExperiencia}+`,
+    countTo: aniosExperiencia,
+    suffix: '+',
     label: 'Años de experiencia',
     sublabel: 'en Derecho de Seguros',
     mono: true,
   },
   {
-    value: `${recuperoIndemnizaciones}%`,
+    countTo: recuperoIndemnizaciones,
+    suffix: '%',
     label: 'Recupero de indemnizaciones',
     sublabel: 'casos complejos',
     mono: true,
   },
   {
-    value: `${arreglosDirectos}%`,
+    countTo: arreglosDirectos,
+    suffix: '%',
     label: 'Arreglos directos',
     sublabel: 'sin llegar a juicio',
     mono: true,
   },
   {
-    value: ciudadesCobertura.slice(0, -1).join(' · ') + ' · Nacional',
+    cities: ciudadesCobertura.slice(0, -1),
     label: 'Cobertura nacional',
     sublabel: 'Bolivia',
-    mono: false,
-    wide: true,
+    isCity: true,
   },
 ];
 ---
@@ -42,10 +45,19 @@ const items = [
   <div class="trustbar-inner">
     <div class="trustbar-items">
       {items.map((item) => (
-        <div class:list={['trustbar-item', { 'trustbar-item-wide': item.wide }]}>
-          <span class:list={['trustbar-value', { 'trustbar-value-mono': item.mono }]}>
-            {item.value}
-          </span>
+        <div class="trustbar-item">
+          {item.countTo !== undefined ? (
+            <span class:list={['trustbar-value', { 'trustbar-value-mono': item.mono }]}>
+              <span class="trustbar-count" data-count-to={item.countTo} data-count-suffix={item.suffix}>0</span>
+              <span class="trustbar-suffix">{item.suffix}</span>
+            </span>
+          ) : (
+            <ul class="trustbar-cities">
+              {item.cities.map((city: string) => (
+                <li>{city}</li>
+              ))}
+            </ul>
+          )}
           <span class="trustbar-label">{item.label}</span>
           <span class="trustbar-sublabel">{item.sublabel}</span>
         </div>
@@ -111,14 +123,18 @@ const items = [
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(15, 27, 61, 0.05);
+    min-width: 0;
   }
 
   .trustbar-item {
     background: var(--color-white);
-    padding: 1.25rem 1.5rem;
+    padding: 1.75rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: 0.25rem;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    min-width: 0;
     transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
@@ -126,25 +142,52 @@ const items = [
     background: rgba(15, 27, 61, 0.02);
   }
 
-  .trustbar-item-wide {
-    /* La ciudad ocupa más espacio natural por el contenido */
+  /* Celda de ciudades — desacoplada de las celdas numéricas */
+  .trustbar-cities {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .trustbar-cities li {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
+    line-height: 1.5;
   }
 
   .trustbar-value {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: 700;
     color: var(--color-navy-800);
     line-height: 1;
     letter-spacing: -0.02em;
+    display: flex;
+    align-items: baseline;
   }
 
   .trustbar-value-mono {
     font-family: var(--font-mono);
-    font-size: 1.75rem;
+    font-size: 3rem;
     color: var(--color-terracotta-600);
     font-weight: 500;
     letter-spacing: -0.01em;
+  }
+
+  /* Contador numérico: tabular-nums evita CLS durante la animación */
+  .trustbar-count {
+    font-variant-numeric: tabular-nums;
+    min-width: 2ch;
+    display: inline-block;
+  }
+
+  .trustbar-suffix {
+    font-variant-numeric: tabular-nums;
   }
 
   .trustbar-label {
@@ -199,11 +242,25 @@ const items = [
     .trustbar-items {
       grid-template-columns: 1fr 1fr;
     }
+
+    .trustbar-value,
+    .trustbar-value-mono {
+      font-size: 2.5rem;
+    }
   }
 
   @media (max-width: 540px) {
     .trustbar-items {
       grid-template-columns: 1fr;
+    }
+
+    .trustbar-item {
+      padding: 1.5rem 1.25rem;
+    }
+
+    .trustbar-value,
+    .trustbar-value-mono {
+      font-size: 2.25rem;
     }
 
     .trustbar-firma {
@@ -217,3 +274,74 @@ const items = [
     }
   }
 </style>
+
+<script>
+  /*
+   * Count-up animado para los números del TrustBar.
+   * Mismo patrón que StatBar.astro: IntersectionObserver + prefers-reduced-motion.
+   * Usa --motion-duration-countup de tokens.css como duración base.
+   * Easing: ease-out cuadrático (rápido al inicio, suave al final — natural para conteo).
+   * Se dispara una sola vez por carga de página (observer.disconnect() tras primera activación).
+   */
+  (function () {
+    const bar = document.querySelector('.trustbar-items');
+    if (!bar) return;
+
+    const countEls = bar.querySelectorAll<HTMLElement>('[data-count-to]');
+    if (countEls.length === 0) return;
+
+    // Duración desde tokens.css — fallback 1200ms si la variable no está cargada
+    const rootStyles = getComputedStyle(document.documentElement);
+    const rawDuration = rootStyles.getPropertyValue('--motion-duration-countup').trim();
+    const duration = rawDuration ? parseInt(rawDuration, 10) : 1200;
+
+    // prefers-reduced-motion: mostrar valores finales sin animar
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      countEls.forEach((el) => {
+        const target = parseInt(el.dataset.countTo!, 10);
+        el.textContent = `${target}`;
+      });
+      return;
+    }
+
+    // Easing: ease-out cuadrático — rápido al inicio, suave al final
+    function easeOutQuad(t: number): number {
+      return 1 - (1 - t) * (1 - t);
+    }
+
+    function animateCount(el: HTMLElement) {
+      const target = parseInt(el.dataset.countTo!, 10);
+      const start = performance.now();
+
+      function tick(now: number) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutQuad(progress);
+        const current = Math.round(easedProgress * target);
+        el.textContent = `${current}`;
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    // IntersectionObserver — se activa una sola vez (same pattern que StatBar.astro)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            countEls.forEach((el) => animateCount(el));
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(bar);
+  })();
+</script>

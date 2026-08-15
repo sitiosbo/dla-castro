@@ -36,7 +36,13 @@ const articleSchema = {
   description: post.data.resumen,
   datePublished: post.data.fechaPublicacion.toISOString(),
   author: {
+    '@type': 'Person',
+    '@id': 'https://dlaseguros.bo/#person-castro',
+    name: 'Dr. Ramiro Castro',
+  },
+  publisher: {
     '@type': 'Organization',
+    '@id': 'https://dlaseguros.bo/#organization',
     name: 'DLA — Defensa Legal del Asegurado',
   },
 };
@@ -59,7 +65,7 @@ const schemaExtra = {
 <BaseLayout
   title={post.data.titulo}
   description={post.data.resumen}
-  schemaExtra={{ ...articleSchema, ...schemaExtra }}
+  schemaExtra={[articleSchema, schemaExtra]}
 >
   <!-- Breadcrumb -->
   <nav class="breadcrumb" aria-label="Ruta de navegación">
@@ -109,9 +115,9 @@ const schemaExtra = {
       <!-- Pie del artículo / Firma institucional -->
       <footer class="article-author-box">
         <div class="author-box-content">
-          <span class="author-box-eyebrow">Publicado por</span>
-          <h3 class="author-box-name">DLA — Defensa Legal del Asegurado</h3>
-          <p class="author-box-role">Firma especializada en Derecho de Seguros en Bolivia · Dr. Ramiro Castro</p>
+          <span class="author-box-eyebrow">Por</span>
+          <h3 class="author-box-name">Dr. Ramiro Castro</h3>
+          <p class="author-box-role">Abogado Especialista en Derecho de Seguros · DLA — Defensa Legal del Asegurado</p>
         </div>
         <div class="author-box-action">
           <a href="/contacto/" class="btn-article-cta">Consultar sobre un caso</a>

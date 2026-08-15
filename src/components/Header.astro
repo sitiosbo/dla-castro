@@ -1,12 +1,9 @@
 ---
 // Header global: wordmark "DLA" dominante + tagline pequeño "Defensa Legal del Asegurado".
 // "Castro" NO aparece aquí (ver ESTADO.md sección Marca) — solo en Footer/Sobre Mí.
-// Nav: Áreas de Práctica (dropdown a las 4 subpáginas), Proceso, Resultados, Blog, Contacto.
+// Nav: Áreas de Práctica ▾ · Proceso · Estudio ▾ (Resultados, Sobre Mí) · Preguntas Frecuentes · Blog · CTA.
 // CTA visible en el header: "Agenda tu evaluación legal" (sticky en scroll).
 const navLinks = [
-  { label: 'Proceso', href: '/proceso/' },
-  { label: 'Resultados', href: '/resultados/' },
-  { label: 'Sobre Mí', href: '/sobre-mi/' },
   { label: 'Preguntas Frecuentes', href: '/preguntas-frecuentes/' },
   { label: 'Blog', href: '/blog/' },
 ];
@@ -16,6 +13,11 @@ const areasLinks = [
   { label: 'Seguros de Personas', href: '/areas-de-practica/seguros-de-personas/' },
   { label: 'Fianzas y Caución', href: '/areas-de-practica/fianzas-y-caucion/' },
   { label: 'Impugnación de Rechazos', href: '/areas-de-practica/impugnacion-de-rechazos/' },
+];
+
+const estudioLinks = [
+  { label: 'Resultados', href: '/resultados/' },
+  { label: 'Sobre Mí', href: '/sobre-mi/' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -62,6 +64,41 @@ const currentPath = Astro.url.pathname;
         </div>
       </div>
 
+      <!-- Link directo: Proceso -->
+      <a
+        href="/proceso/"
+        class:list={['nav-link', { 'nav-link-active': currentPath === '/proceso/' }]}
+      >
+        Proceso
+      </a>
+
+      <!-- Dropdown: Estudio -->
+      <div class="nav-dropdown-wrap">
+        <button
+          id="estudio-menu-btn"
+          class="nav-link nav-dropdown-trigger"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="estudio-dropdown"
+        >
+          Estudio
+          <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="estudio-dropdown" class="nav-dropdown" role="menu" aria-labelledby="estudio-menu-btn">
+          {estudioLinks.map((link) => (
+            <a
+              href={link.href}
+              class:list={['nav-dropdown-item', { 'active': currentPath === link.href }]}
+              role="menuitem"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
       {navLinks.map((link) => (
         <a
           href={link.href}
@@ -100,6 +137,11 @@ const currentPath = Astro.url.pathname;
       ))}
       <div class="mobile-nav-divider"></div>
       {navLinks.map((link) => (
+        <a href={link.href} class="mobile-nav-link">{link.label}</a>
+      ))}
+      <div class="mobile-nav-divider"></div>
+      <p class="mobile-nav-section-label">Estudio</p>
+      {estudioLinks.map((link) => (
         <a href={link.href} class="mobile-nav-link">{link.label}</a>
       ))}
       <a href="/contacto/" class="mobile-nav-cta">Agenda tu evaluación legal</a>
@@ -441,7 +483,7 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-  // Sticky header: transparente sobre Hero, sólido al scroll
+  // Fixed header: transparente sobre Hero, sólido al scroll
   const header = document.getElementById('site-header');
   const hero = document.querySelector('.hero') as HTMLElement | null;
   const heroHeight = hero ? hero.offsetHeight : 400;
@@ -454,30 +496,42 @@ const currentPath = Astro.url.pathname;
     }
   }, { passive: true });
 
-  // Dropdown de Áreas de Práctica
-  const dropBtn = document.getElementById('areas-menu-btn');
-  const dropdown = document.getElementById('areas-dropdown');
+  // Dropdowns — misma lógica reutilizable para ambos
+  function setupDropdown(btnId: string, dropdownId: string) {
+    const btn = document.getElementById(btnId);
+    const dropdown = document.getElementById(dropdownId);
+    if (!btn || !dropdown) return;
 
-  function openDropdown() {
-    dropBtn?.setAttribute('aria-expanded', 'true');
-    dropdown?.classList.add('open');
+    const open = () => {
+      btn!.setAttribute('aria-expanded', 'true');
+      dropdown!.classList.add('open');
+    };
+
+    const close = () => {
+      btn!.setAttribute('aria-expanded', 'false');
+      dropdown!.classList.remove('open');
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = btn!.getAttribute('aria-expanded') === 'true';
+      isOpen ? close() : open();
+    });
+
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+
+    return { close };
   }
 
-  function closeDropdown() {
-    dropBtn?.setAttribute('aria-expanded', 'false');
-    dropdown?.classList.remove('open');
-  }
+  const areasDropdown = setupDropdown('areas-menu-btn', 'areas-dropdown');
+  const estudioDropdown = setupDropdown('estudio-menu-btn', 'estudio-dropdown');
 
-  dropBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = dropBtn.getAttribute('aria-expanded') === 'true';
-    isOpen ? closeDropdown() : openDropdown();
-  });
-
-  document.addEventListener('click', closeDropdown);
-
-  dropBtn?.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDropdown();
+  // Cerrar todos los dropdowns al hacer click fuera
+  document.addEventListener('click', () => {
+    areasDropdown?.close();
+    estudioDropdown?.close();
   });
 
   // Mobile menu

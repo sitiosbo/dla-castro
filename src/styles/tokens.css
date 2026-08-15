@@ -56,6 +56,7 @@
   --motion-duration-enter: 320ms;   /* aparición de elementos (cards, reveal on scroll) */
   --motion-duration-exit: 200ms;    /* salida — más rápida que la entrada */
   --motion-duration-orquestado: 600ms; /* momento de firma: Timeline.astro */
+  --motion-duration-countup: 1200ms; /* conteo de números (4x enter) */
 
   /* Curvas de easing */
   --motion-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);   /* salida rápida, llegada suave */
@@ -69,6 +70,7 @@
     --motion-duration-enter: 0ms;
     --motion-duration-exit: 0ms;
     --motion-duration-orquestado: 0ms;
+    --motion-duration-countup: 0ms;
   }
 }
 
