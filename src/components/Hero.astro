@@ -75,7 +75,7 @@ const { aniosExperiencia } = Astro.props;
     position: relative;
     background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%);
     color: var(--color-white);
-    margin-top: -4.25rem;
+    margin-top: calc(var(--header-height) * -1);
     padding: 5rem 0 4rem;
     overflow: hidden;
   }
@@ -287,7 +287,7 @@ const { aniosExperiencia } = Astro.props;
 
   @media (max-width: 640px) {
     .hero {
-      margin-top: -4.25rem;
+      margin-top: calc(var(--header-height) * -1);
       padding: 3.5rem 0 2.5rem;
     }
 
