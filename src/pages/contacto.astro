@@ -52,7 +52,7 @@ const schemaExtra = {
             <p>Complete los datos clave para un primer análisis confidencial de su póliza o siniestro.</p>
           </div>
 
-          <form id="contact-form" class="contact-form" action="#" method="POST">
+          <form id="contact-form" class="contact-form" action="#" method="POST" data-whatsapp={whatsapp && whatsapp !== 'TODO_NUMERO_WHATSAPP' ? whatsapp.replace(/\D/g, '') : ''}>
             <div class="form-group">
               <label for="nombre">Nombre Completo o Empresa *</label>
               <input type="text" id="nombre" name="nombre" required placeholder="Ej. Roberto Mendoza / Constructora Andes" />
@@ -94,11 +94,44 @@ const schemaExtra = {
               <textarea id="mensaje" name="mensaje" rows="4" placeholder="Describa brevemente la fecha del evento, estado del reclamo o motivo de la consulta..."></textarea>
             </div>
 
-            <button type="submit" class="btn-submit">Enviar Evaluación Legal</button>
+            <!-- Honeypot: invisible para humanos, los bots lo rellenan -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="website">No Complete Este Campo</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <span class="btn-text">Enviar Evaluación Legal</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
             <p class="form-privacy-note">
               Sus datos están protegidos por el deber de confidencialidad profesional.
             </p>
           </form>
+
+          <!-- Mensaje de éxito (oculto por defecto) -->
+          <div id="form-success" class="form-message form-success" hidden>
+            <div class="form-message-icon" aria-hidden="true">✓</div>
+            <h3>Consulta enviada correctamente</h3>
+            <p>Un profesional de DLA se pondrá en contacto a la brevedad.</p>
+            <p class="form-message-secondary">Para una respuesta más inmediata, puede escribirnos directamente:</p>
+            <a id="success-whatsapp-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-inline">
+              Consulta Inmediata por WhatsApp
+            </a>
+          </div>
+
+          <!-- Mensaje de error (oculto por defecto) -->
+          <div id="form-error" class="form-message form-error-msg" hidden>
+            <div class="form-message-icon" aria-hidden="true">✕</div>
+            <h3>No se pudo enviar la consulta</h3>
+            <p>Hubo un problema de conexión. Por favor, intente nuevamente o contacte directamente por WhatsApp.</p>
+            <div class="form-error-actions">
+              <button type="button" id="retry-btn" class="btn-retry">Reintentar envío</button>
+              <a id="error-whatsapp-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-inline">
+                Contactar por WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Panel de Información de Contacto (Cierre del Deck) -->
@@ -183,6 +216,31 @@ const schemaExtra = {
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
   .form-privacy-note { font-family: var(--font-body); font-size: 0.75rem; color: var(--color-ink-400); text-align: center; }
 
+  /* Spinner */
+  .btn-spinner { display: none; width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.3); border-top-color: var(--color-white); border-radius: 50%; animation: spin 600ms linear infinite; flex-shrink: 0; }
+  .btn-submit.is-loading .btn-text { opacity: 0.6; }
+  .btn-submit.is-loading .btn-spinner { display: inline-block; }
+  .btn-submit { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Mensajes de estado (éxito / error) */
+  .form-message { text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-card); animation: form-message-enter var(--motion-duration-enter) var(--motion-ease-enter) forwards; }
+  .form-message-icon { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; margin: 0 auto 1rem; }
+  .form-message h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-navy-800); margin-bottom: 0.5rem; }
+  .form-message p { font-family: var(--font-body); font-size: 0.875rem; color: var(--color-ink-600); line-height: 1.6; margin-bottom: 0.75rem; }
+  .form-message-secondary { font-size: 0.8125rem !important; color: var(--color-ink-400) !important; }
+  .form-success .form-message-icon { background: rgba(15, 169, 104, 0.1); color: var(--color-success-500); }
+  .form-error-msg .form-message-icon { background: rgba(181, 98, 44, 0.1); color: var(--color-terracotta-600); }
+  .btn-whatsapp-inline { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-white); background: #25D366; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 0.375rem; transition: background-color var(--motion-duration-micro) var(--motion-ease-micro); margin-top: 0.5rem; }
+  .btn-whatsapp-inline:hover { background: #1ebe5b; }
+  .form-error-actions { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; margin-top: 1rem; }
+  .btn-retry { font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-navy-800); background: transparent; border: 1px solid rgba(15, 27, 61, 0.2); padding: 0.625rem 1.25rem; border-radius: 0.375rem; cursor: pointer; transition: border-color var(--motion-duration-micro) var(--motion-ease-micro), background-color var(--motion-duration-micro) var(--motion-ease-micro); }
+  .btn-retry:hover { border-color: var(--color-navy-800); background: rgba(15, 27, 61, 0.03); }
+  @keyframes form-message-enter { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Honeypot: oculto visualmente pero presente en DOM */
+  .hp-field { position: absolute; left: -9999px; top: -9999px; opacity: 0; height: 0; width: 0; overflow: hidden; pointer-events: none; }
+
   .info-card { background: var(--color-navy-950); color: var(--color-white); padding: 2rem; border-radius: var(--radius-card); }
   .info-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
   .info-tagline { font-family: var(--font-body); font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
@@ -240,17 +298,63 @@ const schemaExtra = {
   ============================================================
 -->
 <script>
-  const ENDPOINT_URL = 'https://script.google.com/macros/s/TU_SCRIPT_ID/exec';
+  const ENDPOINT_URL = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT;
 
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const btnSubmit = form?.querySelector('.btn-submit') as HTMLButtonElement | null;
+  const btnText = form?.querySelector('.btn-text') as HTMLSpanElement | null;
+  const btnSpinner = form?.querySelector('.btn-spinner') as HTMLSpanElement | null;
+  const formSuccess = document.getElementById('form-success');
+  const formError = document.getElementById('form-error');
+  const retryBtn = document.getElementById('retry-btn');
+  const successWaLink = document.getElementById('success-whatsapp-link') as HTMLAnchorElement | null;
+  const errorWaLink = document.getElementById('error-whatsapp-link') as HTMLAnchorElement | null;
 
-  form?.addEventListener('submit', async (e) => {
+  const whatsappNumber = form?.dataset.whatsapp || '';
+
+  function buildWaUrl(): string {
+    if (!whatsappNumber) return '#';
+    return `https://wa.me/${whatsappNumber}`;
+  }
+
+  function setLoading(loading: boolean) {
+    if (!btnSubmit || !btnText || !btnSpinner) return;
+    btnSubmit.disabled = loading;
+    btnSubmit.classList.toggle('is-loading', loading);
+    btnText.textContent = loading ? 'Enviando…' : 'Enviar Evaluación Legal';
+  }
+
+  function showSuccess() {
+    if (!form || !formSuccess) return;
+    form.hidden = true;
+    formSuccess.hidden = false;
+    if (successWaLink) successWaLink.href = buildWaUrl();
+  }
+
+  function showError() {
+    if (!form || !formError) return;
+    form.hidden = true;
+    formError.hidden = false;
+    if (errorWaLink) errorWaLink.href = buildWaUrl();
+  }
+
+  function resetToForm() {
+    if (!form || !formSuccess || !formError) return;
+    formError.hidden = true;
+    formSuccess.hidden = true;
+    form.hidden = false;
+    setLoading(false);
+  }
+
+  async function handleSubmit(e: Event) {
     e.preventDefault();
     if (!form || !btnSubmit) return;
 
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Enviando…';
+    // Honeypot: si tiene contenido, es un bot — abortar silenciosamente
+    const honeypot = form.elements.namedItem('website') as HTMLInputElement | null;
+    if (honeypot?.value) return;
+
+    setLoading(true);
 
     const payload = {
       nombre: (form.elements.namedItem('nombre') as HTMLInputElement)?.value.trim(),
@@ -270,16 +374,12 @@ const schemaExtra = {
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      form.hidden = true;
-      if (typeof (window as any).showToast === 'function') {
-        (window as any).showToast('success', ' Un profesional de DLA se pondrá en contacto a la brevedad.');
-      }
+      showSuccess();
     } catch {
-      if (typeof (window as any).showToast === 'function') {
-        (window as any).showToast('error', ' Intente nuevamente o contacte directamente por WhatsApp.');
-      }
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = 'Enviar Evaluación Legal';
+      showError();
     }
-  });
+  }
+
+  form?.addEventListener('submit', handleSubmit);
+  retryBtn?.addEventListener('click', resetToForm);
 </script>
