@@ -110,9 +110,18 @@ const schemaOrg = {
   </head>
   <body class="font-body text-ink-600">
     <Header />
-    <slot />
+    <main class="site-main">
+      <slot />
+    </main>
     <Footer />
     <WhatsAppFloat />
     <Toast />
   </body>
 </html>
+
+<style>
+  /* Spacer para header fijo — aplica a todas las páginas automáticamente */
+  .site-main {
+    padding-top: 4.25rem;
+  }
+</style>

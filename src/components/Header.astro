@@ -483,18 +483,24 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-  // Fixed header: transparente sobre Hero, sólido al scroll
+  // Fixed header: transparente sobre Hero en home, sólido en páginas internas
   const header = document.getElementById('site-header');
   const hero = document.querySelector('.hero') as HTMLElement | null;
-  const heroHeight = hero ? hero.offsetHeight : 400;
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > heroHeight - 80) {
-      header?.classList.add('scrolled');
-    } else {
-      header?.classList.remove('scrolled');
-    }
-  }, { passive: true });
+  if (!hero) {
+    // Página interna: header sólido desde el inicio
+    header?.classList.add('scrolled');
+  } else {
+    // Home: header transparente hasta pasar el Hero
+    const heroHeight = hero.offsetHeight;
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > heroHeight - 80) {
+        header?.classList.add('scrolled');
+      } else {
+        header?.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
 
   // Dropdowns — misma lógica reutilizable para ambos
   function setupDropdown(btnId: string, dropdownId: string) {
