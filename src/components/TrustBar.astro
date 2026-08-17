@@ -286,7 +286,7 @@ const items = [
   (function () {
     const bar = document.querySelector('.trustbar-items');
     if (!bar) return;
-    console.log('TrustBar script cargado, bar encontrado:', bar);
+    
     const countEls = bar.querySelectorAll<HTMLElement>('[data-count-to]');
     if (countEls.length === 0) return;
 
@@ -313,7 +313,7 @@ const items = [
     function animateCount(el: HTMLElement) {
       const target = parseInt(el.dataset.countTo!, 10);
       const start = performance.now();
-      console.log('Animando:', el.dataset.countTo);
+      
       function tick(now: number) {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
