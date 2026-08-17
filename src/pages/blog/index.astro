@@ -63,8 +63,9 @@ const schemaExtra = {
     <div class="blog-inner">
       {posts.length > 0 ? (
         <div class="blog-grid">
-          {posts.map((post) => (
-            <article class="post-card">
+          {posts.map((post, index) => (
+            <a href={`/blog/${post.slug}/`} class="post-card-link" style={`--card-index: ${index}`}>
+              <article class="post-card">
               {post.data.imagenPortada && (
                 <div class="post-cover-wrap">
                   <Image
@@ -85,19 +86,18 @@ const schemaExtra = {
                   <span class="post-date">{formatDate(post.data.fechaPublicacion)}</span>
                 </div>
                 <h2 class="post-title">
-                  <a href={`/blog/${post.slug}/`} class="post-title-link">
-                    {post.data.titulo}
-                  </a>
+                  {post.data.titulo}
                 </h2>
                 <p class="post-resumen">{post.data.resumen}</p>
                 <div class="post-footer">
-                  <a href={`/blog/${post.slug}/`} class="post-read-more">
+                  <span class="post-read-more">
                     Leer artículo completo &rarr;
-                  </a>
+                  </span>
                 </div>
               </div>
             </article>
-          ))}
+          </a>
+        ))}
         </div>
       ) : (
         <div class="blog-empty">
@@ -205,12 +205,45 @@ const schemaExtra = {
       transform var(--motion-duration-micro) var(--motion-ease-micro),
       box-shadow var(--motion-duration-micro) var(--motion-ease-micro),
       border-color var(--motion-duration-micro) var(--motion-ease-micro);
+    opacity: 0;
+    transform: translateY(1rem);
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--card-index) * 60ms) forwards paused;
+  }
+
+  .blog-grid.in-view .post-card {
+    animation-play-state: running;
+  }
+
+  /* Stretched link: toda la card es clickeable */
+  .post-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .post-card-link:focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: 2px;
+    border-radius: var(--radius-card);
+  }
+
+  /* Estado táctil (mobile): escala sutil al presionar */
+  .post-card-link:active .post-card {
+    transform: scale(0.98);
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
   .post-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.14);
-    border-color: rgba(15, 27, 61, 0.22);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(15, 27, 61, 0.16);
+    border-color: rgba(15, 27, 61, 0.24);
+  }
+
+  .post-card:focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: 2px;
   }
 
   .post-cover-wrap {
@@ -271,16 +304,6 @@ const schemaExtra = {
     margin-bottom: 0.75rem;
   }
 
-  .post-title-link {
-    color: inherit;
-    text-decoration: none;
-    transition: color var(--motion-duration-micro);
-  }
-
-  .post-title-link:hover {
-    color: var(--color-terracotta-600);
-  }
-
   .post-resumen {
     font-family: var(--font-body);
     font-size: 0.9375rem;
@@ -300,12 +323,17 @@ const schemaExtra = {
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--color-terracotta-600);
-    text-decoration: none;
-    transition: color var(--motion-duration-micro);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition:
+      color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
-  .post-read-more:hover {
+  .post-card:hover .post-read-more {
     color: var(--color-terracotta-500);
+    transform: translateX(0.25rem);
   }
 
   .blog-empty {
@@ -326,4 +354,53 @@ const schemaExtra = {
       grid-template-columns: 1fr;
     }
   }
+
+  @keyframes cardReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-card {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
 </style>
+
+<script>
+  /*
+   * IntersectionObserver para animación de entrada escalonada en .blog-grid.
+   * Patrón idéntico a StatBar.astro / index.astro.
+   * Stagger via --card-index (60ms por card).
+   * Respeta prefers-reduced-motion.
+   */
+  (function () {
+    const grid = document.querySelector('.blog-grid');
+    if (!grid) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      grid.classList.add('in-view');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            // once: true — desconectar tras la primera activación.
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(grid);
+  })();
+</script>
