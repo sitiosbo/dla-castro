@@ -93,7 +93,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
         </p>
       </div>
       <div class="soluciones-grid">
-        <div class="solucion-card">
+        <div class="solucion-card" style="--card-index: 0">
           <div class="solucion-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
@@ -108,7 +108,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
           </p>
           <a href="/proceso/" class="solucion-link">Cómo trabajamos →</a>
         </div>
-        <div class="solucion-card solucion-card-accent">
+        <div class="solucion-card solucion-card-accent" style="--card-index: 1">
           <div class="solucion-icon solucion-icon-accent" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -187,7 +187,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
         </p>
       </div>
       <div class="defensa-grid">
-        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card defensa-card-primary">
+        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card defensa-card-primary" style="--card-index: 0">
           <span class="defensa-num" aria-hidden="true">01</span>
           <h3 class="defensa-titulo">Impugnación de Rechazos</h3>
           <p class="defensa-desc">
@@ -195,7 +195,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
           </p>
           <span class="defensa-link">Mayor prioridad — actuar rápido →</span>
         </a>
-        <a href="/areas-de-practica/seguros-generales/" class="defensa-card">
+        <a href="/areas-de-practica/seguros-generales/" class="defensa-card" style="--card-index: 1">
           <span class="defensa-num" aria-hidden="true">02</span>
           <h3 class="defensa-titulo">Cuantificación de Indemnizaciones</h3>
           <p class="defensa-desc">
@@ -203,7 +203,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
           </p>
           <span class="defensa-link">Ver seguros generales →</span>
         </a>
-        <a href="/areas-de-practica/fianzas-y-caucion/" class="defensa-card">
+        <a href="/areas-de-practica/fianzas-y-caucion/" class="defensa-card" style="--card-index: 2">
           <span class="defensa-num" aria-hidden="true">03</span>
           <h3 class="defensa-titulo">Garantías y Fianzas</h3>
           <p class="defensa-desc">
@@ -211,7 +211,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
           </p>
           <span class="defensa-link">Ver fianzas y caución →</span>
         </a>
-        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card">
+        <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card" style="--card-index: 3">
           <span class="defensa-num" aria-hidden="true">04</span>
           <h3 class="defensa-titulo">Procesos Administrativos APS</h3>
           <p class="defensa-desc">
@@ -231,13 +231,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
         <h2 class="section-title">Cobertura legal especializada</h2>
       </div>
       <div class="areas-grid">
-        {servicios.map((servicio) => (
+        {servicios.map((servicio, index) => (
           <a
             href={`/areas-de-practica/${servicio.slug}/`}
             class:list={[
               'area-card',
               { 'area-card-highlight': servicio.data.prioridadConversion === 'alta' },
             ]}
+            style={`--card-index: ${index}`}
           >
             {servicio.data.prioridadConversion === 'alta' && (
               <span class="area-card-badge">Mayor urgencia</span>
@@ -399,6 +400,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
       border-color var(--motion-duration-micro) var(--motion-ease-micro),
       transform var(--motion-duration-micro) var(--motion-ease-micro),
       box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--card-index) * 100ms) forwards paused;
+  }
+
+  .soluciones-grid.in-view .solucion-card {
+    animation-play-state: running;
   }
 
   .solucion-card:hover {
@@ -610,6 +619,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
       transform var(--motion-duration-micro) var(--motion-ease-micro),
       box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
     position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--card-index) * 100ms) forwards paused;
+  }
+
+  .defensa-grid.in-view .defensa-card {
+    animation-play-state: running;
   }
 
   .defensa-card:hover {
@@ -697,6 +714,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
       border-color var(--motion-duration-micro) var(--motion-ease-micro),
       transform var(--motion-duration-micro) var(--motion-ease-micro),
       box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--card-index) * 100ms) forwards paused;
+  }
+
+  .areas-grid.in-view .area-card {
+    animation-play-state: running;
   }
 
   .area-card:hover {
@@ -1010,4 +1035,56 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     .areas-grid { grid-template-columns: 1fr; }
     .defensa-grid { grid-template-columns: 1fr; }
   }
+
+  @keyframes cardReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .solucion-card,
+    .defensa-card,
+    .area-card {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
 </style>
+
+<script>
+  /*
+   * IntersectionObserver para animación de entrada escalonada en grids de cards.
+   * Reutiliza el patrón de StatBar.astro: .in-view + animation-play-state.
+   * Stagger via --card-index (80-100ms por card).
+   * Respeta prefers-reduced-motion.
+   */
+  (function () {
+    const grids = document.querySelectorAll('.soluciones-grid, .defensa-grid, .areas-grid');
+    if (grids.length === 0) return;
+
+    // Respetar prefers-reduced-motion: activar inmediatamente sin animar.
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      grids.forEach((grid) => grid.classList.add('in-view'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            // once: true — desconectar tras la primera activación.
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    grids.forEach((grid) => observer.observe(grid));
+  })();
+</script>

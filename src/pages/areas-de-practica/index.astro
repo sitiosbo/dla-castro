@@ -106,11 +106,21 @@ const schemaExtra = {
                 transform var(--motion-duration-micro) var(--motion-ease-micro),
                 box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
     opacity: 0;
+    transform: translateY(16px);
     animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
-      calc(var(--card-index) * 80ms) forwards;
+      calc(var(--card-index) * 100ms) forwards paused;
   }
 
-  @keyframes cardReveal { to { opacity: 1; } }
+  .areas-grid.in-view .area-card {
+    animation-play-state: running;
+  }
+
+  @keyframes cardReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   .area-card:hover { border-color: var(--color-terracotta-600); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(181, 98, 44, 0.1); }
   .area-card-highlight { border-color: var(--color-terracotta-600); background: rgba(181, 98, 44, 0.02); }
@@ -127,4 +137,43 @@ const schemaExtra = {
   .btn-primary-pillar:hover { background: var(--color-terracotta-500); }
 
   @media (max-width: 640px) { .areas-grid { grid-template-columns: 1fr; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .area-card {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
 </style>
+
+<script>
+  /*
+   * IntersectionObserver para animación de entrada escalonada en .areas-grid.
+   * Patrón idéntico a StatBar.astro / index.astro.
+   */
+  (function () {
+    const grid = document.querySelector('.areas-grid');
+    if (!grid) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      grid.classList.add('in-view');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(grid);
+  })();
+</script>

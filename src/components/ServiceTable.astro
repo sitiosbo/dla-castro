@@ -190,10 +190,41 @@ const servicios = [
     border: 1px solid rgba(15, 27, 61, 0.1);
     box-shadow: var(--shadow-card);
     margin-bottom: 2rem;
+    position: relative;
+  }
+
+  /* Indicador visual de scroll: gradiente en el borde derecho cuando hay overflow */
+  .table-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 3rem;
+    background: linear-gradient(to left, transparent, rgba(15, 27, 61, 0.15));
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+  }
+
+  /* Ocultar indicador cuando no hay scroll horizontal */
+  .table-wrap:not(:has(overflow))::after {
+    display: none;
+  }
+
+  /* JS añadirá .has-scroll cuando detecte overflow */
+  .table-wrap.has-scroll::after {
+    opacity: 1;
+  }
+
+  .table-wrap.has-scroll:not(:hover):not(:focus-within)::after {
+    opacity: 0.6;
   }
 
   .service-table {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     border-collapse: collapse;
     font-family: var(--font-body);
     font-size: 0.875rem;
@@ -211,7 +242,17 @@ const servicios = [
   }
 
   .th-servicio {
-    width: 40%;
+    /* Columna fija "Servicio Jurídico" */
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--color-navy-950);
+    min-width: 150px;
+    max-width: 150px;
+  }
+
+  .th-cliente {
+    min-width: 120px;
   }
 
   .th-cliente-inner {
@@ -257,11 +298,18 @@ const servicios = [
   }
 
   .td-servicio {
+    /* Columna fija "Servicio Jurídico" - debe coincidir con th-servicio */
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-white);
     padding: 1rem 1.25rem;
     vertical-align: top;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    min-width: 150px;
+    max-width: 150px;
   }
 
   .servicio-categoria {
@@ -280,6 +328,7 @@ const servicios = [
     padding: 1rem;
     text-align: center;
     vertical-align: middle;
+    min-width: 120px;
   }
 
   .check-si {
@@ -377,3 +426,34 @@ const servicios = [
     }
   }
 </style>
+
+<script>
+  /*
+   * Detecta si la tabla tiene overflow horizontal y añade clase para indicador visual.
+   */
+  (function () {
+    const tableWrap = document.querySelector('.table-wrap');
+    if (!tableWrap) return;
+
+    const checkOverflow = () => {
+      const table = tableWrap.querySelector('.service-table');
+      if (!table) return;
+
+      const hasOverflow = table.scrollWidth > tableWrap.clientWidth;
+      tableWrap.classList.toggle('has-scroll', hasOverflow);
+    };
+
+    // Comprobar al cargar
+    checkOverflow();
+
+    // Recomprobar en resize
+    window.addEventListener('resize', checkOverflow);
+
+    // Recomprobar cuando cambie el contenido (por si hay animaciones que afectan ancho)
+    const resizeObserver = new ResizeObserver(checkOverflow);
+    const table = tableWrap.querySelector('.service-table');
+    if (table) {
+      resizeObserver.observe(table);
+    }
+  })();
+</script>
