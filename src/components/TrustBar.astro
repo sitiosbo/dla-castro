@@ -293,7 +293,7 @@ const items = [
     // Duración desde tokens.css — fallback 1200ms si la variable no está cargada
     const rootStyles = getComputedStyle(document.documentElement);
     const rawDuration = rootStyles.getPropertyValue('--motion-duration-countup').trim();
-    const duration = rawDuration ? parseInt(rawDuration, 10) : 1200;
+    const duration = rawDuration ? Math.round(parseFloat(rawDuration) * (rawDuration.endsWith('ms') ? 1 : 1000)) : 1200;
 
     // prefers-reduced-motion: mostrar valores finales sin animar
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
