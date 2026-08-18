@@ -90,7 +90,9 @@ const { fases } = Astro.props;
 <style>
   /*
     ÚNICO componente que usa --motion-duration-orquestado (ver tokens.css y ESTADO.md 4.5).
-    Los pasos se revelan en cascada con delay calculado por --step-index.
+    Secuencia orquestada: fases se revelan en cascada (150ms stagger),
+    líneas conectoras se dibujan entre cada par (75ms offset).
+    Total ~600ms. Gated por .timeline-visible (IntersectionObserver en JS).
   */
 
   .timeline-section {
@@ -147,18 +149,21 @@ const { fases } = Astro.props;
     gap: 2rem;
   }
 
-  /* Paso individual */
+  /* Paso individual — animación gated por .timeline-visible (E1 observer) */
   .timeline-step {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     position: relative;
 
-    /* Animación orquestada — solo este componente usa motion-duration-orquestado */
     opacity: 0;
     transform: translateY(1.5rem);
-    animation: timelineReveal var(--motion-duration-orquestado) var(--motion-ease-enter)
-      calc(var(--step-index) * 120ms) both;
+    animation: timelineReveal 300ms var(--motion-ease-enter)
+      calc(var(--step-index) * 150ms) both paused;
+  }
+
+  .timeline-visible .timeline-step {
+    animation-play-state: running;
   }
 
   @keyframes timelineReveal {
@@ -213,7 +218,6 @@ const { fases } = Astro.props;
   .step-connector-desktop {
     position: absolute;
     top: 2rem;
-    transform: translateY(-50%);
     left: 2rem;
     right: -4rem;
     height: 2px;
@@ -224,6 +228,20 @@ const { fases } = Astro.props;
     );
     pointer-events: none;
     z-index: 0;
+    transform: scaleX(0) translateY(-50%);
+    transform-origin: left center;
+    animation: connectorDraw 200ms var(--motion-ease-enter)
+      calc(var(--step-index) * 150ms + 75ms) both paused;
+  }
+
+  .timeline-visible .step-connector-desktop {
+    animation-play-state: running;
+  }
+
+  @keyframes connectorDraw {
+    to {
+      transform: scaleX(1) translateY(-50%);
+    }
   }
 
   .step-numero-label {
@@ -254,6 +272,20 @@ const { fases } = Astro.props;
       rgba(181, 98, 44, 0.3) 100%
     );
     margin-left: 1.9375rem; /* centrado bajo el número */
+    transform: scaleY(0);
+    transform-origin: top center;
+    animation: connectorDrawMobile 200ms var(--motion-ease-enter)
+      calc(var(--step-index) * 150ms + 75ms) both paused;
+  }
+
+  .timeline-visible .step-connector-mobile {
+    animation-play-state: running;
+  }
+
+  @keyframes connectorDrawMobile {
+    to {
+      transform: scaleY(1);
+    }
   }
 
   /* Contenido del paso */
@@ -291,6 +323,19 @@ const { fases } = Astro.props;
     border-radius: 0 0.25rem 0.25rem 0;
     margin-top: 0.25rem;
     letter-spacing: 0.01em;
+    opacity: 0;
+    animation: anotacionFade 200ms var(--motion-ease-enter)
+      calc(var(--step-index) * 150ms + 100ms) both paused;
+  }
+
+  .timeline-visible .step-anotacion {
+    animation-play-state: running;
+  }
+
+  @keyframes anotacionFade {
+    to {
+      opacity: 1;
+    }
   }
 
   .step-cta {
@@ -382,4 +427,54 @@ const { fases } = Astro.props;
       display: none;
     }
   }
+
+  /* Reduced motion: reveal instantly, no transform animation */
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-step {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .step-connector-desktop {
+      animation: none;
+      transform: scaleX(1) translateY(-50%);
+    }
+
+    .step-connector-mobile {
+      animation: none;
+      transform: scaleY(1);
+    }
+
+    .step-anotacion {
+      animation: none;
+      opacity: 1;
+    }
+  }
 </style>
+
+<script>
+  (function () {
+    const section = document.querySelector('.timeline-section');
+    if (!section) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      section.classList.add('timeline-visible');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            section.classList.add('timeline-visible');
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(section);
+  })();
+</script>
