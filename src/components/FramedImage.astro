@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  aspectRatio: string;
+  widths?: number[];
+  sizes?: string;
+  quality?: number;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  aspectRatio,
+  widths = [400, 800, 1200],
+  sizes = '(max-width: 900px) 100vw, 50vw',
+  quality = 78,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['framed-image', className]} style={`--frame-aspect-ratio: ${aspectRatio};`}>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    format="webp"
+    quality={quality}
+    class="framed-image__img"
+  />
+</div>
+
+<style>
+  .framed-image {
+    background: var(--image-frame-bg);
+    border: var(--image-frame-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: var(--image-frame-padding);
+    overflow: hidden;
+  }
+
+  .framed-image__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--frame-aspect-ratio, auto);
+    object-fit: contain;
+    display: block;
+  }
+</style>

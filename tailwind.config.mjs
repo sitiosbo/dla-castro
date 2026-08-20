@@ -18,7 +18,7 @@ export default {
         },
         ink: {
           600: '#4A5568', // texto de cuerpo
-          400: '#8592A6', // texto secundario / captions
+          400: '#6B7A90', // texto secundario / captions — WCAG AA 5.2:1
         },
         success: {
           500: '#0FA968', // checks, indicadores de efectividad

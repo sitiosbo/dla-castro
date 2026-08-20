@@ -126,6 +126,49 @@ const servicios = [
       </table>
     </div>
 
+    <!-- Vista mobile: acordeón por servicio (reemplaza la tabla en pantallas pequeñas) -->
+    <div class="service-accordion" role="list" aria-label="Servicios por tipo de cliente">
+      {servicios.map((row, index) => (
+        <details class="service-card" style={`--row-index: ${index}`} role="listitem">
+          <summary class="service-card-summary">
+            <span class="servicio-categoria">{row.categoria}</span>
+            <svg class="summary-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+          <div class="service-card-body">
+            <p class="servicio-descripcion">{row.descripcion}</p>
+            <ul class="service-card-clients">
+              {clientTypes.map((ct) => {
+                const disponible = row[ct.key as keyof typeof row] as boolean;
+                return (
+                  <li class="service-card-client-row">
+                    <span class="client-row-text">
+                      <span class="client-row-badge">{ct.badge}</span>
+                      <span class="client-row-label">{ct.label}</span>
+                    </span>
+                    {disponible ? (
+                      <span class="check-si" aria-label="Disponible">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M3 8.5l3.5 3.5 6.5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="check-no" aria-label="No aplica">
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </details>
+      ))}
+    </div>
+
     <!-- Cards de tipo de cliente con CTAs -->
     <div class="client-ctas">
       {clientTypes.map((ct) => (
@@ -282,7 +325,11 @@ const servicios = [
     transition: background-color var(--motion-duration-micro) var(--motion-ease-micro);
     opacity: 0;
     animation: rowReveal var(--motion-duration-enter) var(--motion-ease-enter)
-      calc(var(--row-index) * 50ms + 200ms) forwards;
+      calc(var(--row-index) * 50ms + 200ms) forwards paused;
+  }
+
+  .table-wrap.in-view .service-row {
+    animation-play-state: running;
   }
 
   @keyframes rowReveal {
@@ -349,6 +396,112 @@ const servicios = [
     width: 1.5rem;
     height: 1.5rem;
     color: rgba(15, 27, 61, 0.2);
+  }
+
+  /* Acordeón mobile: oculto por defecto, se muestra bajo el breakpoint */
+  .service-accordion {
+    display: none;
+  }
+
+  .service-card {
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    opacity: 0;
+    animation: rowReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--row-index) * 50ms + 200ms) forwards paused;
+  }
+
+  .service-accordion.in-view .service-card {
+    animation-play-state: running;
+  }
+
+  .service-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .service-card[open] {
+    border-color: rgba(15, 27, 61, 0.18);
+  }
+
+  .service-card-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    list-style: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .service-card-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .service-card-summary .servicio-categoria {
+    font-size: 0.9375rem;
+  }
+
+  .summary-chevron {
+    flex-shrink: 0;
+    color: var(--color-terracotta-600);
+    transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .service-card[open] .summary-chevron {
+    transform: rotate(180deg);
+  }
+
+  .service-card-body {
+    padding: 0 1.1rem 1.1rem;
+  }
+
+  .service-card-body .servicio-descripcion {
+    display: block;
+    margin-bottom: 0.875rem;
+  }
+
+  .service-card-clients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+  }
+
+  .service-card-client-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid rgba(15, 27, 61, 0.06);
+  }
+
+  .service-card-client-row:last-child {
+    border-bottom: none;
+  }
+
+  .client-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .client-row-badge {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-terracotta-600);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .client-row-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-navy-800);
   }
 
   /* CTAs por tipo de cliente */
@@ -425,14 +578,28 @@ const servicios = [
       grid-template-columns: 1fr;
     }
   }
+
+  /* Bajo este ancho la tabla deja de ser legible (columnas muy angostas
+     incluso con scroll horizontal); se reemplaza por el acordeón. */
+  @media (max-width: 640px) {
+    .table-wrap {
+      display: none;
+    }
+
+    .service-accordion {
+      display: block;
+    }
+  }
 </style>
 
 <script>
   /*
    * Detecta si la tabla tiene overflow horizontal y añade clase para indicador visual.
+   * También activa la animación de filas cuando la tabla entra en viewport.
    */
   (function () {
     const tableWrap = document.querySelector('.table-wrap');
+    const accordion = document.querySelector('.service-accordion');
     if (!tableWrap) return;
 
     const checkOverflow = () => {
@@ -454,6 +621,28 @@ const servicios = [
     const table = tableWrap.querySelector('.service-table');
     if (table) {
       resizeObserver.observe(table);
+    }
+
+    // Activar animación de entrada (tabla en desktop, acordeón en mobile)
+    // al entrar en viewport. Se observan ambos porque el CSS decide cuál
+    // de los dos está visible según el ancho de pantalla.
+    const revealTargets = [tableWrap, accordion].filter(Boolean) as Element[];
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealTargets.forEach((el) => el.classList.add('in-view'));
+    } else {
+      const rowObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              rowObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 },
+      );
+      revealTargets.forEach((el) => rowObserver.observe(el));
     }
   })();
 </script>

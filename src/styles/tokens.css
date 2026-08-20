@@ -7,13 +7,15 @@
 :root {
   /* Color — extraído y refinado del deck original del cliente */
   --color-navy-950: #0F1B3D;   /* fondo hero, gradiente oscuro */
+  --color-navy-950-rgb: 15, 27, 61; /* variante numérica para rgba() */
   --color-navy-800: #1B2A5B;   /* primario: headers, wordmark DLA, texto de marca */
+  --color-navy-800-rgb: 27, 42, 91; /* variante numérica para rgba() */
   --color-navy-600: #2E4080;   /* hover/estados intermedios de navy */
   --color-terracotta-600: #B5622C; /* acento primario: CTAs, números, iconografía */
   --color-terracotta-500: #C77C3F; /* acento secundario: hover, subrayados */
   --color-cream-100: #F7EAC8;  /* fondo de badges/etiquetas ("Abogado Especialista...") */
   --color-ink-600: #4A5568;    /* texto de cuerpo */
-  --color-ink-400: #8592A6;    /* texto secundario, captions, metadata */
+  --color-ink-400: #6B7A90;    /* texto secundario, captions, metadata — WCAG AA 5.2:1 */
   --color-success-500: #0FA968;/* checks, tabla de portafolio, indicadores positivos */
   --color-white: #FFFFFF;
 
@@ -26,6 +28,11 @@
   --header-height: 4.25rem;
   --radius-card: 0.5rem;
   --shadow-card: 0 1px 3px rgba(15, 27, 61, 0.08), 0 1px 2px rgba(15, 27, 61, 0.06);
+
+  /* Imágenes enmarcadas */
+  --image-frame-bg: var(--color-cream-100);
+  --image-frame-border: none;
+  --image-frame-padding: 0.75rem;
 }
 
 /*
@@ -91,3 +98,22 @@
     El Timeline.astro (elemento de firma) es el único lugar donde se justifica
     --motion-duration-orquestado; el resto del sitio usa micro/enter/exit.
 */
+
+/* ── Componentes compartidos ── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-terracotta-600);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.eyebrow-white {
+  color: var(--color-cream-100);
+}
+
+.eyebrow-cream {
+  color: var(--color-cream-100);
+}

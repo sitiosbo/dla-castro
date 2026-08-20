@@ -11,8 +11,21 @@ import Timeline from '../components/Timeline.astro';
 import StatBar from '../components/StatBar.astro';
 import ServiceTable from '../components/ServiceTable.astro';
 import { getCollection, getEntry } from 'astro:content';
-import { getImage } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import skylineRaw from '../assets/lapaz-skyline.jpg';
+
+// Imágenes de home — safe import: si el archivo no existe, la sección renderiza solo texto
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/home/*.{jpg,jpeg,png}',
+  { eager: false },
+);
+async function safeImg(path: string) {
+  try { return (await imageModules[path]()).default; }
+  catch { return null; }
+}
+const especialistaImg = await safeImg('../assets/images/home/ramos-sellos.jpg');
+const defensaImg     = await safeImg('../assets/images/home/defensa-edificio.jpg');
+const respaldoImg    = await safeImg('../assets/images/home/respaldo-nacional.jpg');
 
 const servicios = (await getCollection('servicios')).sort(
   (a, b) => a.data.ordenHome - b.data.ordenHome,
@@ -85,7 +98,6 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   <section class="soluciones-section" aria-label="Soluciones legales de alto nivel">
     <div class="section-inner">
       <div class="section-header">
-        <p class="eyebrow">Servicios DLA</p>
         <h2 class="section-title">Soluciones legales de alto nivel</h2>
         <p class="section-subtitle">
           Dos ejes de servicio que cubren todo el ciclo de vida de un reclamo de seguro,
@@ -130,9 +142,20 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
 
   <!-- 4. Especialista en todos los ramos -->
   <section class="ramos-section" aria-label="Especialista en todos los ramos de seguros">
-    <div class="section-inner ramos-inner">
-      <div class="ramos-content">
-        <p class="eyebrow">Especialización</p>
+    <div class="ramos-band">
+      {especialistaImg && (
+        <Image
+          src={especialistaImg}
+          alt=""
+          widths={[800, 1200, 1920]}
+          sizes="100vw"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          class="ramos-band-img"
+        />
+      )}
+      <div class="ramos-band-content">
         <h2 class="section-title">Especialista en todos los ramos</h2>
         <p class="ramos-desc">
           Dominio técnico completo del mercado asegurador boliviano: seguros
@@ -140,52 +163,57 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
           contractuales y más. La especialización no es un diferenciador —
           es el requisito mínimo para ganar.
         </p>
+      </div>
+    </div>
+    <div class="section-inner">
+      <div class="ramos-content">
         <div class="ramos-bullets">
-          <div class="ramos-bullet">
+          <div class="ramos-bullet" style="--bullet-index: 0">
             <span class="bullet-check" aria-hidden="true">✓</span>
             <span>Análisis del condicionado de su póliza</span>
           </div>
-          <div class="ramos-bullet">
+          <div class="ramos-bullet" style="--bullet-index: 1">
             <span class="bullet-check" aria-hidden="true">✓</span>
             <span>Verificación de cláusulas de exclusión</span>
           </div>
-          <div class="ramos-bullet">
+          <div class="ramos-bullet" style="--bullet-index: 2">
             <span class="bullet-check" aria-hidden="true">✓</span>
             <span>Cuantificación técnica de indemnizaciones</span>
           </div>
-          <div class="ramos-bullet">
+          <div class="ramos-bullet" style="--bullet-index: 3">
             <span class="bullet-check" aria-hidden="true">✓</span>
             <span>Conocimiento de jurisprudencia APS actualizada</span>
           </div>
         </div>
         <a href="/sobre-mi/" class="btn-outline">Trayectoria profesional</a>
       </div>
-      <div class="ramos-visual" aria-hidden="true">
-        <!-- Composición visual de ramos en tarjetas técnicas -->
-        <div class="ramos-visual-grid">
-          {['Generales', 'Personas', 'Fianzas', 'SOAT', 'Ingeniería', 'Transporte'].map((ramo) => (
-            <div class="ramo-pill">{ramo}</div>
-          ))}
-        </div>
-        <div class="ramos-stat-destacado">
-          <span class="ramos-stat-numero">{aniosExperiencia}+</span>
-          <span class="ramos-stat-label">años de dominio técnico del mercado asegurador boliviano</span>
-        </div>
-      </div>
     </div>
   </section>
 
   <!-- 5. Defensa integral de asegurados (4 bullets -> linkean a áreas de práctica) -->
   <section class="defensa-section" aria-label="Defensa integral de asegurados">
-    <div class="section-inner">
-      <div class="section-header">
-        <p class="eyebrow">Defensa integral</p>
+    <div class="defensa-band">
+      {defensaImg && (
+        <Image
+          src={defensaImg}
+          alt=""
+          widths={[800, 1200, 1920]}
+          sizes="100vw"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          class="defensa-band-img"
+        />
+      )}
+      <div class="defensa-band-content">
         <h2 class="section-title">Cuatro frentes de protección legal</h2>
         <p class="section-subtitle">
           Cada aspecto de un reclamo de seguro requiere un abordaje distinto.
           DLA cubre el espectro completo.
         </p>
       </div>
+    </div>
+    <div class="section-inner">
       <div class="defensa-grid">
         <a href="/areas-de-practica/impugnacion-de-rechazos/" class="defensa-card defensa-card-primary" style="--card-index: 0">
           <span class="defensa-num" aria-hidden="true">01</span>
@@ -227,7 +255,6 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   <section class="areas-section" aria-label="Áreas de práctica DLA">
     <div class="section-inner">
       <div class="section-header">
-        <p class="eyebrow">Áreas de Práctica</p>
         <h2 class="section-title">Cobertura legal especializada</h2>
       </div>
       <div class="areas-grid">
@@ -267,7 +294,22 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   <ServiceTable />
 
   <!-- 10. Liderazgo y Confianza (Skyline de La Paz) -->
-  <section class="liderazgo-section" aria-label="Liderazgo y respaldo legal institucional" style={`--skyline-url: url('${skyline.src}')`}>
+  <section
+    class:list={['liderazgo-section', respaldoImg && 'liderazgo-section--has-photo']}
+    aria-label="Liderazgo y respaldo legal institucional"
+    style={respaldoImg ? undefined : `--skyline-url: url('${skyline.src}')`}
+  >
+    {respaldoImg && (
+      <Image
+        src={respaldoImg}
+        alt="Respaldo legal institucional DLA — La Paz, Santa Cruz y Cochabamba"
+        widths={[400, 800, 1200, 1920]}
+        sizes="100vw"
+        format="webp"
+        quality={78}
+        class="liderazgo-bg-img"
+      />
+    )}
     <div class="liderazgo-overlay"></div>
     <div class="section-inner liderazgo-inner">
       <div class="liderazgo-content">
@@ -340,21 +382,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     margin: 0 auto 3rem;
   }
 
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--color-terracotta-600);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 0.75rem;
-    display: block;
-  }
-
   .eyebrow-white {
-    color: var(--color-cream-100);
-  }
-
-  .eyebrow-cream {
     color: var(--color-cream-100);
   }
 
@@ -377,7 +405,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
 
   /* === SECCIÓN 3: Soluciones === */
   .soluciones-section {
-    padding: 5rem 0;
+    padding: 5rem 0 6.5rem;
     background: var(--color-white);
   }
 
@@ -481,32 +509,73 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
 
   /* === SECCIÓN 4: Ramos === */
   .ramos-section {
-    padding: 5rem 0;
     background: rgba(15, 27, 61, 0.045);
     border-top: 1px solid rgba(15, 27, 61, 0.08);
     border-bottom: 1px solid rgba(15, 27, 61, 0.08);
   }
 
-  .ramos-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: center;
+  .ramos-band {
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 1.5rem;
+    text-align: center;
+  }
+
+  .ramos-band-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: url(#duotone-navy);
+    z-index: 0;
+  }
+
+  .ramos-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(15, 27, 61, 0.76);
+    pointer-events: none;
+  }
+
+  .ramos-band-content {
+    position: relative;
+    z-index: 2;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  .ramos-band .section-title {
+    color: var(--color-white);
   }
 
   .ramos-desc {
     font-family: var(--font-body);
     font-size: 1rem;
-    color: var(--color-ink-600);
+    color: rgba(255, 255, 255, 0.8);
     line-height: 1.7;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .ramos-section .section-inner {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .ramos-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    text-align: center;
   }
 
   .ramos-bullets {
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2.5rem;
     margin-bottom: 2rem;
+    text-align: left;
   }
 
   .ramos-bullet {
@@ -517,6 +586,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     font-size: 0.9375rem;
     color: var(--color-ink-600);
     line-height: 1.5;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardReveal var(--motion-duration-enter) var(--motion-ease-enter)
+      calc(var(--bullet-index) * 80ms) forwards paused;
+  }
+
+  .ramos-bullets.in-view .ramos-bullet {
+    animation-play-state: running;
   }
 
   .bullet-check {
@@ -532,7 +609,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     font-weight: 600;
     color: var(--color-navy-800);
     text-decoration: none;
-    padding: 0.625rem 1.25rem;
+    padding: 0.625rem 1.5rem;
     border: 1.5px solid var(--color-navy-800);
     border-radius: 0.375rem;
     transition:
@@ -545,57 +622,59 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     color: var(--color-white);
   }
 
-  .ramos-visual-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-    margin-bottom: 2rem;
-  }
-
-  .ramo-pill {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--color-navy-800);
-    background: var(--color-white);
-    border: 1px solid rgba(15, 27, 61, 0.15);
-    padding: 0.375rem 0.875rem;
-    border-radius: 2rem;
-    letter-spacing: 0.02em;
-    box-shadow: 0 1px 3px rgba(15, 27, 61, 0.05);
-  }
-
-  .ramos-stat-destacado {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1.5rem;
-    background: var(--color-navy-950);
-    border-radius: var(--radius-card);
-    color: var(--color-white);
-    box-shadow: var(--shadow-card);
-  }
-
-  .ramos-stat-numero {
-    font-family: var(--font-mono);
-    font-size: 3rem;
-    font-weight: 500;
-    color: var(--color-terracotta-500);
-    line-height: 1;
-  }
-
-  .ramos-stat-label {
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    color: rgba(255,255,255,0.6);
-    max-width: 18rem;
-    line-height: 1.4;
-  }
-
   /* === SECCIÓN 5: Defensa integral === */
   .defensa-section {
-    padding: 5rem 0;
     background: var(--color-white);
+  }
+
+  .defensa-band {
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 1.5rem;
+    text-align: center;
+  }
+
+  .defensa-band-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: url(#duotone-navy);
+    z-index: 0;
+  }
+
+  .defensa-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 27, 61, 0.42) 0%,
+      rgba(15, 27, 61, 0.7) 100%
+    );
+    pointer-events: none;
+  }
+
+  .defensa-band-content {
+    position: relative;
+    z-index: 2;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  .defensa-band .section-title {
+    color: var(--color-white);
+  }
+
+  .defensa-band .section-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .defensa-section .section-inner {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
 
   .defensa-grid {
@@ -630,9 +709,13 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   }
 
   .defensa-card:hover {
-    border-color: rgba(15, 27, 61, 0.25);
+    border-color: var(--color-terracotta-600);
     transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(15, 27, 61, 0.1);
+    box-shadow: 0 10px 28px rgba(15, 27, 61, 0.14);
+  }
+
+  .defensa-card:hover .defensa-link {
+    color: var(--color-terracotta-500);
   }
 
   .defensa-card-primary {
@@ -687,7 +770,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
 
   /* === SECCIÓN 6: Áreas === */
   .areas-section {
-    padding: 5rem 0;
+    padding: 6.5rem 0 5rem;
     background: rgba(15, 27, 61, 0.045);
     border-top: 1px solid rgba(15, 27, 61, 0.08);
     border-bottom: 1px solid rgba(15, 27, 61, 0.08);
@@ -807,6 +890,20 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     padding: 5.5rem 0;
     color: var(--color-white);
     overflow: hidden;
+  }
+
+  .liderazgo-section--has-photo {
+    background-image: none;
+  }
+
+  .liderazgo-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
   }
 
   .liderazgo-overlay {
@@ -1017,7 +1114,7 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   @media (max-width: 900px) {
     .soluciones-grid,
     .defensa-grid,
-    .ramos-inner,
+    .ramos-bullets,
     .cta-final-inner {
       grid-template-columns: 1fr;
     }
@@ -1036,6 +1133,31 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
     .defensa-grid { grid-template-columns: 1fr; }
   }
 
+  /* Band content entrance animation */
+  .ramos-band-content,
+  .defensa-band-content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity var(--motion-duration-enter) var(--motion-ease-enter),
+      transform var(--motion-duration-enter) var(--motion-ease-enter);
+  }
+
+  .ramos-band-content.in-view,
+  .defensa-band-content.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ramos-band-content,
+    .defensa-band-content {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
   @keyframes cardReveal {
     to {
       opacity: 1;
@@ -1046,7 +1168,8 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
   @media (prefers-reduced-motion: reduce) {
     .solucion-card,
     .defensa-card,
-    .area-card {
+    .area-card,
+    .ramos-bullet {
       animation: none;
       opacity: 1;
       transform: none;
@@ -1062,13 +1185,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
    * Respeta prefers-reduced-motion.
    */
   (function () {
-    const grids = document.querySelectorAll('.soluciones-grid, .defensa-grid, .areas-grid');
-    if (grids.length === 0) return;
+    const grids = document.querySelectorAll('.soluciones-grid, .defensa-grid, .areas-grid, .ramos-bullets');
+    const bandContents = document.querySelectorAll('.ramos-band-content, .defensa-band-content');
+    if (grids.length === 0 && bandContents.length === 0) return;
 
-    // Respetar prefers-reduced-motion: activar inmediatamente sin animar.
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
-      grids.forEach((grid) => grid.classList.add('in-view'));
+      grids.forEach((el) => el.classList.add('in-view'));
+      bandContents.forEach((el) => el.classList.add('in-view'));
       return;
     }
 
@@ -1077,14 +1201,14 @@ const skyline = await getImage({ src: skylineRaw, format: 'webp', quality: 82 })
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('in-view');
-            // once: true — desconectar tras la primera activación.
             observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
 
-    grids.forEach((grid) => observer.observe(grid));
+    grids.forEach((el) => observer.observe(el));
+    bandContents.forEach((el) => observer.observe(el));
   })();
 </script>

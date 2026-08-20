@@ -199,7 +199,7 @@ const maxValue = Math.max(...stats.map((s) => s.value));
     );
     border-radius: 0.375rem;
     /* paused por defecto, running cuando el padre tiene .in-view */
-    animation: growBar 0.8s var(--motion-ease-enter)
+    animation: growBar var(--motion-duration-enter) var(--motion-ease-enter)
       calc(var(--bar-index) * 80ms + 200ms) forwards paused;
   }
 

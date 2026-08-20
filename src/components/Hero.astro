@@ -3,12 +3,30 @@
 // Badge + wordmark fijos. Solo H1 + subhead ciclan.
 // CTAs fijos, visibles y clicables desde el primer frame.
 // Cada slide tiene su propia combinación de fondo (tokens.css).
+// Capa de imagen por slide con duotono navy/crema.
 // prefers-reduced-motion: carga directo en el slide canónico.
+import { Image } from 'astro:assets';
 import { heroSlides } from '../data/hero-slides';
+
 interface Props {
   aniosExperiencia: number;
 }
 const { aniosExperiencia } = Astro.props;
+
+// Imágenes de hero — safe import
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/home/*.{jpg,jpeg,png}',
+  { eager: false },
+);
+async function safeImg(path: string) {
+  try { return (await imageModules[path]()).default; }
+  catch { return null; }
+}
+const trayectoriaImg = await safeImg('../assets/images/home/hero-trayectoria.jpg');
+const recuperoImg = await safeImg('../assets/images/home/hero-recupero.jpg');
+const ramosImg = await safeImg('../assets/images/home/hero-ramos.jpg');
+const defensaImg = await safeImg('../assets/images/home/hero-defensa.jpg');
+const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
 ---
 
 <section class="hero hero-bg-navy" aria-label="Presentación DLA — Defensa Legal del Asegurado">
@@ -26,8 +44,42 @@ const { aniosExperiencia } = Astro.props;
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
       <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0" />
     </filter>
+    <filter id="duotone-navy" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.33 0.33 0.33 0 0
+        0.33 0.33 0.33 0 0
+        0.33 0.33 0.33 0 0
+        0    0    0    1 0" />
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.0588 0.9686" />
+        <feFuncG type="table" tableValues="0.1059 0.9176" />
+        <feFuncB type="table" tableValues="0.2392 0.7843" />
+      </feComponentTransfer>
+    </filter>
   </svg>
   <div class="hero-grain" aria-hidden="true"></div>
+
+  <!-- Capa de imagen por slide -->
+  <div class="hero-image-layer" aria-hidden="true">
+    {heroImages.map((img, i) => (
+      img && (
+        <Image
+          src={img}
+          alt=""
+          widths={[800, 1200, 1600]}
+          sizes="50vw"
+          format="webp"
+          quality={80}
+          class:list={[
+            'hero-slide-img',
+            `hero-slide-img-${i}`,
+            { 'hero-slide-img-active': i === 0 },
+          ]}
+          data-index={i}
+        />
+      )
+    ))}
+  </div>
 
   <div class="hero-inner">
     <!-- Badge: siempre visible, animación de entrada una sola vez -->
@@ -106,7 +158,7 @@ const { aniosExperiencia } = Astro.props;
       transparent 163px, transparent 240px,
       var(--color-success-500) 240px, var(--color-success-500) 243px,
       transparent 243px, transparent 320px,
-      #6C5CE7 320px, #6C5CE7 323px,
+      var(--color-navy-600) 320px, var(--color-navy-600) 323px,
       transparent 323px, transparent 400px
     );
   }
@@ -129,7 +181,7 @@ const { aniosExperiencia } = Astro.props;
       transparent 123px, transparent 180px,
       var(--color-success-500) 180px, var(--color-success-500) 188px,
       transparent 188px, transparent 240px,
-      #6C5CE7 240px, #6C5CE7 243px,
+      var(--color-navy-600) 240px, var(--color-navy-600) 243px,
       transparent 243px, transparent 300px
     );
   }
@@ -145,7 +197,7 @@ const { aniosExperiencia } = Astro.props;
       transparent 65%
     ), radial-gradient(
       ellipse at center,
-      rgba(var(--color-navy-950), 0.35) 0%,
+      rgba(var(--color-navy-950-rgb), 0.35) 0%,
       transparent 70%
     );
     opacity: 0.28;
@@ -162,7 +214,7 @@ const { aniosExperiencia } = Astro.props;
       transparent 128px, transparent 180px,
       var(--color-success-500) 180px, var(--color-success-500) 183px,
       transparent 183px, transparent 240px,
-      #6C5CE7 240px, #6C5CE7 243px,
+      var(--color-navy-600) 240px, var(--color-navy-600) 243px,
       transparent 243px, transparent 300px
     );
   }
@@ -178,7 +230,7 @@ const { aniosExperiencia } = Astro.props;
       transparent 60%
     ), radial-gradient(
       ellipse at center,
-      rgba(var(--color-navy-950), 0.4) 0%,
+      rgba(var(--color-navy-950-rgb), 0.4) 0%,
       transparent 65%
     );
     opacity: 0.30;
@@ -192,7 +244,7 @@ const { aniosExperiencia } = Astro.props;
       linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
   }
 
   /* Textura de grano sutil: papel/documento legal */
@@ -206,12 +258,50 @@ const { aniosExperiencia } = Astro.props;
     z-index: 2;
   }
 
+  /* ── Capa de imagen por slide ── */
+  .hero-image-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-slide-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+    filter: url(#duotone-navy);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 300ms var(--motion-ease-exit),
+      visibility 0ms 300ms;
+    mask-image: linear-gradient(to left, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 40%, transparent 100%);
+  }
+
+  .hero-slide-img-active {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 300ms var(--motion-ease-enter),
+      visibility 0ms 0ms;
+  }
+
+  /* Slide 1 (recupero): recortar para mostrar sello + lapicera (mitad inferior) */
+  .hero-slide-img-1 {
+    object-position: 50% 75%;
+  }
+
   .hero-gradient-stripes {
     position: absolute;
     inset: 0;
     opacity: 0.05;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
   }
 
   /* Overlay con capas de color + dark layer — transición via opacity (no paint) */
@@ -219,7 +309,7 @@ const { aniosExperiencia } = Astro.props;
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
   }
 
   .hero-gradient-overlay::before,
@@ -239,7 +329,7 @@ const { aniosExperiencia } = Astro.props;
 
   .hero-gradient-overlay::after {
     /* Capa oscura para contraste (navy-950 semitransparente) */
-    background: radial-gradient(ellipse at center, rgba(var(--color-navy-950), 0.35) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(var(--color-navy-950-rgb), 0.35) 0%, transparent 70%);
   }
 
   /* Estados activos por slide (via clase en .hero) */
@@ -276,10 +366,9 @@ const { aniosExperiencia } = Astro.props;
   .hero-inner {
     position: relative;
     z-index: 2;
-    max-width: 48rem;
-    margin: 0 auto;
+    max-width: 52rem;
     padding: 0 1.5rem;
-    text-align: center;
+    text-align: left;
   }
 
   /* ── Slides container ── */
@@ -295,7 +384,7 @@ const { aniosExperiencia } = Astro.props;
     inset: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     opacity: 0;
     visibility: hidden;
     transition:
@@ -342,7 +431,7 @@ const { aniosExperiencia } = Astro.props;
   .hero-wordmark {
     display: flex;
     align-items: baseline;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.5rem;
     margin-bottom: 1.25rem;
     animation: heroElementIn var(--motion-duration-enter) var(--motion-ease-enter) 80ms both;
@@ -385,7 +474,7 @@ const { aniosExperiencia } = Astro.props;
     min-height: 3.4em;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .hero-slide-active .hero-h1 {
@@ -399,7 +488,6 @@ const { aniosExperiencia } = Astro.props;
     line-height: 1.7;
     color: rgba(255,255,255,0.72);
     max-width: 38rem;
-    margin: 0 auto;
   }
 
   .hero-slide-active .hero-subhead {
@@ -409,7 +497,7 @@ const { aniosExperiencia } = Astro.props;
   /* ── CTAs: siempre visibles, fuera del ciclo de slides ── */
   .hero-ctas {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     flex-wrap: wrap;
   }
@@ -512,8 +600,51 @@ const { aniosExperiencia } = Astro.props;
     .hero-badge { animation: none; }
     .hero-wordmark { animation: none; }
     .hero-slide { transition: none; }
+    .hero-slide-img { transition: none; }
     .hero-slide-active .hero-h1,
     .hero-slide-active .hero-subhead { animation: none; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-image-layer {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .hero-image-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(15, 27, 61, 0.55) 0%,
+        rgba(15, 27, 61, 0.72) 45%,
+        rgba(15, 27, 61, 0.92) 100%
+      );
+      pointer-events: none;
+    }
+
+    .hero-slide-img {
+      position: absolute;
+      inset: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .hero-slide-img-1 {
+      object-position: 50% 75%;
+    }
   }
 
   @media (max-width: 640px) {
@@ -578,6 +709,13 @@ const { aniosExperiencia } = Astro.props;
       canonical.removeAttribute('aria-hidden');
       hero.className = `hero ${BG_MAP[canonical.dataset.background || 'navy']}`;
       hero.style.setProperty('--hero-overlay-color', OVERLAY_COLOR_MAP[canonical.dataset.background || 'navy']);
+      // Imagen canónica directa, sin transición
+      const heroImages = hero.querySelectorAll<HTMLImageElement>('.hero-slide-img');
+      heroImages.forEach(img => {
+        img.classList.remove('hero-slide-img-active');
+      });
+      const canonicalImg = hero.querySelector<HTMLImageElement>(`.hero-slide-img-${slides.length - 1}`);
+      if (canonicalImg) canonicalImg.classList.add('hero-slide-img-active');
       return;
     }
 
@@ -601,6 +739,12 @@ const { aniosExperiencia } = Astro.props;
 
       inEl.classList.add('hero-slide-active');
       inEl.removeAttribute('aria-hidden');
+
+      // Cross-fade de imagen sincronizado
+      const outImg = hero?.querySelector<HTMLImageElement>(`.hero-slide-img-${current}`);
+      const inImg = hero?.querySelector<HTMLImageElement>(`.hero-slide-img-${nextIndex}`);
+      if (outImg) outImg.classList.remove('hero-slide-img-active');
+      if (inImg) inImg.classList.add('hero-slide-img-active');
 
       updateBackground(inEl);
       current = nextIndex;
