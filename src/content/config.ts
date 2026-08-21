@@ -63,6 +63,12 @@ const settings = defineCollection({
       email: z.string().email().optional(),
       ciudadesCobertura: z.array(z.string()),
     }),
+    redes_sociales: z.object({
+      facebook: z.string().optional(),
+      instagram: z.string().optional(),
+      tiktok: z.string().optional(),
+      linkedin: z.string().optional(),
+    }).optional(),
   }),
 });
 

@@ -164,3 +164,11 @@ collections:
                   name: "ciudadesCobertura",
                   widget: "list",
                 }
+          - label: "Redes Sociales"
+            name: "redes_sociales"
+            widget: "object"
+            fields:
+              - {name: "facebook", label: "Facebook URL", widget: "string", required: false, hint: "Dejar vacío si aún no se tiene el link"}
+              - {name: "instagram", label: "Instagram URL", widget: "string", required: false}
+              - {name: "tiktok", label: "TikTok URL", widget: "string", required: false}
+              - {name: "linkedin", label: "LinkedIn URL", widget: "string", required: false}

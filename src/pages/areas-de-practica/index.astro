@@ -1,6 +1,7 @@
 ---
 // Pillar page: hub que enlaza a las 4 subpáginas de práctica, con resumen de cada una.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { getCollection } from 'astro:content';
 const servicios = (await getCollection('servicios')).sort((a,b) => a.data.ordenHome - b.data.ordenHome);
 
@@ -35,16 +36,11 @@ const schemaExtra = {
   </nav>
 
   <!-- Hero de pillar page -->
-  <header class="pillar-hero">
-    <div class="pillar-hero-inner">
-      <p class="eyebrow">Especialización jurídica</p>
-      <h1 class="pillar-titulo">Áreas de Práctica</h1>
-      <p class="pillar-desc">
-        Dominio técnico completo del mercado asegurador boliviano.
-        Cuatro áreas especializadas que cubren todos los ramos y tipos de controversia.
-      </p>
-    </div>
-  </header>
+  <PageHero
+    eyebrow="Especialización jurídica"
+    title="Áreas de Práctica"
+    subtitle="Dominio técnico completo del mercado asegurador boliviano. Cuatro áreas especializadas que cubren todos los ramos y tipos de controversia."
+  />
 
   <!-- Grid de áreas -->
   <main class="pillar-main">
@@ -85,11 +81,6 @@ const schemaExtra = {
   .breadcrumb-link:hover { color: var(--color-navy-800); }
   .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
   .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
-
-  .pillar-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
-  .pillar-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
-  .pillar-titulo { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--color-white); letter-spacing: -0.02em; margin-bottom: 1rem; }
-  .pillar-desc { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 36rem; }
 
   .pillar-main { padding: 4rem 0 5rem; }
   .pillar-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }

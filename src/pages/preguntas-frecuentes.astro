@@ -5,6 +5,7 @@
 // - El contenido permanece en el DOM aunque esté colapsado — SEO/AEO no afectado.
 // - Menos JavaScript = mejor performance en Cloudflare Workers con Static Assets.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 
 const faqs = [
   {
@@ -76,16 +77,11 @@ const schemaExtra = {
   </nav>
 
   <!-- Hero FAQ -->
-  <header class="faq-hero">
-    <div class="faq-hero-inner">
-      <p class="eyebrow">Aclaraciones jurídicas</p>
-      <h1 class="faq-title">Preguntas Frecuentes</h1>
-      <p class="faq-subtitle">
-        Respuestas técnicas a las interrogantes más habituales sobre siniestros, rechazos,
-        normativa de seguros y el procedimiento ante la APS en Bolivia.
-      </p>
-    </div>
-  </header>
+  <PageHero
+    eyebrow="Aclaraciones jurídicas"
+    title="Preguntas Frecuentes"
+    subtitle="Respuestas técnicas a las interrogantes más habituales sobre siniestros, rechazos, normativa de seguros y el procedimiento ante la APS en Bolivia."
+  />
 
   <main class="faq-main">
     <div class="faq-inner">
@@ -148,11 +144,6 @@ const schemaExtra = {
   .breadcrumb-link:hover { color: var(--color-navy-800); }
   .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
   .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
-
-  .faq-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
-  .faq-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
-  .faq-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
-  .faq-subtitle { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 40rem; }
 
   .faq-main { padding: 4rem 0 5rem; }
   .faq-inner { max-width: 52rem; margin: 0 auto; padding: 0 1.5rem; }

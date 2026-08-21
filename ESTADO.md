@@ -70,6 +70,7 @@ una línea de servicio de ese despacho**. Reglas específicas:
 - [x] `Toast.astro` — notificaciones flotantes globales (formulario de contacto y futuras)
 - [x] Optimización de imágenes: `image()` en schema blog, `<Image>` en páginas, `getImage()` para skyline
 - [x] Compilación probada con `npm run build` sin errores
+- [x] `SocialIcons.astro` — íconos de redes sociales en footer (Facebook, Instagram, TikTok, LinkedIn), paleta de marca (`ink-400` → `terracotta-600` en hover), gestionable desde Decap CMS (`settings/general.json` → `redes_sociales`). Pendiente: cliente debe cargar los links reales desde el panel.
 
 ## 4. Orden de trabajo y estado de pasos
 

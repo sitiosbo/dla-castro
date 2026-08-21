@@ -1,6 +1,7 @@
 ---
 // Listado de blog (Decap CMS alimenta esta colección).
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
@@ -48,16 +49,11 @@ const schemaExtra = {
   </nav>
 
   <!-- Hero Blog -->
-  <header class="blog-hero">
-    <div class="blog-hero-inner">
-      <p class="eyebrow">Análisis & Jurisprudencia</p>
-      <h1 class="blog-title">Blog Técnico de Seguros</h1>
-      <p class="blog-subtitle">
-        Criterios jurídicos, normativa actualizada y guías técnicas para asegurados,
-        empresas y tomadores de pólizas en Bolivia.
-      </p>
-    </div>
-  </header>
+  <PageHero
+    eyebrow="Análisis & Jurisprudencia"
+    title="Blog Técnico de Seguros"
+    subtitle="Criterios jurídicos, normativa actualizada y guías técnicas para asegurados, empresas y tomadores de pólizas en Bolivia."
+  />
 
   <main class="blog-main">
     <div class="blog-inner">
@@ -143,30 +139,7 @@ const schemaExtra = {
     font-weight: 500;
   }
 
-  .blog-hero {
-    background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%);
-    color: var(--color-white);
-    padding: 4rem 0;
-  }
-  .blog-hero-inner {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-  .blog-title {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
-  }
-  .blog-subtitle {
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.65;
-    max-width: 42rem;
-  }
+
 
   .blog-main {
     padding: 4rem 0 5rem;

@@ -2,6 +2,7 @@
 // Trayectoria de Castro (25+ años), credenciales, especialización en Derecho de Seguros.
 // En esta página "Castro" tiene protagonismo como la credencial humana responsable de DLA.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { getEntry } from 'astro:content';
 
 const settings = await getEntry('settings', 'general');
@@ -32,18 +33,12 @@ const schemaExtra = {
   </nav>
 
   <!-- Hero Sobre Mí -->
-  <header class="about-hero">
-    <div class="about-hero-inner">
-      <div class="about-hero-badge">
-        <span class="badge-dot"></span> Abogado Responsable · DLA
-      </div>
-      <h1 class="about-title">Dr. Ramiro Castro</h1>
-      <p class="about-subtitle">
-        Más de {aniosExperiencia} años dedicados exclusivamente al estudio, interpretación y patrocinio
-        en Derecho de Seguros y Reaseguros en Bolivia.
-      </p>
-    </div>
-  </header>
+  <PageHero
+    badge="Abogado Responsable · DLA"
+    badgeDot={true}
+    title="Dr. Ramiro Castro"
+    subtitle={`Más de ${aniosExperiencia} años dedicados exclusivamente al estudio, interpretación y patrocinio en Derecho de Seguros y Reaseguros en Bolivia.`}
+  />
 
   <main class="about-main">
     <div class="about-inner">
@@ -128,13 +123,6 @@ const schemaExtra = {
   .breadcrumb-link:hover { color: var(--color-navy-800); }
   .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
   .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
-
-  .about-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
-  .about-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
-  .about-hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-cream-100); color: var(--color-navy-800); font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 0.875rem; border-radius: 2rem; margin-bottom: 1.25rem; }
-  .badge-dot { width: 6px; height: 6px; background: var(--color-terracotta-600); border-radius: 50%; }
-  .about-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
-  .about-subtitle { font-family: var(--font-body); font-size: 1.125rem; color: rgba(255,255,255,0.75); max-width: 42rem; line-height: 1.6; }
 
   .about-main { padding: 4rem 0 5rem; }
   .about-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }

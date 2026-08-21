@@ -1,6 +1,7 @@
 ---
 // "Procesos y Estrategia Jurídica" + Timeline completo de Ruta Crítica del Reclamo.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import Timeline from '../components/Timeline.astro';
 import FramedImage from '../components/FramedImage.astro';
 
@@ -107,16 +108,11 @@ const fases = [
   </nav>
 
   <!-- Hero Proceso -->
-  <header class="proceso-hero">
-    <div class="proceso-hero-inner">
-      <p class="eyebrow">Metodología de trabajo</p>
-      <h1 class="proceso-title">Proceso y Estrategia Jurídica</h1>
-      <p class="proceso-subtitle">
-        Una metodología estructurada en 4 fases diseñadas para reducir la incertidumbre,
-        hacer cumplir la normativa legal y maximizar las probabilidades de indemnización.
-      </p>
-    </div>
-  </header>
+  <PageHero
+    eyebrow="Metodología de trabajo"
+    title="Proceso y Estrategia Jurídica"
+    subtitle="Una metodología estructurada en 4 fases diseñadas para reducir la incertidumbre, hacer cumplir la normativa legal y maximizar las probabilidades de indemnización."
+  />
 
   <!-- Timeline (Elemento de Firma) -->
   <Timeline fases={fases} />
@@ -167,11 +163,6 @@ const fases = [
   .breadcrumb-link:hover { color: var(--color-navy-800); }
   .breadcrumb-sep { color: var(--color-ink-400); font-size: 0.75rem; }
   .breadcrumb-current { font-family: var(--font-body); font-size: 0.8125rem; color: var(--color-navy-800); font-weight: 500; }
-
-  .proceso-hero { background: linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-800) 100%); color: var(--color-white); padding: 4rem 0; }
-  .proceso-hero-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
-  .proceso-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
-  .proceso-subtitle { font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 40rem; }
 
   .section-inner { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
   .estrategia-section { padding: 5rem 0; background: var(--color-white); border-top: 1px solid rgba(15, 27, 61, 0.06); }
