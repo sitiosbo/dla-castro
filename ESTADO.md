@@ -15,7 +15,7 @@ Fuente de contenido original: presentación PDF del cliente (ya volcada en
 - **DLA** = marca principal. Va en wordmark, `<title>`, dominio, metadatos, favicon.
 - **Castro** = apellido del abogado, usado como firma/credencial. NUNCA al mismo nivel
   jerárquico que "DLA" en ningún componente. Aparece en: `TrustBar.astro` (primera
-  mención), `/sobre-mi/`, `Footer.astro` ("Abogado responsable: Castro"), schema.org
+  mencion), `/sobre-mi/`, `Footer.astro` ("Abogado responsable: Ramiro Guillermo Castro"), schema.org
   `Person`.
 - Si algún componente muestra "Castro" con el mismo tamaño/peso que "DLA", es un bug
   de marca — corregir antes de continuar.
@@ -143,3 +143,9 @@ un rango seguro tipo `~3.x.y`.
 - Credenciales / API Token de Cloudflare para `wrangler deploy`.
 - Diseño de Isotipo/Logo definitivo de DLA.
 - Validación legal de textos normativos en FAQ.
+
+## 6.1 Cambio de nombre del abogado (21-ago-2026)
+
+Reemplazado "Dr. Ramiro Castro" → "Ramiro Guillermo Castro" (sin prefijo "Dr.") en
+todos los archivos del proyecto: componentes, contenido, metadata SEO, schema.org,
+documentación. Verificar que Decap CMS también refleje el cambio en el panel.

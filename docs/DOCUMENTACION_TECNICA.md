@@ -8,7 +8,7 @@
 
 ## 1. Resumen Ejecutivo
 
-DLA (Defensa Legal del Asegurado) es un sitio web **100% estático** para un estudio jurídico especializado en Derecho de Seguros en Bolivia, liderado por el Dr. Ramiro Castro. El sitio combina un motor de generación estática (Astro 4) con un CMS decap Headless (Decap CMS) para que el abogado pueda editar contenido sin tocar código, y se despliega en Cloudflare Workers con Static Assets.
+DLA (Defensa Legal del Asegurado) es un sitio web **100% estático** para un estudio jurídico especializado en Derecho de Seguros en Bolivia, liderado por el Ramiro Guillermo Castro. El sitio combina un motor de generación estática (Astro 4) con un CMS decap Headless (Decap CMS) para que el abogado pueda editar contenido sin tocar código, y se despliega en Cloudflare Workers con Static Assets.
 
 **Stack en una frase:** Astro 4 (SSG) + Tailwind CSS + Decap CMS, desplegado en Cloudflare Workers con Static Assets, con un Worker proxy para el formulario de contacto.
 
