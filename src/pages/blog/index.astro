@@ -57,6 +57,20 @@ const schemaExtra = {
 
   <main class="blog-main">
     <div class="blog-inner">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <filter id="duotone-navy" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="
+            0.33 0.33 0.33 0 0
+            0.33 0.33 0.33 0 0
+            0.33 0.33 0.33 0 0
+            0    0    0    1 0" />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues="0.0588 0.9686" />
+            <feFuncG type="table" tableValues="0.1059 0.9176" />
+            <feFuncB type="table" tableValues="0.2392 0.7843" />
+          </feComponentTransfer>
+        </filter>
+      </svg>
       {posts.length > 0 ? (
         <div class="blog-grid">
           {posts.map((post, index) => (
@@ -220,6 +234,7 @@ const schemaExtra = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: url(#duotone-navy);
     transition: transform var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
