@@ -9,12 +9,17 @@
   "contacto": {
     "whatsapp": "59170557088",
     "email": "contacto@dlaseguros.bo",
-    "ciudadesCobertura": ["La Paz", "Santa Cruz", "Cochabamba", "Toda Bolivia"]
+    "ciudadesCobertura": [
+      "La Paz",
+      "Santa Cruz",
+      "Cochabamba",
+      "Toda Bolivia"
+    ]
   },
   "redes_sociales": {
-    "facebook": "",
-    "instagram": "",
-    "tiktok": "",
-    "linkedin": ""
+    "facebook": "http://www.facebook.com",
+    "instagram": "http://www.instagram.com",
+    "tiktok": "http://www.tiktok.com",
+    "linkedin": "http://www.linkedin.com"
   }
 }
