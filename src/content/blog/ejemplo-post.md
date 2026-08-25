@@ -1,8 +1,10 @@
 ---
-titulo: "¿Qué acciones legales tomar inmediatamente ante un rechazo de siniestro?"
+titulo: ¿Qué acciones legales tomar inmediatamente ante un rechazo de siniestro?
 fechaPublicacion: 2026-08-12
-resumen: "Pasos fundamentales, plazos reglamentarios y estrategia técnico-legal para impugnar la negativa de cobertura de una aseguradora en Bolivia."
-categoria: "siniestros"
+resumen: Pasos fundamentales, plazos reglamentarios y estrategia técnico-legal
+  para impugnar la negativa de cobertura de una aseguradora en Bolivia.
+imagenPortada: 66116.jpg
+categoria: siniestros
 ---
 
 El rechazo de un siniestro por parte de una compañía aseguradora suele generar una situación de alta vulnerabilidad e incertidumbre patrimonial para el asegurado. En el mercado boliviano, las cartas de declinación de cobertura frecuentemente invocan exclusiones del condicionado general o supuestos incumplimientos de plazos de aviso.
