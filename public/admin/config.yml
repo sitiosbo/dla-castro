@@ -5,7 +5,7 @@ backend:
   base_url: https://dla-castro.calderonwilsonpol.workers.dev
   auth_endpoint: /api/auth
 
-#local_backend: true
+# local_backend: true
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -39,8 +39,8 @@ collections:
     folder: "src/content/blog"
     create: true
     slug: "{{year}}-{{month}}-{{slug}}"
-    media_folder: ""      # Las imágenes se guardan junto al .md del artículo (ruta relativa)
-    public_folder: ""     # Necesario para que image() de Astro pueda procesarlas en build time
+    media_folder: "" # Las imágenes se guardan junto al .md del artículo (ruta relativa)
+    public_folder: "" # Necesario para que image() de Astro pueda procesarlas en build time
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
       - {
@@ -168,7 +168,28 @@ collections:
             name: "redes_sociales"
             widget: "object"
             fields:
-              - {name: "facebook", label: "Facebook URL", widget: "string", required: false, hint: "Dejar vacío si aún no se tiene el link"}
-              - {name: "instagram", label: "Instagram URL", widget: "string", required: false}
-              - {name: "tiktok", label: "TikTok URL", widget: "string", required: false}
-              - {name: "linkedin", label: "LinkedIn URL", widget: "string", required: false}
+              - {
+                  name: "facebook",
+                  label: "Facebook URL",
+                  widget: "string",
+                  required: false,
+                  hint: "Dejar vacío si aún no se tiene el link",
+                }
+              - {
+                  name: "instagram",
+                  label: "Instagram URL",
+                  widget: "string",
+                  required: false,
+                }
+              - {
+                  name: "tiktok",
+                  label: "TikTok URL",
+                  widget: "string",
+                  required: false,
+                }
+              - {
+                  name: "linkedin",
+                  label: "LinkedIn URL",
+                  widget: "string",
+                  required: false,
+                }
