@@ -149,3 +149,13 @@ un rango seguro tipo `~3.x.y`.
 Reemplazado "Dr. Ramiro Castro" → "Ramiro Guillermo Castro" (sin prefijo "Dr.") en
 todos los archivos del proyecto: componentes, contenido, metadata SEO, schema.org,
 documentación. Verificar que Decap CMS también refleje el cambio en el panel.
+
+## 6.2 Blog hero — filtro navy + fix object-fit (25-ago-2026)
+
+Corregido bug pre-existente: `.article-cover-img` usaba `object-fit: cover` (recortaba
+la imagen). Cambiado a `contain` (sin recorte, decisión de diseño confirmada).
+
+Agregado `filter: url(#duotone-navy)` al hero del artículo de blog. El SVG filter
+`#duotone-navy` ya estaba definido en el archivo pero no se aplicaba al hero — solo
+a las imágenes del body. Nota: `FramedImage.astro` no aplica el filtro por sí solo;
+el filtro se aplica desde el componente padre (ej. proceso.astro).

@@ -109,6 +109,20 @@ const schemaExtra = {
 
       <!-- Cuerpo del artículo -->
       <article class="article-content prose">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+          <filter id="duotone-navy" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="
+              0.33 0.33 0.33 0 0
+              0.33 0.33 0.33 0 0
+              0.33 0.33 0.33 0 0
+              0    0    0    1 0" />
+            <feComponentTransfer>
+              <feFuncR type="table" tableValues="0.0588 0.9686" />
+              <feFuncG type="table" tableValues="0.1059 0.9176" />
+              <feFuncB type="table" tableValues="0.2392 0.7843" />
+            </feComponentTransfer>
+          </filter>
+        </svg>
         <Content />
       </article>
 
@@ -237,7 +251,8 @@ const schemaExtra = {
   .article-cover-img {
     width: 100%;
     max-height: 28rem;
-    object-fit: cover;
+    object-fit: contain;
+    filter: url(#duotone-navy);
   }
 
   /* Estilos de tipografía editorial para contenido markdown */
@@ -282,6 +297,56 @@ const schemaExtra = {
     font-size: 1.125rem;
     color: var(--color-navy-800);
     border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  /* ── Imágenes del cuerpo ── */
+  .article-content.prose :global(img) {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    margin: 2.75rem auto;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    filter: url(#duotone-navy);
+  }
+  @media (min-width: 641px) {
+    .article-content.prose :global(img) {
+      max-width: min(72rem, calc(100vw - 3rem));
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    }
+  }
+  @media (max-width: 640px) {
+    .article-content.prose :global(img) {
+      max-width: 100%;
+      width: auto;
+      position: static;
+      margin: 2rem auto;
+      left: auto;
+      right: auto;
+    }
+  }
+
+  /* Figure + caption */
+  .article-content.prose :global(figure) {
+    margin: 2.75rem auto;
+  }
+  .article-content.prose :global(figure img) {
+    margin: 0 auto;
+  }
+  .article-content.prose :global(figcaption) {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--color-ink-600);
+    margin-top: 0.75rem;
   }
 
   /* Pie del artículo */
