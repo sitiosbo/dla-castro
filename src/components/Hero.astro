@@ -91,7 +91,7 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
     <!-- Wordmark: siempre visible, ancla de marca -->
     <div class="hero-wordmark" aria-label="DLA — Defensa Legal del Asegurado">
       <span class="wordmark-dla">DLA</span>
-      <span class="wordmark-separator" aria-hidden="true">—</span>
+      <span class="wordmark-divider" aria-hidden="true"></span>
       <span class="wordmark-name">Defensa Legal del Asegurado</span>
     </div>
 
@@ -430,9 +430,10 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
   /* ── Wordmark: siempre visible, ancla de marca ── */
   .hero-wordmark {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
+    margin-left: 1.5rem;
     margin-bottom: 1.25rem;
     animation: heroElementIn var(--motion-duration-enter) var(--motion-ease-enter) 80ms both;
   }
@@ -440,17 +441,17 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
   .wordmark-dla {
     font-family: var(--font-display);
     font-size: 4.5rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--color-white);
     letter-spacing: -0.04em;
     line-height: 1;
   }
 
-  .wordmark-separator {
-    font-family: var(--font-display);
-    font-size: 2.5rem;
-    color: var(--color-terracotta-600);
-    line-height: 1;
+  .wordmark-divider {
+    width: 1px;
+    height: 2.25rem;
+    background: rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
   }
 
   .wordmark-name {
@@ -660,8 +661,8 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
       font-size: 2.75rem;
     }
 
-    .wordmark-separator {
-      font-size: 1.75rem;
+    .wordmark-divider {
+      height: 1.5rem;
     }
 
     .hero-watermark {

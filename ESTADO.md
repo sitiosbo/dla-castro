@@ -159,3 +159,40 @@ Agregado `filter: url(#duotone-navy)` al hero del artículo de blog. El SVG filt
 `#duotone-navy` ya estaba definido en el archivo pero no se aplicaba al hero — solo
 a las imágenes del body. Nota: `FramedImage.astro` no aplica el filtro por sí solo;
 el filtro se aplica desde el componente padre (ej. proceso.astro).
+
+## 6.3 Hero wordmark — alineación, peso y divisor vertical (27-ago-2026)
+
+Tres ajustes en `src/components/Hero.astro`:
+
+1. **Alineación badge↔wordmark:** Agregado `margin-left: 1.5rem` a `.hero-wordmark` para
+   compensar el desplazamiento del badge (padding-left 0.625rem + dot 6px + gap 0.5rem).
+   El borde izquierdo de "D" en "DLA" queda alineado con el borde izquierdo de "A" en
+   "ABOGADO". Verificar visualmente en navegador — el valor puede necesitar ajuste fino.
+
+2. **Peso de "DLA" reducido:** Cambiado `.wordmark-dla` de `font-weight: 700` a `600`.
+   Fraunces se ve mejor en pesos moderados para wordmarks grandes. Fraunces 600 ya
+   estaba cargado en Google Fonts (verificado en BaseLayout.astro).
+
+3. **Divisor vertical:** Reemplazado `<span class="wordmark-separator">—</span>` por
+   `<span class="wordmark-divider"></span>` (div vacío, `width: 1px; height: 2.25rem;
+   background: rgba(255,255,255,0.25)`). Cambiado `.hero-wordmark` de `align-items:
+   baseline` a `center` para centrar el divisor verticalmente respecto a "DLA".
+   Responsive: `height: 1.5rem` en mobile (≤640px).
+
+El `aria-label="DLA — Defensa Legal del Asegurado"` se mantuvo sin cambios (accesibilidad).
+
+## 6.4 Favicon + logo Decap CMS (27-ago-2026)
+
+Wilson colocó `public/favicon.ico` y `public/admin/logo.png`. Se agregaron las
+referencias en código:
+
+1. **Favicon:** `<link rel="icon" type="image/x-icon" href="/favicon.ico" />` en
+   `src/layouts/BaseLayout.astro` (reemplaza referencia rota a `favicon.svg` que no
+   existía). Schema.org `logo` en BaseLayout también corregido de `favicon.svg` a
+   `favicon.ico`.
+
+2. **Logo Decap CMS:** `logo_url: /admin/logo.png` en `public/admin/config.yml`
+   (reemplaza `logo_url: /favicon.svg` que apuntaba al archivo inexistente).
+
+`grep -r "favicon" src/` confirma solo 2 referencias, ambas apuntando a `favicon.ico`.
+No quedan referencias rotas ni duplicadas.

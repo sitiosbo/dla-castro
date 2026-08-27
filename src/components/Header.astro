@@ -1,8 +1,11 @@
 ---
-// Header global: wordmark "DLA" dominante + tagline pequeño "Defensa Legal del Asegurado".
+// Header global: logo DLA (isotipo + wordmark "DLA" en línea).
 // "Castro" NO aparece aquí (ver ESTADO.md sección Marca) — solo en Footer/Sobre Mí.
 // Nav: Áreas de Práctica ▾ · Proceso · Estudio ▾ (Resultados, Sobre Mí) · Preguntas Frecuentes · Blog · CTA.
 // CTA visible en el header: "Agenda tu evaluación legal" (sticky en scroll).
+import { Image } from 'astro:assets';
+import logoDla from '../assets/images/brand/logo.png';
+
 const navLinks = [
   { label: 'Preguntas Frecuentes', href: '/preguntas-frecuentes/' },
   { label: 'Blog', href: '/blog/' },
@@ -25,10 +28,17 @@ const currentPath = Astro.url.pathname;
 
 <header id="site-header" class="site-header">
   <div class="header-inner">
-    <!-- Wordmark DLA — elemento dominante. "Castro" no aparece aquí. -->
+    <!-- Logo DLA — isotipo + wordmark. "Castro" no aparece aquí. -->
     <a href="/" class="header-logo" aria-label="DLA — Defensa Legal del Asegurado, inicio">
-      <span class="logo-dla">DLA</span>
-      <span class="logo-tagline">Defensa Legal del Asegurado</span>
+      <Image
+        src={logoDla}
+        alt=""
+        class="header-logo-img"
+        width={36}
+        height={36}
+        loading="eager"
+      />
+      <span class="logo-wordmark">DLA</span>
     </a>
 
     <!-- Nav principal desktop -->
@@ -185,64 +195,41 @@ const currentPath = Astro.url.pathname;
     height: 3.5rem;
   }
 
-  /* Wordmark — efecto grande en Hero / compacto al hacer scroll */
+  /* Logo — isotipo + wordmark en línea */
   .header-logo {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     text-decoration: none;
     line-height: 1;
     flex-shrink: 0;
   }
 
-  .logo-dla {
+  .header-logo-img {
+    height: 36px;
+    width: auto;
+  }
+
+  .logo-wordmark {
     font-family: var(--font-display);
-    font-size: 1.875rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 600;
     color: var(--color-white);
     letter-spacing: -0.02em;
     line-height: 1;
-    transition:
-      font-size var(--motion-duration-micro) var(--motion-ease-micro),
-      color var(--motion-duration-micro) var(--motion-ease-micro);
+    transition: color var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
-  .site-header.scrolled .logo-dla {
-    font-size: 1.5rem;
+  .site-header.scrolled .logo-wordmark {
     color: var(--color-navy-800);
   }
 
-  .header-logo:hover .logo-dla {
+  .header-logo:hover .logo-wordmark {
     color: var(--color-terracotta-500);
   }
 
-  .site-header.scrolled .header-logo:hover .logo-dla {
+  .site-header.scrolled .header-logo:hover .logo-wordmark {
     color: var(--color-terracotta-600);
-  }
-
-  .logo-tagline {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 3px;
-    opacity: 1;
-    max-height: 1rem;
-    transition:
-      opacity var(--motion-duration-micro) var(--motion-ease-micro),
-      max-height var(--motion-duration-micro) var(--motion-ease-micro),
-      margin-top var(--motion-duration-micro) var(--motion-ease-micro),
-      color var(--motion-duration-micro) var(--motion-ease-micro);
-  }
-
-  .site-header.scrolled .logo-tagline {
-    opacity: 0;
-    max-height: 0;
-    margin-top: 0;
-    overflow: hidden;
-    pointer-events: none;
-    color: var(--color-ink-400);
   }
 
   /* Nav desktop */
@@ -478,6 +465,10 @@ const currentPath = Astro.url.pathname;
 
     .mobile-menu-btn {
       display: flex;
+    }
+
+    .logo-wordmark {
+      font-size: 1.125rem;
     }
   }
 </style>

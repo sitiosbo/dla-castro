@@ -11,7 +11,7 @@ media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
 site_url: https://dlaseguros.bo
-logo_url: /favicon.svg
+logo_url: /admin/logo.png
 
 collections:
   - name: "servicios"
