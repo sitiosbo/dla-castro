@@ -196,3 +196,21 @@ referencias en código:
 
 `grep -r "favicon" src/` confirma solo 2 referencias, ambas apuntando a `favicon.ico`.
 No quedan referencias rotas ni duplicadas.
+
+## 6.5 Cambio de número de WhatsApp (22-sep-2026)
+
+Reemplazado número antiguo `59170557088` por `59157001099` (formato limpio, sin `+`):
+
+1. `src/content/settings/general.json` línea 10 — fuente de verdad
+   (`contacto.whatsapp`), consumido dinámicamente por `WhatsAppFloat.astro` y
+   `contacto.astro` (`data-whatsapp` / `wa.me`).
+2. `public/llms.txt` línea 20 — formato display `+591 57001099`.
+3. `instruc_contacto.md` línea 62 — ejemplo JSON en documentación.
+
+Verificación post-cambio:
+- `grep 70557088|59170557088|7055-7088` repo-wide → **0 resultados**.
+- `grep 57001099` → **3 apariciones** (los 3 archivos anteriores).
+- `npm run build` → sin errores (0 errors, 0 warnings, 1 hint pre-existente de
+  `BaseLayout.astro:115`).
+
+No se tocaron otros teléfonos ni archivos. Sin git (modo local).
