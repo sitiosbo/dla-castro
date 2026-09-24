@@ -37,12 +37,12 @@ const articleSchema = {
   datePublished: post.data.fechaPublicacion.toISOString(),
   author: {
     '@type': 'Person',
-    '@id': 'https://dlaseguros.bo/#person-castro',
+    '@id': 'https://defensalegaldelasegurado.com/#person-castro',
     name: 'Ramiro Guillermo Castro',
   },
   publisher: {
     '@type': 'Organization',
-    '@id': 'https://dlaseguros.bo/#organization',
+    '@id': 'https://defensalegaldelasegurado.com/#organization',
     name: 'DLA — Defensa Legal del Asegurado',
   },
 };
@@ -50,13 +50,13 @@ const articleSchema = {
 const schemaExtra = {
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://dlaseguros.bo/' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://dlaseguros.bo/blog/' },
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://defensalegaldelasegurado.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://defensalegaldelasegurado.com/blog/' },
     {
       '@type': 'ListItem',
       position: 3,
       name: post.data.titulo,
-      item: `https://dlaseguros.bo/blog/${post.slug}/`,
+      item: `https://defensalegaldelasegurado.com/blog/${post.slug}/`,
     },
   ],
 };

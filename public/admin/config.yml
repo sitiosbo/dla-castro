@@ -2,7 +2,7 @@ backend:
   name: github
   repo: sitiosbo/dla-castro
   branch: main
-  base_url: https://dla-castro.calderonwilsonpol.workers.dev
+  base_url: https://defensalegaldelasegurado.com
   auth_endpoint: /api/auth
 
 # local_backend: true
@@ -10,7 +10,7 @@ backend:
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
-site_url: https://dlaseguros.bo
+site_url: https://defensalegaldelasegurado.com
 logo_url: /admin/logo.png
 
 collections:

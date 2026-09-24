@@ -60,7 +60,7 @@ Los datos que aparecen en el panel lateral de la página de contacto (WhatsApp, 
   },
   "contacto": {
     "whatsapp": "59157001099",
-    "email": "contacto@dlaseguros.bo",
+    "email": "defensalegaldelasegurado@gmail.com",
     "ciudadesCobertura": ["La Paz", "Santa Cruz", "Cochabamba", "Toda Bolivia"]
   }
 }

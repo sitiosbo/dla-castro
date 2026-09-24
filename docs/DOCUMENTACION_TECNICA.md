@@ -2,7 +2,7 @@
 
 > **Última actualización:** 20 de agosto de 2026
 > **Repositorio:** `sitiosbo/dla-castro` (GitHub)
-> **Sitio en producción:** `https://dlaseguros.bo`
+> **Sitio en producción:** `https://defensalegaldelasegurado.com`
 
 ---
 
@@ -21,7 +21,7 @@ DLA (Defensa Legal del Asegurado) es un sitio web **100% estático** para un est
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        VISITANTE                                    │
-│  Navegador → https://dlaseguros.bo                                  │
+│  Navegador → https://defensalegaldelasegurado.com                   │
 └──────────────────────────────┬──────────────────────────────────────┘
                                │
                                ▼
@@ -152,7 +152,7 @@ dla-seguros/
 - **Archivo:** `public/admin/config.yml`
 - **Backend:** GitHub (`sitiosbo/dla-castro`, branch `main`)
 - **OAuth:** Embebido en el Worker (`/api/auth` y `/api/callback` en `src/worker/index.js`)
-- **URL del CMS:** `https://dlaseguros.bo/admin/`
+- **URL del CMS:** `https://defensalegaldelasegurado.com/admin/`
 
 ### 5.2 Colecciones
 
@@ -345,7 +345,7 @@ npx wrangler secret put APPS_SCRIPT_URL
 
 - **Generado por:** `@astrojs/sitemap` (integración de Astro)
 - **Archivo:** `dist/sitemap-index.xml`
-- **Referencia en:** `public/robots.txt` → `Sitemap: https://dlaseguros.bo/sitemap-index.xml`
+- **Referencia en:** `public/robots.txt` → `Sitemap: https://defensalegaldelasegurado.com/sitemap-index.xml`
 
 > **Deuda técnica:** `@astrojs/sitemap` está fijado en `3.6.0` porque la versión `3.7.3` tiene un bug conocido (`Cannot read properties of undefined (reading 'reduce')`). Si alguien intenta actualizar sin saber esto, el build fallará. Ver sección 12.
 
@@ -412,7 +412,7 @@ El formulario de contacto recolecta:
 | **Aviso legal incompleto**                  | Baja        | El texto legal de `/aviso-legal/` y `/politica-privacidad/` necesita validación del abogado.                                                                         | Validar con el abogado antes de producción formal.                                                    |
 | **Falta foto de Castro en `/sobre-mi/`**    | Baja        | La página existe pero no tiene foto personal del abogado.                                                                                                            | Agregar `src/assets/castro-foto.jpg` cuando el abogado provea la imagen.                              |
 | **Blog operativo**                          | Informativa | El blog está implementado, funcionando al 100% y probado. Publicaciones via Decap CMS en `/blog/`.                                                                   | Ninguna — funcional.                                                                                  |
-| **Dominio placeholder**                     | Informativa | `dlaseguros.bo` es el dominio de trabajo. Puede cambiar.                                                                                                             | Confirmar dominio final con el abogado.                                                               |
+| **Dominio definitivo**                      | Informativa | `defensalegaldelasegurado.com` es el dominio definitivo y activo (sin `www`).                                                                                        | Ninguna — dominio confirmado.                                                                        |
 | **Google Fonts `media` warning**            | Informativa | `BaseLayout.astro:115` tiene un warning de TypeScript por el atributo `media` en el link de Google Fonts. Es un patrón válido (preload asíncrono), no un error real. | No requiere acción.                                                                                   |
 
 ---

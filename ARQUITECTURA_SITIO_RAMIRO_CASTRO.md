@@ -8,7 +8,7 @@
 - **DLA — Defensa Legal del Asegurado** es la marca comercial. Va en el logotipo/wordmark, título del sitio (`<title>`), favicon, dominio y todos los metadatos SEO.
 - **Castro** es el apellido del abogado responsable. Funciona como **firma de autoridad**, no como co-marca ni se fusiona en el logotipo. Aparece en lugares puntuales donde se necesita credencial humana: pie de página ("Abogado responsable: Castro"), página `/sobre-mi/`, firma de contrato/consulta, y schema.org `Person` vinculado a la organización `LegalService`.
 - **Jerarquía visual del logo:** wordmark "DLA" como elemento dominante (tamaño, peso, posición). El nombre "Castro" nunca comparte el mismo nivel jerárquico — va como subtítulo pequeño o tagline ("DLA · Defensa Legal del Asegurado — Abogado Castro"), similar al patrón de firmas internacionales tipo DLA Piper, donde las siglas quedaron como marca pura y los apellidos de socios se usan solo como credencial.
-- **Dominio:** pendiente de definición final con el cliente. Working placeholder para esta arquitectura: `dlaseguros.bo` (o `.com.bo`) — cumple el requisito de traer "seguros" en el dominio para SEO de nicho. Se ajusta fácilmente sin tocar el resto de la arquitectura.
+- **Dominio:** definitivo y activo: `defensalegaldelasegurado.com` (sin `www`).
 
 ---
 

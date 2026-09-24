@@ -39,8 +39,8 @@ function rehypeFigureFromAlt() {
 }
 
 export default defineConfig({
-  // TODO: reemplazar por el dominio final que definan con el abogado (placeholder: dlaseguros.bo)
-  site: 'https://dlaseguros.bo',
+  // Dominio real del sitio (sin www)
+  site: 'https://defensalegaldelasegurado.com',
   trailingSlash: 'always',
   integrations: [
     tailwind({ applyBaseStyles: false }),

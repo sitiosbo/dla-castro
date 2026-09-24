@@ -139,7 +139,7 @@ un rango seguro tipo `~3.x.y`.
 ## 6. Pendientes que requieren decisión humana
 
 - Número de WhatsApp real (`contacto.whatsapp` en `settings/general.json`).
-- Dominio final (`dlaseguros.bo` es placeholder de trabajo).
+- Dominio final definido y activo: `defensalegaldelasegurado.com` — es el dominio definitivo, no un placeholder (ver 6.6).
 - Credenciales / API Token de Cloudflare para `wrangler deploy`.
 - Diseño de Isotipo/Logo definitivo de DLA.
 - Validación legal de textos normativos en FAQ.
@@ -214,3 +214,28 @@ Verificación post-cambio:
   `BaseLayout.astro:115`).
 
 No se tocaron otros teléfonos ni archivos. Sin git (modo local).
+
+## 6.6 Dominio y correo reales — defensalegaldelasegurado.com (24-sep-2026)
+
+Reemplazo en dos fases (auditoría → cambios confirmados por el usuario):
+
+- **Dominio:** el dominio placeholder anterior fue reemplazado por
+  `defensalegaldelasegurado.com` (sin `www`) en 38 líneas:
+  `astro.config.mjs` (`site` + comentario), `BaseLayout.astro:27` (`siteUrl` que alimenta
+  og:image/twitter:image/schema.org), `public/robots.txt`, `public/admin/config.yml`
+  (`site_url`), `public/llms.txt`, los 22 breadcrumbs/JSON-LD de 10 páginas/layouts, y
+  documentación (`ARQUITECTURA...md`, `ESTADO.md`, `docs/DOCUMENTACION_TECNICA.md` —
+  incluye realineación del diagrama ASCII de la línea 24).
+- **Correo:** el correo del dominio anterior → `defensalegaldelasegurado@gmail.com` en
+  `general.json:11`, `llms.txt:19`, `instruc_contacto.md:63`.
+- **workers.dev:** `public/admin/config.yml:5` `base_url` ahora es
+  `https://defensalegaldelasegurado.com` (decisión del usuario: OAuth del CMS resuelve
+  en el dominio real, no en la URL de preview del Worker).
+
+Verificación: grep del dominio/correo viejos y de la URL de workers.dev →
+**0 resultados** en el proyecto (solo `dist/` regenerado: 0 viejos / 21 nuevos).
+`npm run build` sin errores. 19 archivos modificados. Sin git.
+
+Redacción de `ESTADO.md:142` (dominio ya no es placeholder) y de `ARQUITECTURA...md:11`
+(sin texto de pendiente ni alternativa `.com.bo`) corregida tras confirmación
+del usuario: el dominio es definitivo.
