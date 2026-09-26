@@ -36,6 +36,15 @@ const schemaOrg = {
       name: 'DLA — Defensa Legal del Asegurado',
       url: siteUrl,
       logo: `${siteUrl}/favicon.ico`,
+      telephone: '+59157001099',
+      // Sin dirección exacta: el despacho está en proceso de traslado de oficina.
+      // Se agrega solo a nivel de ciudad/país (válido en schema.org) — actualizar con
+      // la dirección completa (streetAddress, postalCode) en cuanto se confirme la nueva oficina.
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'La Paz',
+        addressCountry: 'BO',
+      },
       description:
         'Estudio jurídico especializado en Derecho de Seguros en Bolivia. Asesoría técnica, patrocinio en siniestros e impugnación de rechazos de cobertura.',
       areaServed: [
