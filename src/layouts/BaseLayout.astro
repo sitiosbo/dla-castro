@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import Toast from '../components/Toast.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import { direccionSchema } from '../data/oficina';
 import '../styles/tokens.css';
 
@@ -78,14 +79,7 @@ const schemaOrg = {
 <!doctype html>
 <html lang="es">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KH9TYCX64Y"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-KH9TYCX64Y');
-    </script>
+    <!-- Google Analytics: se carga solo tras el consentimiento (ver components/CookieBanner.astro) -->
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -140,6 +134,7 @@ const schemaOrg = {
     <Footer />
     <WhatsAppFloat />
     <Toast />
+    <CookieBanner />
   </body>
 </html>
 

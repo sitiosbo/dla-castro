@@ -99,10 +99,12 @@ const waUrl = isPlaceholder
     font-family: var(--font-body);
     font-size: 0.875rem;
     font-weight: 600;
+    translate: 0 calc(-1 * var(--cookie-banner-height, 0px));
     transition:
       transform var(--motion-duration-micro) var(--motion-ease-micro),
       box-shadow var(--motion-duration-micro) var(--motion-ease-micro),
-      background-color var(--motion-duration-micro) var(--motion-ease-micro);
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      translate var(--motion-duration-enter) var(--motion-ease-enter);
   }
 
   /* Hover: feedback táctil con translateY + sombra más profunda navy.

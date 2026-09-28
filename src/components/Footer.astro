@@ -102,6 +102,8 @@ const legalLinks = [
             {i < legalLinks.length - 1 && <span class="footer-legal-sep" aria-hidden="true">·</span>}
           </>
         ))}
+        <span class="footer-legal-sep" aria-hidden="true">·</span>
+        <button type="button" class="footer-legal-link footer-cookie-btn" data-cookie-settings>Configuración de cookies</button>
       </nav>
     </div>
   </div>
@@ -273,6 +275,14 @@ const legalLinks = [
 
   .footer-legal-link:hover {
     color: rgba(255,255,255,0.65);
+  }
+
+  /* Botón que reabre el banner de cookies, con el mismo aspecto que los enlaces legales */
+  .footer-cookie-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
   }
 
   .footer-legal-sep {

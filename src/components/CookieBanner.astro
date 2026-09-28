@@ -1,0 +1,270 @@
+---
+// Banner de consentimiento de cookies (solo analítica: Google Analytics).
+// Google Analytics NO se carga hasta que la persona pulsa "Aceptar".
+// La decisión se guarda en localStorage por 12 meses. Se puede cambiar desde el
+// enlace "Configuración de cookies" del Footer (cualquier elemento con data-cookie-settings).
+const GA_ID = 'G-KH9TYCX64Y';
+---
+
+<div
+  id="cookie-banner"
+  class="cookie-banner"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="cookie-banner-title"
+  aria-describedby="cookie-banner-text"
+  tabindex="-1"
+  data-ga-id={GA_ID}
+  hidden
+>
+  <div class="cookie-banner-inner">
+    <div class="cookie-banner-copy">
+      <p id="cookie-banner-title" class="cookie-banner-title">Cookies de analítica</p>
+      <p id="cookie-banner-text" class="cookie-banner-text">
+        Usamos Google Analytics, que emplea cookies, para conocer cómo se usa el sitio y mejorarlo.
+        Solo se activa si lo aceptas. Puedes cambiar tu decisión cuando quieras desde
+        «Configuración de cookies», al pie de la página. Más información en la
+        <a href="/politica-privacidad/">Política de Privacidad</a>.
+      </p>
+    </div>
+    <div class="cookie-banner-actions">
+      <button type="button" class="cookie-btn cookie-btn-reject" data-cookie-reject>Rechazar</button>
+      <button type="button" class="cookie-btn cookie-btn-accept" data-cookie-accept>Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--color-navy-950);
+    color: var(--color-white);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 -4px 16px rgba(15, 27, 61, 0.25);
+    opacity: 0;
+    transform: translateY(100%);
+    transition:
+      transform var(--motion-duration-exit) var(--motion-ease-exit),
+      opacity var(--motion-duration-exit) var(--motion-ease-exit);
+  }
+
+  .cookie-banner.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      transform var(--motion-duration-enter) var(--motion-ease-enter),
+      opacity var(--motion-duration-enter) var(--motion-ease-enter);
+  }
+
+  .cookie-banner:focus {
+    outline: none;
+  }
+
+  .cookie-banner-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .cookie-banner-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-cream-100);
+    margin-bottom: 0.25rem;
+  }
+
+  .cookie-banner-text {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 52rem;
+  }
+
+  .cookie-banner-text a {
+    color: var(--color-white);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .cookie-banner-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  /* Ambos botones con el mismo tamaño y peso: rechazar debe ser tan fácil como aceptar */
+  .cookie-btn {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 7rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-white);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .cookie-btn-reject {
+    background: transparent;
+    color: var(--color-white);
+  }
+
+  .cookie-btn-reject:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .cookie-btn-accept {
+    background: var(--color-white);
+    color: var(--color-navy-800);
+  }
+
+  .cookie-btn-accept:hover {
+    background: var(--color-cream-100);
+  }
+
+  .cookie-btn:focus-visible,
+  .cookie-banner-text a:focus-visible {
+    outline: 2px solid var(--color-terracotta-500);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .cookie-banner-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .cookie-banner-actions .cookie-btn {
+      flex: 1;
+    }
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  const STORAGE_KEY = 'dla-cookie-consent';
+  const MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; // 12 meses
+
+  const banner = document.getElementById('cookie-banner');
+  const GA_ID = banner ? banner.dataset.gaId : '';
+
+  function readConsent() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || (data.analytics !== 'granted' && data.analytics !== 'denied')) return null;
+      if (Date.now() - data.ts > MAX_AGE_MS) return null; // caducada: volver a preguntar
+      return data.analytics;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveConsent(value) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ analytics: value, ts: Date.now() }));
+    } catch {
+      /* modo privado o almacenamiento bloqueado: la decisión vale solo para esta visita */
+    }
+  }
+
+  let gaLoaded = false;
+  function loadAnalytics() {
+    if (gaLoaded || !GA_ID) return;
+    gaLoaded = true;
+    window['ga-disable-' + GA_ID] = false;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID);
+  }
+
+  function disableAnalytics() {
+    if (GA_ID) window['ga-disable-' + GA_ID] = true;
+    // Borra las cookies de Google Analytics (_ga, _ga_XXXX) que ya existan
+    const host = location.hostname;
+    const domains = [host, '.' + host, '.' + host.split('.').slice(-2).join('.')];
+    document.cookie.split(';').forEach((c) => {
+      const name = c.split('=')[0].trim();
+      if (name === '_ga' || name.indexOf('_ga_') === 0 || name === '_gid') {
+        domains.forEach((d) => {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=' + d;
+        });
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+      }
+    });
+  }
+
+  function setBannerHeightVar(open) {
+    // Permite que otros elementos fijos (ej. botón de WhatsApp) se suban sobre el banner
+    document.documentElement.style.setProperty(
+      '--cookie-banner-height',
+      open && banner ? banner.offsetHeight + 'px' : '0px'
+    );
+  }
+
+  function showBanner(moveFocus) {
+    if (!banner) return;
+    banner.hidden = false;
+    void banner.offsetHeight; // reflow para que la transición se ejecute
+    banner.classList.add('is-visible');
+    setBannerHeightVar(true);
+    if (moveFocus) banner.focus();
+  }
+
+  function hideBanner() {
+    if (!banner) return;
+    banner.classList.remove('is-visible');
+    setBannerHeightVar(false);
+    window.setTimeout(() => {
+      if (!banner.classList.contains('is-visible')) banner.hidden = true;
+    }, 250);
+  }
+
+  function decide(value) {
+    saveConsent(value);
+    if (value === 'granted') loadAnalytics();
+    else disableAnalytics();
+    hideBanner();
+  }
+
+  // Estado inicial
+  const current = readConsent();
+  if (current === 'granted') loadAnalytics();
+  else if (current === 'denied') disableAnalytics();
+  else showBanner(false);
+
+  // Botones del banner y enlace "Configuración de cookies" del footer
+  document.addEventListener('click', (e) => {
+    const target = e.target instanceof Element ? e.target : null;
+    if (!target) return;
+    if (target.closest('[data-cookie-accept]')) decide('granted');
+    else if (target.closest('[data-cookie-reject]')) decide('denied');
+    else if (target.closest('[data-cookie-settings]')) showBanner(true);
+  });
+
+  window.addEventListener('resize', () => {
+    if (banner && banner.classList.contains('is-visible')) setBannerHeightVar(true);
+  });
+</script>
