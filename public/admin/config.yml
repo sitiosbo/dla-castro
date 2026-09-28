@@ -174,7 +174,11 @@ collections:
                       required: false,
                     }
                   - { label: "Ciudad", name: "ciudad", widget: "string" }
-                  - { label: "Departamento/Región", name: "departamento", widget: "string" }
+                  - {
+                      label: "Departamento/Región",
+                      name: "departamento",
+                      widget: "string",
+                    }
                   - { label: "País", name: "pais", widget: "string" }
                   - {
                       label: "País (ISO 3166-1 alpha-2)",
