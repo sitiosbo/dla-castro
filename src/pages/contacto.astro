@@ -3,6 +3,7 @@
 // Replica el cierre del deck: Especialista / Experiencia / Cobertura / Contacto Directo.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getEntry } from 'astro:content';
+import { direccionLineas, mapsUrl } from '../data/oficina';
 
 const settings = await getEntry('settings', 'general');
 const { whatsapp, email, ciudadesCobertura } = settings.data.contacto;
@@ -160,6 +161,22 @@ const schemaExtra = {
                 <p class="email-direct">Email: <a href={`mailto:${email}`}>{email}</a></p>
               )}
             </div>
+          </div>
+
+          <!-- Nuestra oficina (dirección desde settings/general.json → data/oficina.ts) -->
+          <div class="office-card">
+            <p class="eyebrow">Nuestra oficina</p>
+            <address class="office-direccion">
+              <span class="office-linea office-linea-calle">{direccionLineas[0]}</span>
+              <span class="office-linea">{direccionLineas[1]}</span>
+              <span class="office-linea">{direccionLineas[2]}</span>
+            </address>
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="btn-maps">
+              Cómo llegar
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
           </div>
         </aside>
       </div>
@@ -559,6 +576,36 @@ const schemaExtra = {
   .wa-pending-text { font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.5); }
   .email-direct { font-family: var(--font-body); font-size: 0.8125rem; color: rgba(255,255,255,0.6); margin-top: 0.75rem; }
   .email-direct a { color: var(--color-terracotta-500); text-decoration: none; }
+
+  /* Nuestra oficina */
+  .office-card {
+    background: var(--color-white);
+    border: 1px solid rgba(15, 27, 61, 0.1);
+    border-radius: var(--radius-card);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-card);
+    margin-top: 1.5rem;
+  }
+  .office-direccion { display: flex; flex-direction: column; gap: 0.375rem; font-style: normal; margin-bottom: 1.25rem; }
+  .office-linea { font-family: var(--font-body); font-size: 0.9375rem; color: var(--color-ink-600); line-height: 1.5; }
+  .office-linea-calle { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: var(--color-navy-800); line-height: 1.35; }
+  .btn-maps {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      transform var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+  .btn-maps:hover { background: var(--color-terracotta-500); transform: translateY(-1px); }
 
   @media (max-width: 900px) {
     .contacto-grid { grid-template-columns: 1fr; }

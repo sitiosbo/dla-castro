@@ -5,6 +5,7 @@
 import BaseLayout from './BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Timeline from '../components/Timeline.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   titulo: string;
@@ -18,6 +19,24 @@ interface Props {
 
 const { titulo, resumen, slug, prioridadConversion, breadcrumbLabel } = Astro.props;
 const esUrgente = prioridadConversion === 'alta';
+
+// Sección "Sigue explorando": otras áreas (excluye la actual), orden fijo por slug
+const ordenAreas = [
+  'seguros-generales',
+  'seguros-de-personas',
+  'fianzas-y-caucion',
+  'impugnacion-de-rechazos',
+];
+const servicios = await getCollection('servicios');
+const otrasAreas = servicios
+  .filter((area) => area.slug !== slug)
+  .sort((a, b) => ordenAreas.indexOf(a.slug) - ordenAreas.indexOf(b.slug))
+  .map((area) => ({
+    slug: area.slug,
+    titulo: area.data.titulo,
+    resumen: area.data.resumen,
+    prioridadConversion: area.data.prioridadConversion,
+  }));
 
 // Schema BreadcrumbList
 const schemaExtra = {
@@ -125,19 +144,29 @@ const fasesImpugnacion = [
             <span class="sidebar-meta-item">Confidencial</span>
           </div>
         </div>
-
-        <!-- Enlace a otras áreas -->
-        <div class="sidebar-otras-areas">
-          <p class="sidebar-otras-titulo">Otras áreas de práctica</p>
-          <a href="/areas-de-practica/seguros-generales/" class="sidebar-area-link">Seguros Generales</a>
-          <a href="/areas-de-practica/seguros-de-personas/" class="sidebar-area-link">Seguros de Personas</a>
-          <a href="/areas-de-practica/fianzas-y-caucion/" class="sidebar-area-link">Fianzas y Caución</a>
-          <a href="/areas-de-practica/impugnacion-de-rechazos/" class="sidebar-area-link sidebar-area-link-highlight">
-            Impugnación de Rechazos →
-          </a>
-        </div>
       </aside>
     </div>
+
+    <!-- Otras áreas al pie del contenido (el sidebar solo queda con el card de contacto) -->
+    <section class="sigue-explorando" aria-labelledby="sigue-explorando-titulo">
+      <div class="sigue-explorando-inner">
+        <p class="eyebrow">Otras áreas de práctica</p>
+        <h2 id="sigue-explorando-titulo" class="sigue-titulo">Sigue explorando</h2>
+        <div class="sigue-grid">
+          {otrasAreas.map((area) => (
+            <a
+              href={`/areas-de-practica/${area.slug}/`}
+              class:list={['sigue-card', { 'sigue-card-destacada': area.prioridadConversion === 'alta' }]}
+            >
+              <span class="sigue-card-eyebrow">Área de práctica</span>
+              <h3 class="sigue-card-titulo">{area.titulo}</h3>
+              <p class="sigue-card-resumen">{area.resumen}</p>
+              <span class="sigue-card-cta">Ver área →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   </main>
 </BaseLayout>
 
@@ -385,9 +414,11 @@ const fasesImpugnacion = [
     display: flex;
     flex-direction: column;
     gap: 0.875rem;
-    margin-bottom: 1.5rem;
+  }
+
+  .area-sidebar {
     position: sticky;
-    top: 5rem;
+    top: calc(var(--header-height) + 1rem);
   }
 
   .sidebar-eyebrow {
@@ -453,49 +484,116 @@ const fasesImpugnacion = [
     font-size: 0.6875rem;
   }
 
-  .sidebar-otras-areas {
+  /* Sección "Sigue explorando" */
+  .sigue-explorando {
+    max-width: 72rem;
+    margin: 4rem auto 0;
+    padding: 0 1.5rem;
+  }
+
+  .sigue-explorando-inner {
+    border-top: 1px solid rgba(15, 27, 61, 0.08);
+    padding-top: 3rem;
+  }
+
+  .sigue-titulo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin: 0 0 1.5rem;
+  }
+
+  .sigue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+
+  .sigue-card {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem;
-    padding: 1.25rem;
+    background: var(--color-white);
     border: 1px solid rgba(15, 27, 61, 0.08);
     border-radius: var(--radius-card);
+    padding: 1.5rem;
+    text-decoration: none;
+    transition:
+      transform var(--motion-duration-micro) var(--motion-ease-micro),
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      box-shadow var(--motion-duration-micro) var(--motion-ease-micro);
   }
 
-  .sidebar-otras-titulo {
-    font-family: var(--font-body);
-    font-size: 0.6875rem;
-    font-weight: 600;
+  .sigue-card:hover,
+  .sigue-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(15, 27, 61, 0.2);
+    box-shadow: var(--shadow-card);
+  }
+
+  .sigue-card:focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: 2px;
+  }
+
+  .sigue-card-destacada {
+    border-top: 3px solid var(--color-terracotta-600);
+  }
+
+  .sigue-card-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--color-ink-400);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
   }
 
-  .sidebar-area-link {
+  .sigue-card-destacada .sigue-card-eyebrow {
+    color: var(--color-terracotta-600);
+  }
+
+  .sigue-card-titulo {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-navy-800);
+    line-height: 1.3;
+    margin: 0 0 0.5rem;
+  }
+
+  .sigue-card-resumen {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sigue-card-cta {
+    margin-top: auto;
     font-family: var(--font-body);
     font-size: 0.875rem;
-    color: var(--color-ink-600);
-    text-decoration: none;
-    padding: 0.375rem 0.5rem;
-    border-radius: 0.25rem;
-    transition:
-      color var(--motion-duration-micro) var(--motion-ease-micro),
-      background var(--motion-duration-micro) var(--motion-ease-micro);
-  }
-
-  .sidebar-area-link:hover {
-    color: var(--color-navy-800);
-    background: rgba(15, 27, 61, 0.04);
-  }
-
-  .sidebar-area-link-highlight {
-    color: var(--color-terracotta-600);
     font-weight: 600;
+    color: var(--color-terracotta-600);
   }
 
-  .sidebar-area-link-highlight:hover {
+  .sigue-card-destacada .sigue-card-cta {
     color: var(--color-terracotta-500);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sigue-card:hover,
+    .sigue-card:focus-visible {
+      transform: none;
+    }
   }
 
   @media (max-width: 900px) {
@@ -503,7 +601,7 @@ const fasesImpugnacion = [
       grid-template-columns: 1fr;
     }
 
-    .sidebar-card {
+    .area-sidebar {
       position: static;
     }
   }

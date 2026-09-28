@@ -239,3 +239,123 @@ Verificación: grep del dominio/correo viejos y de la URL de workers.dev →
 Redacción de `ESTADO.md:142` (dominio ya no es placeholder) y de `ARQUITECTURA...md:11`
 (sin texto de pendiente ni alternativa `.com.bo`) corregida tras confirmación
 del usuario: el dominio es definitivo.
+
+## 6.7 Sidebar áreas de práctica — sticky al contenedor, no al card (24-sep-2026)
+
+Bug: en las 4 páginas de `/areas-de-practica/` el card de contacto (`position:
+sticky; top: 5rem`) se desplazaba sobre el listado "Otras áreas de práctica"
+(.sidebar-otras-areas) al hacer scroll, porque el sticky estaba solo en el card.
+
+Fix en el bloque `<style>` de `src/layouts/AreaLayout.astro` (solo CSS, markup
+intacto):
+
+1. `.sidebar-card`: eliminados `position: sticky;` y `top: 5rem;`.
+2. Nueva regla `.area-sidebar`: `position: sticky; top: calc(var(--header-height)
+   + 1rem); max-height: calc(100vh - var(--header-height) - 2rem); overflow-y: auto`
+   — card + listado se mueven juntos; `max-height` + `overflow-y` es la red de
+   seguridad para ventanas bajas (scroll interno en vez de contenido cortado).
+3. Media query ≤900px: `.sidebar-card { position: static; }` → `.area-sidebar
+   { position: static; max-height: none; overflow-y: visible; }`.
+
+Clave del fix: `.area-main-inner` tiene `align-items: start` (el aside tiene alto
+= contenido), por eso el sticky debe ir en el `<aside>` (containing block = grid
+area de la columna de contenido).
+
+Verificación: `npm run build` sin errores. CSS compilado confirmado en
+`dist/_astro/fianzas-y-caucion.CG0p48zu.css` (chunk que comparten las 4 páginas):
+regla sticky nueva presente, regla mobile presente, `.sidebar-card` sin
+sticky/top. Quedan pendientes de prueba visual manual por el usuario (screenshots
+desktop scroll medio, ventana baja ~600px, mobile ≤900px, y foco con Tab en los
+vínculos del listado — el `overflow-y: auto` del aside podría recortar el contorno
+de foco). Sin git.
+
+## 6.8 Sidebar sin scroll interno + sección "Sigue explorando" (24-sep-2026)
+
+Supera a 6.7: el `max-height` + `overflow-y: auto` añadido allí generaba una barra
+de scroll dentro del card azul (mala UX). Solución: el aside queda **solo con el
+card** (~335px, cabe en cualquier laptop) y "Otras áreas de práctica" baja al pie
+del contenido como sección "Sigue explorando".
+
+`src/layouts/AreaLayout.astro` (único archivo tocado; las 4 páginas, tokens.css,
+Timeline y hero intactos):
+
+**A. Sidebar**
+- `.area-sidebar`: eliminados `max-height` y `overflow-y`; conserva `position:
+  sticky; top: calc(var(--header-height) + 1rem)`.
+- Markup: eliminado el bloque `<div class="sidebar-otras-areas">` completo.
+- `.sidebar-card`: eliminado `margin-bottom: 1.5rem`.
+- CSS muerto borrado: `.sidebar-otras-areas`, `.sidebar-otras-titulo`,
+  `.sidebar-area-link`, `:hover`, `.sidebar-area-link-highlight` y su `:hover`.
+- Media ≤900px: `.area-sidebar { position: static; }` (sin max-height/overflow).
+
+**B. Sección "Sigue explorando"** (nueva, dentro de `<main>`, después de
+`.area-main-inner`; contenedor 72rem + padding 1.5rem; `margin-top: 4rem`;
+`border-top: 1px rgba(15,27,61,0.08)` + `padding-top: 3rem` en `.sigue-explorando-inner`)
+- Semántica: `<section aria-labelledby="sigue-explorando-titulo">` + `<h2 id>`
+  con estilo propio (display/navy-800/1.5rem, igual que los h2 del prose);
+  `.eyebrow` global sobre el título.
+- Datos dinámicos: `getCollection('servicios')` filtrando el área actual
+  (`area.slug !== slug`) y orden fijo por slug (seguros-generales →
+  seguros-de-personas → fianzas-y-caucion → impugnacion-de-rechazos).
+- Card: `<a>` completo; eyebrow mono "Área de práctica"; título display navy-800;
+  resumen ink-600 con `-webkit-line-clamp: 3`; "Ver área →" terracotta-600 con
+  `margin-top: auto` (alturas iguales vía grid `stretch` + flex-column).
+- Énfasis `prioridadConversion === 'alta'` (impugnación): `border-top: 3px`
+  terracotta + eyebrow/CTA en terracotta.
+- Grid: `repeat(auto-fit, minmax(16rem, 1fr))`, gap 1.25rem → 3 columnas en
+  desktop, colapsa solo en pantallas angostas (sin media query extra).
+- Hover/focus-visible: `translateY(-2px)` + border-color + `box-shadow:
+  var(--shadow-card)` (3 propiedades, todas con `--motion-duration-micro` y
+  `--motion-ease-micro`); `@media (prefers-reduced-motion: reduce)` anula el
+  transform; foco de teclado con outline terracotta 2px.
+
+**Verificación:** `npm run build` 0 errores / 0 warnings (2 hints preexistentes
+de BaseLayout). HTML de las 4 páginas: sección presente, 3 tarjetas cada una,
+el área actual excluida, orden fijo correcto, impugnación con clase
+`sigue-card-destacada` en las 3 páginas restantes, DOM order contenido →
+aside → sección. CSS compilado: 0 referencias a `sidebar-otras-*` /
+`sidebar-area-link*` / `overflow-y` / `max-height: calc(100vh…`; reglas
+`.sigue-*` completas incl. line-clamp y reduced-motion. Dev server (`npm run
+dev`) responde HTTP 200 con la sección. Sin git (usuario revisa localmente).
+
+## 6.9 Dirección física real de la oficina en todo el sitio (24-sep-2026)
+
+Dirección definitiva del cliente (sin inventar teléfono/horarios/coords/CP):
+Calle Ballivián #1456, Edificio Cervantes, Mezanine 2, Oficina 4, entre calles
+Loayza y Bueno · La Paz, Bolivia.
+
+**Fuente única de datos:** `src/content/settings/general.json` → `contacto.direccion`
+(el lugar donde ya vivían WhatsApp y email) con campos `calle, edificio, piso,
+oficina, referencia, ciudad, departamento, pais, paisISO`. Extensiones:
+- `src/content/config.ts`: schema zod de `settings.contacto.direccion` (requerido).
+- `src/data/oficina.ts` (nuevo): SOLO derivaciones — `streetAddress`,
+  `direccionLineas` (3 líneas /contacto), `direccionCorta` (footer),
+  `direccionTextoLargo` (legal + Maps), `direccionSchema` (PostalAddress) y
+  `mapsUrl` (Google Maps search con `encodeURIComponent`, sin iframe).
+- `public/admin/config.yml`: campo `direccion` registrado en Decap (un guardado
+  del CMS no lo borra y el cliente puede editarlo).
+
+**Dónde se muestra:**
+1. `/contacto/`: bloque "Nuestra oficina" (`.office-card`, card blanco bajo el
+   `.info-card` del sidebar — form, `.direct-contact-box`, toast y WhatsApp intactos:
+   diff de contacto.astro = 47 altas / 0 bajas) con 3 líneas + botón "Cómo llegar"
+   (`target="_blank" rel="noopener noreferrer"`).
+2. Footer (todas las páginas): línea "Oficina · Calle Ballivián #1456, … · La Paz,
+   Bolivia" y la línea de cobertura ahora etiquetada "Cobertura · La Paz · Santa
+   Cruz · Cochabamba · Toda Bolivia" (contenido intacto).
+3. JSON-LD BaseLayout: entidad existente **LegalService** extendida — su
+   `address` (antes solo locality+country, con comentario de "pendiente") ahora es
+   `PostalAddress` con `streetAddress`, `addressLocality`, `addressRegion`,
+   `addressCountry: BO`; sin geo/telephone nuevos/openingHours. Sin entidades
+   duplicadas (LegalService + Person + BreadcrumbList).
+4. Legales: `/aviso-legal/` (párrafo "Domicilio de la oficina" en Titular) y
+   `/politica-privacidad/` (nueva sección "Responsable del sitio" con domicilio).
+
+**Checklist:** dirección sale de un solo archivo (grep `Ballivián` en src/ → solo
+general.json); build 0 errores/0 warnings (2 hints preexistentes); JSON-LD parsea
+como JSON válido en home y contacto; strings idénticos entre contacto/footer/schema/
+legales (derivan del mismo JSON); footer con label "Oficina" vs "Cobertura" para
+no contradecir la cobertura nacional; form/toast/WhatsAppFloat/worker sin tocar.
+Páginas legales: existen y tienen contenido real pero siguen marcadas con TODO
+("validar con el abogado el texto legal completo") — se les sumó el domicilio sin
+reescribirlas. Sin git.

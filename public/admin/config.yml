@@ -159,6 +159,29 @@ collections:
                   widget: "string",
                   required: false,
                 }
+              - label: "Dirección de la oficina"
+                name: "direccion"
+                widget: "object"
+                fields:
+                  - { label: "Calle", name: "calle", widget: "string" }
+                  - { label: "Edificio", name: "edificio", widget: "string" }
+                  - { label: "Piso", name: "piso", widget: "string" }
+                  - { label: "Oficina", name: "oficina", widget: "string" }
+                  - {
+                      label: "Referencia (entre calles)",
+                      name: "referencia",
+                      widget: "string",
+                      required: false,
+                    }
+                  - { label: "Ciudad", name: "ciudad", widget: "string" }
+                  - { label: "Departamento/Región", name: "departamento", widget: "string" }
+                  - { label: "País", name: "pais", widget: "string" }
+                  - {
+                      label: "País (ISO 3166-1 alpha-2)",
+                      name: "paisISO",
+                      widget: "string",
+                      hint: "Código de 2 letras para schema.org, ej. BO",
+                    }
               - {
                   label: "Ciudades de cobertura",
                   name: "ciudadesCobertura",

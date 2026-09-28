@@ -61,6 +61,18 @@ const settings = defineCollection({
     contacto: z.object({
       whatsapp: z.string(),
       email: z.string().email().optional(),
+      // Dirección física de la oficina — única fuente de verdad (ver src/data/oficina.ts)
+      direccion: z.object({
+        calle: z.string(),
+        edificio: z.string(),
+        piso: z.string(),
+        oficina: z.string(),
+        referencia: z.string(),
+        ciudad: z.string(),
+        departamento: z.string(),
+        pais: z.string(),
+        paisISO: z.string(),
+      }),
       ciudadesCobertura: z.array(z.string()),
     }),
     redes_sociales: z.object({

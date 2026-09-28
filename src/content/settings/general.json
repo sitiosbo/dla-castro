@@ -9,6 +9,17 @@
   "contacto": {
     "whatsapp": "59157001099",
     "email": "defensalegaldelasegurado@gmail.com",
+    "direccion": {
+      "calle": "Calle Ballivián #1456",
+      "edificio": "Edificio Cervantes",
+      "piso": "Mezanine 2",
+      "oficina": "Oficina 4",
+      "referencia": "Entre calles Loayza y Bueno",
+      "ciudad": "La Paz",
+      "departamento": "La Paz",
+      "pais": "Bolivia",
+      "paisISO": "BO"
+    },
     "ciudadesCobertura": [
       "La Paz",
       "Santa Cruz",
