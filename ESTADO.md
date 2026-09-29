@@ -412,3 +412,35 @@ institucional completa con status HTTP 404.
   200; `npm run build` OK (16 páginas, astro check 0 errores); screenshot
   headless local con header, footer, botones y banner de cookies correctos;
   meta robots presente solo en 404.html. Sin git (usuario revisa localmente).
+
+## 6.12 Un solo `<h1>` en la portada — carrusel del Hero (29-sep-2026)
+
+**Problema:** `Hero.astro:107` renderizaba `<h1 class="hero-h1">` dentro del
+`.map()` de los 4 slides → `grep -c "<h1" dist/index.html` = **4** (los 4 en el
+DOM a la vez para el cross-fade).
+
+**Fix (solo estructura semántica, 0 cambios de comportamiento):**
+- Slide 1 (visible por defecto) conserva `<h1 class="hero-h1">`; slides 2-4
+  ahora son `<div class="hero-h1">` — no son subtítulos, son variantes del mismo
+  titular (ni h2-h6). El texto siguen poniéndolo los mismos datos de
+  `hero-slides`; el JS del ciclo (que solo alterna clases
+  `hero-slide-active`/`aria-hidden`) no se tocó.
+- `.hero-h1`: añadido `margin-top: 0.67em` explícito — era el margen UA del
+  `<h1>` que los `<div>` no heredan; sin esto los slides 2-4 subirían ~29px en
+  el cross-fade. Para el `<h1>` el valor es idéntico al UA → cero cambio.
+- No se tocaron wordmark, badge, CTAs, animaciones ni timings.
+
+**Verificación (numérica, CDP headless antes/después, mismo dev server):**
+- `grep -c "<h1" dist/index.html` → **1** (Git grep); el único h1 = slide 1
+  ("25+ años de trayectoria…"). Resto de páginas: 1 h1 cada una.
+- Métricas de los 4 títulos idénticas antes/después en ambos estados del ciclo
+  (x/y/w/h, margin, font-size 44px, line-height 55px, weight 600, Fraunces):
+  **0 píxeles de diferencia en la zona del hero (y0–700)**; solo varía la banda
+  y>700 entre ejecuciones (banner de cookies/WhatsApp, ruido ambiental — ocurre
+  también entre dos ejecuciones con el mismo código).
+- Ciclo intacto: active 0 → 2 con el mismo timing (3200ms/slide); capturas
+  antes/después del estado intermedio fueron byte-idénticas (MD5 igual).
+- `npm run build` OK (16 páginas, astro check 0 errores).
+- Capturas: `_qa-h1-inicio.png` (slide 1) y `_qa-h1-ciclo.png` (slide 3 activo)
+  en la raíz — temporales, sin commitear (el preview de imágenes del entorno
+  estaba sirviendo caché vieja; abrir los archivos directamente). Sin git.

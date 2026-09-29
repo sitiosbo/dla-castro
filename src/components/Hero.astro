@@ -104,7 +104,14 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
           data-background={slide.background}
           aria-hidden={i !== 0 ? 'true' : undefined}
         >
-          <h1 class="hero-h1" set:html={slide.titulo.replace(/\n/g, '<br />')} />
+          {/* Exactamente UN <h1> por página: la primera variante (la visible
+              por defecto). Las demás siguen en el DOM para el cross-fade pero
+              con etiqueta no semántica (no son subtítulos, son variantes). */}
+          {i === 0 ? (
+            <h1 class="hero-h1" set:html={slide.titulo.replace(/\n/g, '<br />')} />
+          ) : (
+            <div class="hero-h1" set:html={slide.titulo.replace(/\n/g, '<br />')} />
+          )}
           <p class="hero-subhead">{slide.subhead}</p>
         </div>
       ))}
@@ -471,6 +478,9 @@ const heroImages = [trayectoriaImg, recuperoImg, ramosImg, defensaImg];
     font-weight: 600;
     line-height: 1.25;
     color: var(--color-white);
+    /* Margen UA del <h1> (0.67em) fijado explícitamente: los slides 2-4 son
+       <div> y deben conservar EXACTAMENTE la misma posición en el cross-fade. */
+    margin-top: 0.67em;
     margin-bottom: 1.25rem;
     min-height: 3.4em;
     display: flex;
