@@ -359,3 +359,56 @@ no contradecir la cobertura nacional; form/toast/WhatsAppFloat/worker sin tocar.
 Páginas legales: existen y tienen contenido real pero siguen marcadas con TODO
 ("validar con el abogado el texto legal completo") — se les sumó el domicilio sin
 reescribirlas. Sin git.
+
+## 6.10 Imagen Open Graph por defecto (og-default.png) (29-sep-2026)
+
+`BaseLayout.astro` declara `ogImage = '/og-default.png'` (og:image y twitter:image
+→ `https://defensalegaldelasegurado.com/og-default.png`) pero el archivo no
+existía: 404 al compartir el sitio en WhatsApp/Facebook. Se generó el archivo;
+el meta tag NO se tocó.
+
+- **Nuevo:** `public/og-default.png` — PNG 1200×630 exactos, 150.3 KB (< 300 KB).
+- **Nuevo:** `scripts/generate-og-image.mjs` (script único, reproducible con
+  `node scripts/generate-og-image.mjs`; se decidió dejarlo documentado en vez de
+  borrarlo): compone con sharp — gradiente 135° navy-950 → navy-800 + grid 40px
+  blanco 2.5% (mismo patrón del Hero), glow terracotta sutil, logo isotipo
+  `src/assets/images/brand/logo.png` a 104px, barra de acento terracotta-600,
+  título "DLA — Defensa Legal del Asegurado" en Fraunces 700, subtítulo
+  "Abogado especialista en Derecho de Seguros · Bolivia" en Inter 400 (tamaños
+  auto-ajustados por medida real del texto, tope 1020px útiles) y dominio en
+  terracotta-500. Todos los colores se leen de `tokens.css` (con fallback literal).
+- **Nota técnica:** librsvg (motor SVG de sharp) ignora `@font-face`; el render
+  usa las familias Fraunces/Inter instaladas en la máquina (presentes aquí;
+  documentado en el encabezado del script).
+- **Verificación:** `npm run build` OK → `dist/og-default.png` = 153864 bytes;
+  HTML de dist sigue con `og:image`/`twitter:image` idénticos (0 cambios en
+  BaseLayout.astro); imagen abierta en el explorador. Sin git (usuario revisa
+  localmente).
+
+## 6.11 Página 404 personalizada (29-sep-2026)
+
+Antes: no existía `src/pages/404.astro` → cualquier URL inexistente devolvía
+una respuesta vacía (0 bytes, pantalla en blanco). Ahora sirve una página
+institucional completa con status HTTP 404.
+
+- **Nuevo:** `src/pages/404.astro` — BaseLayout completo (Header + Footer +
+  WhatsAppFloat + Toast + CookieBanner), eyebrow mono "Error 404" terracotta,
+  "404" grande en Fraunces navy-800 (`aria-hidden`), h1 "Página no encontrada",
+  texto institucional y 3 acciones: **Volver al inicio** (primario terracotta),
+  **Áreas de práctica** y **Contacto** (secundarios con borde). Solo tokens de
+  `tokens.css` (colores, `--radius-card`, transiciones `--motion-*` con
+  reduced-motion heredado); CRLF y sin BOM como las páginas hermanas.
+- **BaseLayout.astro (único cambio fuera de la página, necesario y reportado):**
+  prop opcional `noindex?: boolean` (default `false`) → `<meta name="robots"
+  content="noindex">`. Sin la prop, nada cambia en el resto de páginas
+  (verificado: dist/index.html sin meta robots).
+- **Title:** "Página no encontrada · DLA — Defensa Legal del Asegurado" ✓.
+- **wrangler.jsonc NO se tocó** — ya tenía `"not_found_handling": "404-page"`,
+  así que Cloudflare Static Assets sirve `dist/404.html` con status 404; el
+  worker sigue delegando todo en `env.ASSETS.fetch` (sin cambios).
+- **Verificación:** dev server → `curl -I .../pagina-que-no-existe/` = HTTP 404
+  con 72235 bytes de contenido; `npx wrangler dev` (mismo camino que producción:
+  worker + assets) → HTTP 404 + 23186 bytes (= dist/404.html) y control `/` =
+  200; `npm run build` OK (16 páginas, astro check 0 errores); screenshot
+  headless local con header, footer, botones y banner de cookies correctos;
+  meta robots presente solo en 404.html. Sin git (usuario revisa localmente).

@@ -17,6 +17,8 @@ interface Props {
   schemaExtra?: Record<string, unknown> | Record<string, unknown>[];
   canonical?: string;
   ogImage?: string;
+  // noindex: páginas que no deben indexarse (ej. 404) → <meta name="robots">
+  noindex?: boolean;
 }
 const {
   title,
@@ -24,6 +26,7 @@ const {
   schemaExtra,
   canonical = Astro.url.href,
   ogImage = '/og-default.png',
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = 'https://defensalegaldelasegurado.com';
@@ -85,6 +88,7 @@ const schemaOrg = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} · DLA — Defensa Legal del Asegurado</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->

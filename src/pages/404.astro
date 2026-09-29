@@ -1,0 +1,130 @@
+---
+// 404 — Página no encontrada (institucional, tono del sitio).
+// Cloudflare Static Assets sirve dist/404.html con status HTTP 404 para rutas
+// inexistentes gracias a `not_found_handling: "404-page"` en wrangler.jsonc
+// (no fue necesario modificar wrangler ni el worker).
+// `noindex` → <meta name="robots" content="noindex"> (no debe indexarse).
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Página no encontrada"
+  description="La página solicitada no existe o fue movida. Vuelva al inicio o continúe desde las secciones principales de DLA — Defensa Legal del Asegurado."
+  noindex
+>
+  <section class="not-found">
+    <div class="not-found-inner">
+      <p class="eyebrow">Error 404</p>
+      <p class="nf-code" aria-hidden="true">404</p>
+      <h1 class="nf-title">Página no encontrada</h1>
+      <p class="nf-text">
+        La dirección que intentó visitar no existe o fue movida a otra ubicación.
+        Puede volver al inicio o continuar desde las secciones principales del
+        sitio.
+      </p>
+      <div class="nf-actions">
+        <a href="/" class="nf-btn nf-btn-primary">Volver al inicio</a>
+        <a href="/areas-de-practica/" class="nf-btn nf-btn-secondary">Áreas de práctica</a>
+        <a href="/contacto/" class="nf-btn nf-btn-secondary">Contacto</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 5rem 1.5rem 6rem;
+  }
+
+  .not-found-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* "404" decorativo grande — decorativo porque el <h1> lleva el título real */
+  .nf-code {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(5.5rem, 16vw, 9rem);
+    line-height: 1;
+    color: var(--color-navy-800);
+    margin: 0 0 1.5rem;
+  }
+
+  .nf-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-navy-800);
+    margin-bottom: 1rem;
+  }
+
+  .nf-text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-600);
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .nf-btn {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.875rem 1.75rem;
+    border-radius: var(--radius-card);
+    transition:
+      background-color var(--motion-duration-micro) var(--motion-ease-micro),
+      border-color var(--motion-duration-micro) var(--motion-ease-micro),
+      color var(--motion-duration-micro) var(--motion-ease-micro);
+  }
+
+  .nf-btn-primary {
+    color: var(--color-white);
+    background: var(--color-terracotta-600);
+    border: 1px solid var(--color-terracotta-600);
+  }
+
+  .nf-btn-primary:hover {
+    background: var(--color-terracotta-500);
+    border-color: var(--color-terracotta-500);
+  }
+
+  .nf-btn-secondary {
+    color: var(--color-navy-800);
+    background: transparent;
+    border: 1px solid rgba(15, 27, 61, 0.15);
+  }
+
+  .nf-btn-secondary:hover {
+    color: var(--color-terracotta-600);
+    border-color: var(--color-terracotta-600);
+  }
+
+  .nf-btn:focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 568px) {
+    .nf-actions {
+      flex-direction: column;
+    }
+
+    .nf-btn {
+      width: 100%;
+    }
+  }
+</style>
