@@ -444,3 +444,36 @@ DOM a la vez para el cross-fade).
 - Capturas: `_qa-h1-inicio.png` (slide 1) y `_qa-h1-ciclo.png` (slide 3 activo)
   en la raíz — temporales, sin commitear (el preview de imágenes del entorno
   estaba sirviendo caché vieja; abrir los archivos directamente). Sin git.
+
+## 6.13 Un solo `<main>` por página — `<main>` anidados eliminados (29-sep-2026)
+
+**Problema:** `BaseLayout.astro:135` ya define `<main class="site-main">`, pero 10
+páginas declaraban un **segundo** `<main>` anidado dentro (HTML inválido:
+`<main>` dentro de `<main>`) → `grep -o "<main" | wc -l` = **2** en 10 archivos
+de `dist`.
+
+**Fix (solo el nombre de la etiqueta de apertura y el cierre; clases, IDs,
+atributos y contenido intactos):**
+- `<section>` donde el bloque es un listado temático sin envoltorio semántico
+  propio: `pillar-main` (áreas de práctica), `blog-main`, `faq-main`.
+- `<div>` donde es un shell de layout que ya envuelve `<article>`/`<form>`/`<aside>`:
+  `article-main` (blog/[...slug]), `contacto-main`, `about-main`, `area-main`.
+- **Desviación reportada:** 4 de las 10 páginas listadas (fianzas-y-caucion,
+  impugnacion-de-rechazos, seguros-de-personas, seguros-generales) **no tienen
+  `<main>` propio**: lo heredan de `src/layouts/AreaLayout.astro:123`
+  (`<main class="area-main">`). Por eso el fix tocó 6 páginas + AreaLayout.astro
+  (layout, no página). `BaseLayout.astro` NO se tocó. También se verificó que
+  ningún CSS seleccione elementos `main`/`section`/`div` ni haya
+  `querySelector('main')` en JS — el cambio de tag es visualmente neutro.
+
+**Verificación:**
+- `npm run build` OK (16 páginas, `astro check` 0 errores).
+- Loop sobre `dist/` (los 10 archivos de la lista): **11/11 con exactamente `1`**
+  `<main>` (TOTAL=11).
+- QA visual determinista (CDP headless, `prefers-reduced-motion: reduce`, banner
+  de cookies pre-oculto): 4 páginas (contacto, preguntas-frecuentes, áreas,
+  fianzas) capturadas antes/después — dimensiones idénticas (1264x2230,
+  1264x2008, 1264x2097, 1264x2063) y diff de píxeles **0** en áreas y fianzas;
+  46 bytes de 8.4M (0.0005%, ruido de antialias) en contacto y FAQ.
+- Capturas en `%TEMP%\opencode\main-before\` y `%TEMP%\opencode\main-after\`
+  (temporales, sin commitear). Sin git.
