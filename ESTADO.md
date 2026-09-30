@@ -477,3 +477,49 @@ atributos y contenido intactos):**
   46 bytes de 8.4M (0.0005%, ruido de antialias) en contacto y FAQ.
 - Capturas en `%TEMP%\opencode\main-before\` y `%TEMP%\opencode\main-after\`
   (temporales, sin commitear). Sin git.
+
+## 6.14 Decap CMS: preview con tokens.css — fix del 404 en producción (29-sep-2026)
+
+**Problema:** `public/admin/index.html:14` llamaba a
+`window.CMS.registerPreviewStyle('/src/styles/tokens.css')`. `src/` no se copia a
+`dist/` (verificado: no existe `dist/src/styles/tokens.css` y un server estático
+sobre `dist/` responde **404** en esa ruta) → en producción el CSS nunca llegaba y
+el preview del editor se veía sin estilos. En `astro dev` sí funcionaba (Vite sirve
+`/src/...`), por eso nunca se había visto roto en local.
+
+**Fix (sincronización automática, sin copias manuales):**
+- `package.json`: nuevo script `"prebuild": "node scripts/copy-cms-preview-styles.mjs"`
+  (npm lo ejecuta solo antes de `build`). No se tocó ningún otro script
+  (`build`, `dev`, `deploy`, `preview` intactos).
+- `scripts/copy-cms-preview-styles.mjs` (nuevo, cero dependencias): `fs.copyFileSync`
+  de `src/styles/tokens.css` → `public/admin/tokens.css` (copia byte a byte).
+- `public/admin/index.html:14` → `registerPreviewStyle('/admin/tokens.css')`.
+- Sin cambios en `src/styles/tokens.css`, `config.yml` ni en el resto de `index.html`.
+
+**Verificación:**
+- `npm run build` ejecuta el prebuild (log `> prebuild` +
+  `[copy-cms-preview-styles] ... -> public/admin/tokens.css (5644 bytes)`); probado
+  borrando antes el archivo: se regenera solo. `dist/admin/tokens.css` existe con
+  MD5 `07591A12FA8865342D320DF61F550E20` = idéntico al origen (build 16 páginas OK).
+- Server estático sobre `dist/` (condiciones de producción): `/admin/tokens.css` =
+  **200**, ruta vieja `/src/styles/tokens.css` = **404**, `/admin/` = 200.
+- Panel Decap en local (CDP headless): sesión vía `local_backend` (config.yml
+  interceptado en memoria — el archivo NO se tocó) + `npx decap-server` en :8081.
+  Con el artículo `ejemplo-post` abierto y su preview visible: red
+  `GET /admin/tokens.css` = **200 text/css**; el iframe de preview carga
+  `<link href="/admin/tokens.css">` y `--color-navy-950 = #0F1B3D`; un `span.eyebrow`
+  (clase que solo define tokens.css) computa `color: rgb(181, 98, 44)` terracota +
+  `IBM Plex Mono` + `uppercase`, mientras en el documento principal (sin el CSS)
+  computa `rgb(121, 130, 145)` → control negativo. Capturas en
+  `%TEMP%\opencode\decap-final2\` (01-panel-login, 02-panel-colecciones,
+  03-editor-con-preview, 04-preview-con-tokens con la etiqueta terracota visible).
+
+**Decisión `.gitignore` (reportada, NO aplicada):** NO agregar todavía
+`public/admin/tokens.css`. Motivo: `npm run deploy` es `astro build && wrangler deploy`
+y npm solo dispara `prebuild` antes de `npm run build` (no antes de `deploy` ni de
+`dev`); con el archivo ignorado y sin commitear, un deploy desde un clone limpio
+dejaría `dist/admin/tokens.css` ausente → volvería el 404. Alternativa pendiente de
+aprobación: ignorarlo Y añadir `predeploy`/`predev` con el mismo script (eso sí
+modifica scripts, prohibido en esta tarea). `wrangler.jsonc` no se tocó.
+Archivos sin commitear: `package.json` y `public/admin/index.html` (M) +
+`scripts/copy-cms-preview-styles.mjs` y `public/admin/tokens.css` (??). Sin git.
