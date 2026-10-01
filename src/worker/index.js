@@ -95,7 +95,8 @@ async function handleContacto(request, env) {
   if (
     !data.nombre?.trim() ||
     !data.tipoCaso?.trim() ||
-    !data.telefono?.trim()
+    !data.telefono?.trim() ||
+    data.consentimiento !== true
   ) {
     return jsonResponse(
       { ok: false, error: "Faltan campos obligatorios" },
@@ -121,6 +122,7 @@ async function handleContacto(request, env) {
         telefono: data.telefono?.trim() ?? "",
         email: data.email?.trim() ?? "",
         mensaje: data.mensaje?.trim() ?? "",
+        consentimiento: data.consentimiento === true,
       }),
     });
 

@@ -523,3 +523,49 @@ aprobación: ignorarlo Y añadir `predeploy`/`predev` con el mismo script (eso s
 modifica scripts, prohibido en esta tarea). `wrangler.jsonc` no se tocó.
 Archivos sin commitear: `package.json` y `public/admin/index.html` (M) +
 `scripts/copy-cms-preview-styles.mjs` y `public/admin/tokens.css` (??). Sin git.
+
+## 6.15 Consentimiento de Política de Privacidad propagado hasta el Sheet (01-oct-2026)
+
+**Problema:** el checkbox `consentimiento` existía en el HTML (`contacto.astro:105`,
+`required`, el navegador ya bloqueaba el envío sin marcarlo) pero el campo NO viajaba
+en el `payload` del formulario ni en el reenvío del Worker a Google Apps Script → las
+2 columnas nuevas del Sheet ("Consentimiento Aceptado" y "Versión Política
+Privacidad", ya agregadas por Wilson en el Apps Script) quedaban siempre vacías.
+
+**Cambios (3):**
+- `src/pages/contacto.astro` — en el `payload` de `handleSubmit` (~línea 881):
+  `consentimiento: (form.elements.namedItem('consentimiento') as HTMLInputElement)?.checked ?? false`.
+  Checkbox HTML, `required` y demás campos intactos.
+- `src/worker/index.js` — en `handleContacto`: (a) revalidación server-side suma
+  `data.consentimiento !== true` → 400 `"Faltan campos obligatorios"` (bloquea un
+  POST directo a `/api/contacto` sin consentimiento, saltándose el checkbox); (b) el
+  `body` reenviado a `env.APPS_SCRIPT_URL` incluye
+  `consentimiento: data.consentimiento === true`.
+- `src/pages/contacto.astro` — solo el bloque de comentario de referencia del Apps
+  Script (~líneas 616-681) actualizado al código REAL desplegado: headers con
+  `'Consentimiento Aceptado'` y `'Versión Política Privacidad'`, constante
+  `VERSION_POLITICA_PRIVACIDAD = '2026-09-28'` y `appendRow` con
+  `data.consentimiento === true ? 'Sí' : 'No'` + la versión. Verificado línea a
+  línea: las 42 líneas del bloque son idénticas al Código.gs que Wilson tiene en
+  producción (diff 0). Solo documentación, no afecta comportamiento.
+- NO se tocaron: `handleAuth`, `handleCallback`, otras funciones del Worker,
+  `wrangler.jsonc`, secrets/variables, `.dev.vars` ni el diseño de la página.
+
+**Verificación local (`npm run build` OK: `astro check` + 16 páginas; luego
+`npx wrangler dev --port 8787`):** para no ensuciar el Sheet real se usó
+`--var APPS_SCRIPT_URL=http://127.0.0.1:8788/exec` (flag CLI con precedencia sobre
+`.dev.vars`) apuntando a un mock de Apps Script que imprime el body recibido.
+- Positiva (formulario real en `/contacto/` vía Chrome headless CDP): campos
+  llenados + checkbox marcado + enviar → toast "Consulta enviada correctamente",
+  `POST /api/contacto` = **200** `{"ok":true}` y el mock registró
+  `"consentimiento": true`. Capturas en `%TEMP%\opencode\consent-form\`
+  (01-formulario-vacio, 02-formulario-llenado-con-check, 03-tras-envio).
+- Negativa (curl directo al Worker): payload sin el campo `consentimiento` →
+  **400** `{"ok":false,"error":"Faltan campos obligatorios"}`; con
+  `"consentimiento": false` → **400** idéntico.
+- Log de wrangler: `POST /api/contacto 200 OK` (positiva) y `400 Bad Request`
+  (negativas), coherente con lo anterior.
+
+**Nota:** el Apps Script (Google) se sigue editando a mano fuera del repo; aquí solo
+se documentó su copia de referencia. Archivos sin commitear: `src/pages/contacto.astro`
+y `src/worker/index.js` (M). Sin git.

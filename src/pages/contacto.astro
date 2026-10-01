@@ -621,20 +621,15 @@ const schemaExtra = {
   2. Ir a Extensiones > Apps Script > pegar este código en Código.gs:
   ============================================================
 
-  const EXPECTED_HEADERS = ['Fecha', 'Nombre', 'Tipo de Caso', 'Aseguradora', 'Teléfono', 'Email', 'Mensaje'];
+  const EXPECTED_HEADERS = ['Fecha', 'Nombre', 'Tipo de Caso', 'Aseguradora', 'Teléfono', 'Email', 'Mensaje', 'Consentimiento Aceptado', 'Versión Política Privacidad'];
+
+  const VERSION_POLITICA_PRIVACIDAD = '2026-09-28'; // Actualizar esta fecha cada vez que se modifique la Política de Privacidad del sitio
 
   function doPost(e) {
     try {
       var data = JSON.parse(e.postData.contents);
-
-      // OPCIÓN A (Recomendada): Si el script se creó desde la hoja (Extensiones > Apps Script),
-      // no necesitas configurar ningún ID:
       var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
-      // OPCIÓN B: Si es un Apps Script independiente, usa openById con el ID de la hoja:
-      // var sheet = SpreadsheetApp.openById('COLOCA_AQUI_EL_ID_DEL_SHEET').getActiveSheet();
-
-      // Auto-crear fila de encabezados si no existe
       var lastRow = sheet.getLastRow();
       if (lastRow === 0) {
         sheet.getRange(1, 1, 1, EXPECTED_HEADERS.length).setValues([EXPECTED_HEADERS]);
@@ -649,12 +644,14 @@ const schemaExtra = {
 
       sheet.appendRow([
         new Date(),
-        data.nombre      || '',
-        data.tipoCaso    || '',
+        data.nombre || '',
+        data.tipoCaso || '',
         data.aseguradora || '',
-        data.telefono    || '',
-        data.email       || '',
-        data.mensaje     || ''
+        data.telefono || '',
+        data.email || '',
+        data.mensaje || '',
+        data.consentimiento === true ? 'Sí' : 'No',
+        VERSION_POLITICA_PRIVACIDAD
       ]);
 
       return ContentService
@@ -885,6 +882,7 @@ const schemaExtra = {
       telefono: (form.elements.namedItem('telefono') as HTMLInputElement)?.value.trim(),
       email: (form.elements.namedItem('email') as HTMLInputElement)?.value.trim(),
       mensaje: (form.elements.namedItem('mensaje') as HTMLTextAreaElement)?.value.trim(),
+      consentimiento: (form.elements.namedItem('consentimiento') as HTMLInputElement)?.checked ?? false,
     };
 
     try {
