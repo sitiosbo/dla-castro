@@ -1,16 +1,16 @@
 ---
-titulo: "Impugnación de Rechazos"
-resumen: "Análisis exhaustivo y defensa técnica ante negativas injustificadas de cobertura por parte de las aseguradoras."
-icono: "gavel"
-prioridadConversion: "alta"
+titulo: Impugnación de Rechazos
+resumen: Análisis exhaustivo y defensa técnica ante negativas injustificadas de
+  cobertura por parte de las aseguradoras.
+icono: gavel
+prioridadConversion: alta
 ordenHome: 4
 ---
-
 ## Defensa Integral de Asegurados
 
-- **Impugnación de Rechazos:** Análisis exhaustivo y defensa técnica ante negativas injustificadas de cobertura por parte de las aseguradoras.
-- **Cuantificación de Indemnizaciones:** Verificación de liquidaciones de siniestros y ajustes conforme a los límites de la póliza.
-- **Procesos Administrativos:** Reclamaciones en la vía administrativa de la APS y acciones judiciales correspondientes.
+* **Impugnación de Rechazos:** Análisis exhaustivo y defensa técnica ante negativas injustificadas de cobertura por parte de las aseguradoras.
+* **Cuantificación de Indemnizaciones:** Verificación de liquidaciones de siniestros y ajustes conforme a los límites de la póliza.
+* **Procesos Administrativos:** Reclamaciones en la vía administrativa de la APS y acciones judiciales correspondientes.
 
 ## Ruta Crítica del Reclamo de Seguro
 
@@ -20,7 +20,7 @@ ordenHome: 4
 4. **Fase 4: Ejecución** — Cobro de indemnización o activación de la vía arbitral / judicial en caso de persistir la negativa.
 
 <!--
-  TODO agente:
+  TODO:
   - Esta es la página de MAYOR prioridad de conversión del sitio (usuario en crisis, alta intención).
   - CTA más agresivo del sitio va aquí: formulario corto + WhatsApp destacado arriba del fold.
   - Renderizar la Ruta Crítica como el componente Timeline.astro (elemento de firma visual, ver tokens.css).
