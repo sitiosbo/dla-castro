@@ -37,7 +37,7 @@ function readToken(name, fallback) {
 
 const NAVY_950 = readToken('color-navy-950', '#0F1B3D');
 const NAVY_800 = readToken('color-navy-800', '#1B2A5B');
-const TERRA_600 = readToken('color-terracotta-600', '#B5622C');
+const TERRA_600 = readToken('color-terracotta-600', '#A85A28');
 const TERRA_500 = readToken('color-terracotta-500', '#C77C3F');
 const CREAM_100 = readToken('color-cream-100', '#F7EAC8');
 

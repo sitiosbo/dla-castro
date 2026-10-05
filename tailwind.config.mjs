@@ -10,7 +10,7 @@ export default {
           600: '#2E4080', // estados intermedios, hover de navy
         },
         terracotta: {
-          600: '#B5622C', // acento primario / CTAs
+          600: '#A85A28', // acento primario / CTAs
           500: '#C77C3F', // acento secundario / hover CTA
         },
         cream: {
@@ -18,7 +18,7 @@ export default {
         },
         ink: {
           600: '#4A5568', // texto de cuerpo
-          400: '#6B7A90', // texto secundario / captions — WCAG AA 5.2:1
+          400: '#5F6E84', // texto secundario / captions — WCAG AA ~5.18:1
         },
         success: {
           500: '#0FA968', // checks, indicadores de efectividad

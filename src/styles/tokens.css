@@ -11,11 +11,11 @@
   --color-navy-800: #1B2A5B;   /* primario: headers, wordmark DLA, texto de marca */
   --color-navy-800-rgb: 27, 42, 91; /* variante numérica para rgba() */
   --color-navy-600: #2E4080;   /* hover/estados intermedios de navy */
-  --color-terracotta-600: #B5622C; /* acento primario: CTAs, números, iconografía */
+  --color-terracotta-600: #A85A28; /* acento primario: CTAs, números, iconografía */
   --color-terracotta-500: #C77C3F; /* acento secundario: hover, subrayados */
   --color-cream-100: #F7EAC8;  /* fondo de badges/etiquetas ("Abogado Especialista...") */
   --color-ink-600: #4A5568;    /* texto de cuerpo */
-  --color-ink-400: #6B7A90;    /* texto secundario, captions, metadata — WCAG AA 5.2:1 */
+  --color-ink-400: #5F6E84;    /* texto secundario, captions, metadata — WCAG AA ~5.18:1 */
   --color-success-500: #0FA968;/* checks, tabla de portafolio, indicadores positivos */
   --color-white: #FFFFFF;
 
