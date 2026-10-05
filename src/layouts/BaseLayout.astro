@@ -7,6 +7,7 @@ import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import Toast from '../components/Toast.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import { direccionSchema } from '../data/oficina';
+import { siteUrl } from '../data/site';
 import '../styles/tokens.css';
 
 interface Props {
@@ -29,8 +30,6 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = 'https://defensalegaldelasegurado.com';
-
 // schema.org base — LegalService (marca DLA) + Person (Castro, abogado responsable)
 const schemaOrg = {
   '@context': 'https://schema.org',
@@ -40,7 +39,7 @@ const schemaOrg = {
       '@id': `${siteUrl}/#organization`,
       name: 'DLA — Defensa Legal del Asegurado',
       url: siteUrl,
-      logo: `${siteUrl}/favicon.ico`,
+      logo: `${siteUrl}/logo-schema.png`,
       telephone: '+59157001099',
       // Dirección postal de la oficina (fuente: settings/general.json → contacto.direccion,
       // derivada en src/data/oficina.ts). Sin geo/openingHours: no son datos confirmados.
@@ -57,10 +56,10 @@ const schemaOrg = {
         '@type': 'OfferCatalog',
         name: 'Áreas de Práctica',
         itemListElement: [
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros Generales' } },
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros de Personas' } },
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Fianzas y Caución' } },
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Impugnación de Rechazos' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros Generales', url: `${siteUrl}/areas-de-practica/seguros-generales/` } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Seguros de Personas', url: `${siteUrl}/areas-de-practica/seguros-de-personas/` } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Fianzas y Caución', url: `${siteUrl}/areas-de-practica/fianzas-y-caucion/` } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Impugnación de Rechazos', url: `${siteUrl}/areas-de-practica/impugnacion-de-rechazos/` } },
         ],
       },
     },
@@ -71,6 +70,14 @@ const schemaOrg = {
       jobTitle: 'Abogado Especialista en Derecho de Seguros',
       worksFor: { '@id': `${siteUrl}/#organization` },
       knowsAbout: ['Derecho de Seguros', 'Impugnación de rechazos', 'Ley 1883 de Bolivia', 'APS Bolivia'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      name: 'DLA — Defensa Legal del Asegurado',
+      url: siteUrl,
+      inLanguage: 'es-BO',
+      publisher: { '@id': `${siteUrl}/#organization` },
     },
     // schemaExtra puede ser un objeto único o un array de objetos (ej. BlogPosting + BreadcrumbList)
     ...(schemaExtra

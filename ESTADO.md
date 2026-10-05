@@ -569,3 +569,51 @@ Privacidad", ya agregadas por Wilson en el Apps Script) quedaban siempre vacías
 **Nota:** el Apps Script (Google) se sigue editando a mano fuera del repo; aquí solo
 se documentó su copia de referencia. Archivos sin commitear: `src/pages/contacto.astro`
 y `src/worker/index.js` (M). Sin git.
+
+## 6.16 JSON-LD completo — WebSite, logo, BlogPosting y OfferCatalog (05-oct-2026)
+
+**Cambios (solo dentro de objetos JSON-LD, invisible al usuario):**
+- `src/layouts/BaseLayout.astro`:
+  - **A)** Nuevo nodo `WebSite` en el `@graph` (junto a LegalService y Person, afecta a
+    TODAS las páginas): `@id …/#website`, `name`, `url`, `inLanguage: 'es-BO'`,
+    `publisher → #organization`.
+  - **B)** `LegalService.logo`: `/favicon.ico` → `/logo-schema.png`.
+  - **C)** `hasOfferCatalog`: cada `Service` ahora incluye `url` real
+    (`/areas-de-practica/{slug}/`). Los 4 slugs verificados 1:1 contra los archivos
+    reales de `src/pages/areas-de-practica/` antes de aplicar.
+- `src/pages/blog/[...slug].astro`:
+  - **D)** `articleSchema` completado: `dateModified` (igual a `fechaPublicacion`,
+    sin campos nuevos en config.ts ni frontmatter), `image`
+    (`${siteUrl}${imagenPortada.src}` con fallback a `/og-default.png`) y
+    `publisher.logo` (`ImageObject` → `/logo-schema.png`).
+- Nuevo `src/data/site.ts` con `export const siteUrl` (antes era un string local en
+  BaseLayout): BaseLayout y `[...slug].astro` lo importan — sin duplicar el literal.
+- NO se tocaron: config.ts, frontmatter, logo visual del header/footer, FAQPage,
+  BreadcrumbList, otros nodos, `blog/index.astro` ni ningún diseño.
+
+**Verificación:**
+- `npm run build` EXIT=0 (`astro check` + 16 páginas).
+- JSON-LD extraído de `dist/` ANTES y DESPUÉS (home, fianzas-y-caucion,
+  ejemplo-post): `JSON.parse` OK en los 6, todos los `@type` son de schema.org, y los
+  nodos ajenos a la tarea (Person, BreadcrumbList) quedaron byte-idénticos.
+- HTTP 200 en local (server estático sobre dist/:8095): las 4 URLs del OfferCatalog +
+  `/logo-schema.png` (recién copiado a dist por este build) + `image` del post
+  (`/_astro/66116.DpTI_PdM.jpg`).
+- Rich Results Test (`search.google.com/test/rich-results`, modo CÓDIGO, automatizado
+  por CDP): el código cargó bien (3366 chars) y se pulsó "PROBAR CÓDIGO", pero
+  **reCAPTCHA bloquea el envío automatizado** (`CONSOLE.error: "Los parámetros de la
+  API no son válidos"`), y el modo URL solo analizaría la página YA publicada (con el
+  JSON-LD viejo). Se valida en local en su lugar: sintaxis + tipos + campos
+  concretos OK (WebSite completo, 4 URLs en Services, dateModified ISO8601, image
+  absoluta, publisher.logo ImageObject). **Pendiente: re-validar en la herramienta
+  tras desplegar.**
+- Visual: captura de `.article-cover` en `/blog/ejemplo-post/` antes/después con MD5
+  idéntico (`74939B48BEFE4B37933C13DBF1EF18B4`); métricas idénticas (natural
+  832×605, render 832×448, `object-fit: contain`, filtro duotone-navy). Único cambio
+  detectado: `jsonLdHasImage` false→true (invisible).
+- EOLs intactos: `.astro` en CRLF, `site.ts` en LF, sin BOM.
+
+**Archivos sin commitear:** `src/layouts/BaseLayout.astro` (M),
+`src/pages/blog/[...slug].astro` (M), `src/data/site.ts` (??). En el working tree hay
+además cambios del usuario ajenos a esta tarea: `public/logo-schema.png` (??) y
+`public/images/lapaz-skyline.jpg` (D). Sin git.
