@@ -20,7 +20,7 @@
   --color-white: #FFFFFF;
 
   /* Tipografía */
-  --font-display: 'Fraunces', ui-serif, Georgia, serif;   /* H1-H3, wordmark DLA */
+  --font-display: 'Fraunces Variable', 'Fraunces', ui-serif, Georgia, serif; /* H1-H3, wordmark DLA (Fontsource variable, eje opsz) */
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif; /* párrafos, UI */
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace; /* %, artículos legales, stats */
 
