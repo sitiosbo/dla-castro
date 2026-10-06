@@ -2,6 +2,28 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import { visit } from 'unist-util-visit';
+import { getLastmod } from './src/utils/lastmod';
+
+// Mapa ruta del sitemap (con trailing slash) → archivo fuente que la genera.
+// Usado por `serialize` para emitir un <lastmod> real por página:
+// frontmatter de colección > último commit de git > fecha de build (con warning).
+const pageSources = {
+  '/': 'src/pages/index.astro',
+  '/areas-de-practica/': 'src/pages/areas-de-practica/index.astro',
+  '/areas-de-practica/fianzas-y-caucion/': 'src/pages/areas-de-practica/fianzas-y-caucion.astro',
+  '/areas-de-practica/impugnacion-de-rechazos/': 'src/pages/areas-de-practica/impugnacion-de-rechazos.astro',
+  '/areas-de-practica/seguros-de-personas/': 'src/pages/areas-de-practica/seguros-de-personas.astro',
+  '/areas-de-practica/seguros-generales/': 'src/pages/areas-de-practica/seguros-generales.astro',
+  '/aviso-legal/': 'src/pages/aviso-legal.astro',
+  '/blog/': 'src/pages/blog/index.astro',
+  '/blog/ejemplo-post/': 'src/content/blog/ejemplo-post.md',
+  '/contacto/': 'src/pages/contacto.astro',
+  '/politica-privacidad/': 'src/pages/politica-privacidad.astro',
+  '/preguntas-frecuentes/': 'src/pages/preguntas-frecuentes.astro',
+  '/proceso/': 'src/pages/proceso.astro',
+  '/resultados/': 'src/pages/resultados.astro',
+  '/sobre-mi/': 'src/pages/sobre-mi.astro',
+};
 
 // Hosting: Cloudflare Workers con Static Assets (modelo actual de Cloudflare,
 // NO Cloudflare Pages). GitHub (sitiosbo/dla-seguros) es exclusivamente el
@@ -44,7 +66,19 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     tailwind({ applyBaseStyles: false }),
-    sitemap(),
+    sitemap({
+      serialize(item) {
+        const route = new URL(item.url).pathname;
+        const source = pageSources[route];
+        if (!source) {
+          console.warn(
+            `[sitemap] lastmod: sin archivo fuente mapeado para "${route}" — la URL queda sin <lastmod>.`,
+          );
+          return item;
+        }
+        return { ...item, lastmod: getLastmod(route, source) };
+      },
+    }),
   ],
   markdown: {
     rehypePlugins: [rehypeFigureFromAlt],
