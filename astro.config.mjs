@@ -3,27 +3,18 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import { visit } from 'unist-util-visit';
 import { getLastmod } from './src/utils/lastmod';
+import { pageSources } from './src/data/page-sources.mjs';
 
-// Mapa ruta del sitemap (con trailing slash) → archivo fuente que la genera.
-// Usado por `serialize` para emitir un <lastmod> real por página:
-// frontmatter de colección > último commit de git > fecha de build (con warning).
-const pageSources = {
-  '/': 'src/pages/index.astro',
-  '/areas-de-practica/': 'src/pages/areas-de-practica/index.astro',
-  '/areas-de-practica/fianzas-y-caucion/': 'src/pages/areas-de-practica/fianzas-y-caucion.astro',
-  '/areas-de-practica/impugnacion-de-rechazos/': 'src/pages/areas-de-practica/impugnacion-de-rechazos.astro',
-  '/areas-de-practica/seguros-de-personas/': 'src/pages/areas-de-practica/seguros-de-personas.astro',
-  '/areas-de-practica/seguros-generales/': 'src/pages/areas-de-practica/seguros-generales.astro',
-  '/aviso-legal/': 'src/pages/aviso-legal.astro',
-  '/blog/': 'src/pages/blog/index.astro',
-  '/blog/ejemplo-post/': 'src/content/blog/ejemplo-post.md',
-  '/contacto/': 'src/pages/contacto.astro',
-  '/politica-privacidad/': 'src/pages/politica-privacidad.astro',
-  '/preguntas-frecuentes/': 'src/pages/preguntas-frecuentes.astro',
-  '/proceso/': 'src/pages/proceso.astro',
-  '/resultados/': 'src/pages/resultados.astro',
-  '/sobre-mi/': 'src/pages/sobre-mi.astro',
-};
+// ── <lastmod> del sitemap ────────────────────────────────────────────────
+// La tabla ruta→archivo vive en src/data/page-sources.mjs (compartida con
+// scripts/generate-lastmod.mjs).
+//
+// IMPORTANTE: si se edita o agrega una página estática listada en
+// pageSources, correr `node scripts/generate-lastmod.mjs` localmente y
+// commitear el src/data/lastmod-static.json actualizado JUNTO con el cambio.
+// El build de Cloudflare no ejecuta git: sin ese JSON actualizado, la página
+// nueva cae en el fallback (fecha de build + warning en el log de build).
+// Las colecciones (.md) no usan el JSON: su lastmod sale del frontmatter.
 
 // Hosting: Cloudflare Workers con Static Assets (modelo actual de Cloudflare,
 // NO Cloudflare Pages). GitHub (sitiosbo/dla-seguros) es exclusivamente el
@@ -67,16 +58,20 @@ export default defineConfig({
   integrations: [
     tailwind({ applyBaseStyles: false }),
     sitemap({
+      // Aislamiento por página: si el cálculo de un lastmod falla, solo esa
+      // URL queda con fallback; nunca se rompe el sitemap entero
+      // (@astrojs/sitemap aborta por completo si serialize lanza).
       serialize(item) {
-        const route = new URL(item.url).pathname;
-        const source = pageSources[route];
-        if (!source) {
+        let route = item.url;
+        try {
+          route = new URL(item.url).pathname;
+          return { ...item, lastmod: getLastmod(route, pageSources[route]) };
+        } catch (err) {
           console.warn(
-            `[sitemap] lastmod: sin archivo fuente mapeado para "${route}" — la URL queda sin <lastmod>.`,
+            `[sitemap] lastmod: error inesperado para "${route}" — usando fecha de build. Error: ${String(err)}`,
           );
-          return item;
+          return { ...item, lastmod: new Date().toISOString() };
         }
-        return { ...item, lastmod: getLastmod(route, source) };
       },
     }),
   ],
