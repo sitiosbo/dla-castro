@@ -393,6 +393,9 @@ const currentPath = Astro.url.pathname;
   .mobile-nav {
     background: var(--color-white);
     border-top: 1px solid rgba(15, 27, 61, 0.08);
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobile-nav[hidden] { display: none; }
@@ -471,6 +474,15 @@ const currentPath = Astro.url.pathname;
       font-size: 1.125rem;
     }
   }
+
+  /* Red de seguridad: el menú móvil nunca es visible en escritorio,
+     aunque la ventana se redimensione con el menú abierto (estado hidden
+     y aria-* los sincroniza el script al cruzar el breakpoint). */
+  @media (min-width: 769px) {
+    .mobile-nav {
+      display: none !important;
+    }
+  }
 </style>
 
 <script>
@@ -544,5 +556,23 @@ const currentPath = Astro.url.pathname;
     } else {
       mobileNav?.removeAttribute('hidden');
     }
+  });
+
+  const mobileBreakpoint = window.matchMedia('(min-width: 769px)');
+
+  function closeMobileMenu() {
+    mobileBtn?.setAttribute('aria-expanded', 'false');
+    mobileBtn?.setAttribute('aria-label', 'Abrir menú');
+    mobileNav?.setAttribute('hidden', '');
+  }
+
+  mobileBreakpoint.addEventListener('change', (e) => {
+    if (e.matches) closeMobileMenu();
+  });
+
+  // También cerrar al hacer click en un link del menú móvil (mejora de UX,
+  // evita que quede abierto al navegar)
+  mobileNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMobileMenu);
   });
 </script>
