@@ -10,15 +10,15 @@
     "whatsapp": "59157001099",
     "email": "defensalegaldelasegurado@gmail.com",
     "direccion": {
+      "departamento": "La Paz",
       "calle": "Calle Ballivián #1456",
-      "edificio": "Edificio Cervantes",
-      "piso": "Mezanine 2",
+      "paisISO": "BO",
       "oficina": "Oficina 4",
       "referencia": "Entre calles Loayza y Bueno",
+      "piso": "Mezanine 2",
       "ciudad": "La Paz",
-      "departamento": "La Paz",
       "pais": "Bolivia",
-      "paisISO": "BO"
+      "edificio": "Edificio Cervantes"
     },
     "ciudadesCobertura": [
       "La Paz",
@@ -29,8 +29,8 @@
   },
   "redes_sociales": {
     "facebook": "https://www.facebook.com/dlabolivia",
-    "instagram": "http://www.instagram.com",
-    "tiktok": "http://www.tiktok.com",
+    "instagram": "https://www.instagram.com/dla.bolivia",
+    "tiktok": "https://www.tiktok.com/@dla.bolivia",
     "linkedin": "http://www.linkedin.com"
   }
 }
