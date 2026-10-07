@@ -50,9 +50,14 @@ una línea de servicio de ese despacho**. Reglas específicas:
 - [x] `astro.config.mjs` + `wrangler.jsonc` — **hosting: Cloudflare Workers con Static Assets**
 - [x] Tokens de diseño en `src/styles/tokens.css` + `tailwind.config.mjs` (animaciones Emil Kowalski)
 - [x] Content collections (`src/content/config.ts`) con schema completo
-- [x] Contenido real de las 4 áreas de práctica migrado a markdown
+- [ ] **Contenido de las 4 áreas de práctica (H-001, P0 — SIN RESOLVER):** solo
+  `impugnacion-de-rechazos.md` tiene cuerpo completo (2 secciones + ruta crítica de 4
+  fases). `fianzas-y-caucion.md`, `seguros-de-personas.md` y `seguros-generales.md`
+  tienen **UNA sola oración** de cuerpo + comentario `TODO` pidiendo expandir
+  (verificado en el código el 06-oct-2026; editados por Decap el 01-oct-2026 pero
+  siguen sin redacción técnica-legal).
 - [x] Decap CMS config (`public/admin/config.yml`)
-- [x] `BaseLayout.astro` con SEO, Open Graph, Twitter Cards, Schema.org (LegalService + Person)
+- [x] `BaseLayout.astro` con SEO, Open Graph, Twitter Cards, Schema.org (LegalService + Person + WebSite)
 - [x] `Header.astro` y `Footer.astro` con jerarquía de marca no negociable (DLA dominante)
 - [x] `Hero.astro` + `TrustBar.astro`
 - [x] `Timeline.astro` (elemento de firma con `--motion-duration-orquestado`)
@@ -63,7 +68,7 @@ una línea de servicio de ese despacho**. Reglas específicas:
 - [x] `preguntas-frecuentes.astro` con JSON-LD `FAQPage`
 - [x] `WhatsAppFloat.astro` (persistente con mensajes contextuales por sección)
 - [x] Páginas legales (`aviso-legal.astro`, `politica-privacidad.astro`)
-- [x] Favicon SVG base (`public/favicon.svg`)
+- [x] Favicon (`public/favicon.ico` — el `favicon.svg` que se declaraba aquí nunca existió; ver 6.4)
 - [x] Dependencias instaladas (`node_modules`)
 - [x] `blog/index.astro` y `blog/[...slug].astro` con tipografía editorial y schema SEO
 - [x] `public/admin/` — Decap CMS con OAuth embebido en el Worker (`src/worker/index.js`)
@@ -71,6 +76,15 @@ una línea de servicio de ese despacho**. Reglas específicas:
 - [x] Optimización de imágenes: `image()` en schema blog, `<Image>` en páginas, `getImage()` para skyline
 - [x] Compilación probada con `npm run build` sin errores
 - [x] `SocialIcons.astro` — íconos de redes sociales en footer (Facebook, Instagram, TikTok, LinkedIn), paleta de marca (`ink-400` → `terracotta-600` en hover), gestionable desde Decap CMS (`settings/general.json` → `redes_sociales`). Pendiente: cliente debe cargar los links reales desde el panel.
+- [x] `CookieBanner.astro` en todas las páginas + Google Analytics (`G-KH9TYCX64Y`) cargado **solo** tras consentimiento — ver 6.17.
+- [x] Dirección de la oficina centralizada en `src/data/oficina.ts` (fuente única `general.json`) — ver 6.9.
+- [x] Políticas legales (`/aviso-legal/`, `/politica-privacidad/`) actualizadas el 28-sep-2026, **sin comentarios TODO** — ver 6.17.
+- [x] JSON-LD completo: `WebSite`, `OfferCatalog` con URLs reales, `BlogPosting` con `dateModified` — ver 6.16.
+- [x] Contraste WCAG AA corregido en tokens (05-oct-2026), fuentes autoalojadas con Fontsource (06-oct-2026) y menú móvil con scroll propio/cierre automático (06-oct-2026) — ver 6.18.
+- [x] Sitemap con `<lastmod>` real por página, resuelto **sin git en tiempo de build** (06-oct-2026) — ver 6.19.
+- [x] Cabeceras de seguridad HTTP básicas (H-011): HSTS, `X-Content-Type-Options`,
+  `X-Frame-Options` y `Referrer-Policy` en **todas** las respuestas del Worker
+  (07-oct-2026; CSP queda fuera de alcance) — ver 6.21.
 
 ## 4. Orden de trabajo y estado de pasos
 
@@ -171,7 +185,9 @@ Tres ajustes en `src/components/Hero.astro`:
 
 2. **Peso de "DLA" reducido:** Cambiado `.wordmark-dla` de `font-weight: 700` a `600`.
    Fraunces se ve mejor en pesos moderados para wordmarks grandes. Fraunces 600 ya
-   estaba cargado en Google Fonts (verificado en BaseLayout.astro).
+   estaba cargado en Google Fonts (verificado en BaseLayout.astro). *Actualización
+   oct-2026: Google Fonts ya no se usa — las fuentes son autoalojadas con Fontsource,
+   ver 6.18.*
 
 3. **Divisor vertical:** Reemplazado `<span class="wordmark-separator">—</span>` por
    `<span class="wordmark-divider"></span>` (div vacío, `width: 1px; height: 2.25rem;
@@ -350,6 +366,12 @@ oficina, referencia, ciudad, departamento, pais, paisISO`. Extensiones:
    duplicadas (LegalService + Person + BreadcrumbList).
 4. Legales: `/aviso-legal/` (párrafo "Domicilio de la oficina" en Titular) y
    `/politica-privacidad/` (nueva sección "Responsable del sitio" con domicilio).
+   **Corrección 06-oct-2026 (auditoría H-027):** eso era correcto para esa sesión,
+   pero **ya no aplica** — tras la reescritura del 28-sep-2026 (`2545678`),
+   `/politica-privacidad/` **no** incluye el domicilio ni sección "Responsable del
+   sitio"; solo dice "con domicilio en el Estado Plurinacional de Bolivia", y no
+   importa `src/data/oficina.ts`. Quien sí lo importa: `contacto.astro`,
+   `Footer.astro`, `aviso-legal.astro` y `BaseLayout.astro` (JSON-LD).
 
 **Checklist:** dirección sale de un solo archivo (grep `Ballivián` en src/ → solo
 general.json); build 0 errores/0 warnings (2 hints preexistentes); JSON-LD parsea
@@ -358,7 +380,8 @@ legales (derivan del mismo JSON); footer con label "Oficina" vs "Cobertura" para
 no contradecir la cobertura nacional; form/toast/WhatsAppFloat/worker sin tocar.
 Páginas legales: existen y tienen contenido real pero siguen marcadas con TODO
 ("validar con el abogado el texto legal completo") — se les sumó el domicilio sin
-reescribirlas. Sin git.
+reescribirlas. **Corrección 06-oct-2026:** los TODO ya no existen (la reescritura
+del 28-sep-2026 los eliminó; grep → 0 resultados). Sin git.
 
 ## 6.10 Imagen Open Graph por defecto (og-default.png) (29-sep-2026)
 
@@ -617,3 +640,108 @@ y `src/worker/index.js` (M). Sin git.
 `src/pages/blog/[...slug].astro` (M), `src/data/site.ts` (??). En el working tree hay
 además cambios del usuario ajenos a esta tarea: `public/logo-schema.png` (??) y
 `public/images/lapaz-skyline.jpg` (D). Sin git.
+
+## 6.17 Banner de cookies + Google Analytics y legales actualizadas (22/28-sep-2026)
+
+- **Google Analytics (22-sep-2026, `b1d1c7a`):** ID de medición `G-KH9TYCX64Y`,
+  definido **solo** en `src/components/CookieBanner.astro`. No existe snippet gtag en
+  el `<head>`: BaseLayout solo lleva un comentario que apunta al componente.
+- **Banner de cookies (28-sep-2026, `0360161`):** `CookieBanner.astro` renderizado en
+  `BaseLayout` (todas las páginas, incl. 404). Consentimiento en `localStorage`
+  (`dla-cookie-consent`, 12 meses de vigencia). "Aceptar" → `loadAnalytics()` inyecta
+  el script de gtag; "Rechazar" → `ga-disable-<ID>` + borra cookies `_ga`, `_ga_*`,
+  `_gid`. Footer con botón `data-cookie-settings` ("Configuración de cookies") para
+  reabrirlo; variable CSS `--cookie-banner-height` para subir los elementos fijos
+  (WhatsAppFloat). Rechazar y Aceptar con el mismo tamaño/peso (regla de privacidad:
+  rechazar debe ser tan fácil como aceptar).
+- **Políticas legales (28-sep-2026, `2545678`):** `/aviso-legal/` y
+  `/politica-privacidad/` actualizados. El domicilio real (vía `oficina.ts`) está en
+  **`/aviso-legal/`**; `/politica-privacidad/` no lo repite — solo declara "domicilio
+  en el Estado Plurinacional de Bolivia" y no importa `oficina.ts`. Grep de `TODO`
+  sobre ambos archivos → **0 resultados** (ya no están "pendientes de validación"
+  como decía la documentación vieja). Versión que viaja al Sheet:
+  `VERSION_POLITICA_PRIVACIDAD = '2026-09-28'` en `contacto.astro`.
+- La centralización de la dirección en `src/data/oficina.ts` es de esta misma corrida
+  (ver 6.9).
+
+## 6.18 Contraste WCAG AA, fuentes Fontsource y menú móvil (05–06 oct 2026)
+
+- **Contraste (05-oct-2026, `d6988cf`, 14 archivos):** `--color-ink-400` `#6B7A90` →
+  `#5F6E84` (≈5.18:1 sobre blanco), `--color-terracotta-600` `#B5622C` → `#A85A28`, y
+  textos claros del footer sobre navy subidos de alpha 0.35–0.45 a **0.55**. Tocó
+  `tokens.css`, `tailwind.config.mjs` y 10 componentes/páginas;
+  `public/admin/tokens.css` es la copia que regenera el `prebuild` (sin edición
+  manual).
+- **Fuentes autoalojadas (06-oct-2026, `26fcaa9`, H-023):**
+  `@fontsource-variable/fraunces/opsz.css` + `@fontsource/inter` 400/500/600 +
+  `@fontsource/ibm-plex-mono` 400/500 importados en el frontmatter de `BaseLayout`;
+  el `<link>` de Google Fonts salió del `<head>`. `tokens.css` y `tailwind.config.mjs`
+  usan `'Fraunces Variable'`. QA: 0 peticiones a `fonts.googleapis.com`/`fonts.gstatic.com`,
+  34 `.woff2` en `dist/_astro/` con `font-display: swap`, familias reales confirmadas
+  por CDP.
+- **Menú móvil (06-oct-2026, `64cf626`, `Header.astro` +30 líneas):** menú con
+  `max-height: calc(100vh - var(--header-height))` + `overflow-y: auto` (scroll propio),
+  red de seguridad `@media (min-width: 769px) { .mobile-nav { display: none !important; } }`,
+  y cierre automático al cruzar el breakpoint (`matchMedia`) o al navegar desde un link
+  del menú.
+
+## 6.19 Sitemap con `<lastmod>` real, sin git en el build (06-oct-2026)
+
+Dos commits: `1aec8b3` (lastmod por página vía `serialize`) y `29db6df` (sin git en
+build de Cloudflare).
+
+- **Páginas estáticas (14 rutas):** fechas `%cI` de `git log -1` versionadas en
+  `src/data/lastmod-static.json`, generadas **localmente** con
+  `node scripts/generate-lastmod.mjs`.
+- **Colecciones (blog):** **SOLO frontmatter** (`fechaPublicacion`) — se quitó el
+  `max(frontmatter, git)` porque git no existe en el build de Cloudflare; si un post se
+  edita después, agregar `fechaActualizacion` al frontmatter (Decap puede editarlo).
+- **Piezas:** tabla compartida `src/data/page-sources.mjs` (config + script),
+  `src/utils/lastmod.ts` (lee JSON/frontmatter, try/catch por página, fallback a fecha
+  de build + `console.warn`), `serialize` en `astro.config.mjs` con try/catch por URL.
+- **Regla operativa:** editar/agregar una página estática listada en `page-sources.mjs`
+  → correr el script y commitear el JSON junto con el cambio (documentado en
+  `astro.config.mjs`, en el propio módulo y en `docs/DOCUMENTACION_TECNICA.md` §17).
+- **Verificación:** `npm run build` EXIT=0 con `.git` renombrado Y sin `git` en el PATH;
+  15 URLs con `<lastmod>` (6 fechas distintas, ninguna = fecha de build);
+  `/blog/ejemplo-post/` = `2026-08-12` (frontmatter). `@astrojs/sitemap` sigue pineado
+  en `3.6.0` (ver 4.7).
+
+## 6.20 Documentación técnica re-auditada (H-027, 06-oct-2026)
+
+`docs/DOCUMENTACION_TECNICA.md` (última actualización antes: 20-ago-2026) actualizada
+contra el código real: nuevas secciones 14–19 (cookies+GA, oficina.ts, legales,
+sitemap lastmod, Fontsource, contraste/menú), árbol de carpetas e inventario de
+componentes corregidos, y eliminadas las filas falsas de deuda técnica ("cookie notice
+pendiente", "Google Fonts media warning", "aviso legal con TODO"). En esta misma tarea:
+sección 3 de ESTADO.md corregida (H-001: 3 de 4 áreas siguen con una oración),
+correcciones de 6.9 (politica-privacidad no incluye domicilio) y del favicon de la
+sección 3, y comentario de repo en `astro.config.mjs` corregido a `sitiosbo/dla-castro`.
+
+## 6.21 Cabeceras de seguridad HTTP básicas (H-011, 07-oct-2026)
+
+Tarea de auditoría H-011 (P2): el sitio no enviaba **ningún** header de seguridad
+HTTP. Implementado solo en `src/worker/index.js` (sin tocar el Dashboard de
+Cloudflare), cubriendo **todas** las respuestas —estáticas vía `env.ASSETS.fetch()`
+y las del Worker (`/api/auth`, `/api/callback`, `/api/contacto`)— mediante
+`withSecurityHeaders()`, que clona la respuesta (`new Response(response.body, response)`)
+y hace `headers.set(...)` **sin modificar el body**:
+
+- `Strict-Transport-Security: max-age=31536000; includeSubDomains` — **sin `preload`**
+  a propósito: es difícil de revertir una vez que el navegador lo cachea.
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: SAMEORIGIN`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+- **CSP fuera de alcance a propósito** (así lo define H-011): el panel Decap carga
+  scripts desde `unpkg.com` y GA desde `googletagmanager.com`; una CSP mal calibrada
+  rompería `/admin/`. Queda como tarea aparte (riesgo registrado en
+  `docs/DOCUMENTACION_TECNICA.md` §9.2).
+- **Verificación (07-oct-2026, `wrangler dev` local):** `npm run build` EXIT=0;
+  `curl -sI` con los 4 headers en `/`, `/admin/`, `/contacto/`, `/admin/config.yml`,
+  respuesta 404, `GET /api/auth` (301) y `GET /api/callback`; bodies de `/`,
+  `/admin/` y `/contacto/` **idénticos byte a byte** al build; `POST /api/contacto`
+  end-to-end → 200 `{"ok":true}` y 400 sin `consentimiento` (flujo intacto).
+- **X-Frame-Options sin efectos adversos:** el sitio no se embebe en iframes propios
+  ni de terceros. Si en producción aparece algún iframe embebido, **reportarlo** antes
+  de retirar la cabecera (no se quitó silenciosamente).

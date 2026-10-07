@@ -150,20 +150,41 @@ async function handleContacto(request, env) {
   }
 }
 
+/* ── Headers de seguridad HTTP (H-011) ──
+   Sin "preload" en HSTS a propósito: es difícil de revertir una vez
+   que el navegador lo cachea. CSP queda fuera de alcance (tarea aparte). */
+
+const SECURITY_HEADERS = {
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+};
+
+function withSecurityHeaders(response) {
+  // Clona la respuesta (mismo body/status/headers) y añade los de seguridad,
+  // sin tocar el contenido en ningún caso.
+  const secured = new Response(response.body, response);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    secured.headers.set(name, value);
+  }
+  return secured;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/auth") {
-      return handleAuth(request, env);
+      return withSecurityHeaders(await handleAuth(request, env));
     }
     if (url.pathname === "/api/callback") {
-      return handleCallback(request, env);
+      return withSecurityHeaders(await handleCallback(request, env));
     }
     if (url.pathname === "/api/contacto" && request.method === "POST") {
-      return handleContacto(request, env);
+      return withSecurityHeaders(await handleContacto(request, env));
     }
 
-    return env.ASSETS.fetch(request);
+    return withSecurityHeaders(await env.ASSETS.fetch(request));
   },
 };

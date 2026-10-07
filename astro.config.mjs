@@ -17,7 +17,7 @@ import { pageSources } from './src/data/page-sources.mjs';
 // Las colecciones (.md) no usan el JSON: su lastmod sale del frontmatter.
 
 // Hosting: Cloudflare Workers con Static Assets (modelo actual de Cloudflare,
-// NO Cloudflare Pages). GitHub (sitiosbo/dla-seguros) es exclusivamente el
+// NO Cloudflare Pages). GitHub (sitiosbo/dla-castro) es exclusivamente el
 // repositorio de código fuente. El deploy se hace con `wrangler deploy`
 // (ver wrangler.jsonc) sirviendo el output estático de `astro build`.
 //
